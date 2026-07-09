@@ -2,78 +2,61 @@
 
 Parametric OpenSCAD enclosures for Mariko Earthgrids field devices, branded with the Reality2 network hallmark.
 
+## Overview
+
+This repository contains parametric case designs for various Mariko Earthgrids devices. Each device has its own directory with source files, STL exports, documentation, and verification tools.
+
 ## Devices
 
 | Device | Description | Status |
 |--------|-------------|--------|
 | [Xiao + LoRa](xiao/) | Phone-mount case for Seeed Xiao + LoRa board | ✅ Production |
 
----
+## Project Structure
 
-## Xiao + LoRa Phone-Mount Case
-
-Parametric OpenSCAD enclosure for a Seeed Xiao + LoRa board that mounts on the back of a phone, connected by a short right-angle USB-C cable.
-
-![assembly](xiao/images/assembly.png)
-
-### Design overview
-
-- **Inverted mounting**: the solid printed floor is the *visible outer face* when installed; the click-in lid faces the phone. Total profile: **13.1 mm**.
-- **Meandering antenna channel, full body width**: the channel is the same outer width as the box, split lengthwise by a central divider into **two 8 mm lanes** — one per antenna (LoRa | WiFi/BLE). 75 mm long; the curve is a smooth function with zero slope at both ends. The divider also serves as the board's central back-stop.
-- **One-piece click-in lid** covering box + channel: flat 1.5 mm plate, seated 0.2 mm below the rim, retained by six ramped snap bumps. Pry notch at the channel's far end.
-- **Branding, debossed 0.4 mm into the visible face**: Mariko tree mark, braided river waves along the meander, and Reality2 hexagon hallmark.
-- **USB-C**: stadium-shaped window (12.6 x 7.0 mm) sized for Adafruit 6367 slim right-angle cable.
-
-### Files
-
-| file | purpose |
-|---|---|
-| `xiao/src/xiao_case.scad` | the design (all parameters at the top) |
-| `xiao/src/mariko_logo_traced.scad` | traced Mariko tree polygon data — **required dependency** |
-| `xiao/test/` | fit-test and preview scenes |
-| `xiao/scripts/check_fit.py` | snap-fit verification (run before printing) |
-| `xiao/stl/` | ready-to-print exports |
-| `xiao/images/` | renders and reference images |
-
-### Printing
-
-- Two parts, both print flat as exported, **no supports**.
-- Case: floor on the bed — the branding is bed-face engraving. A 0.2 mm first layer keeps the koru spirals and R2 spokes sharp.
-- Lid: prints flat on its top face.
-- Material: PLA or PETG. Snap tuning knobs: `tol` (0.3), `snap_depth` (0.7).
-
-### Assembly
-
-1. Seat the board in the box (component side up, USB end at the window).
-2. Feed the antennas into the meander trough (left antenna to left lane, right to right lane).
-3. Click the lid in: box end first, then press along the channel.
-4. Insert the USB-C plug through the window from outside, ribbon toward the rim (phone side).
-5. Mount rim-side against the phone.
-
-To open: fingernail in the far-end notch, peel the lid along the channel.
-
-### Verification workflow
-
-Geometry changes should pass the interference test before printing:
-
-```bash
-cd xiao
-python3 scripts/check_fit.py
 ```
-
-`closed ~0 mm³` proves the lid seats; `lifted >0` proves all six clips catch.
-
----
+mariko-xiao-case/
+├── branding/           # Shared branding assets (logos, images)
+├── xiao/              # Xiao + LoRa device case
+├── CLAUDE.md          # Project context and invariants
+└── README.md          # This file
+```
 
 ## Shared Assets
 
-### Branding
-
 The `branding/` directory contains shared branding assets used across devices:
 
-- `branding/logos/` - Logo source files (SCAD traces)
+- `branding/logos/` - Logo source files (SCAD traces, SVGs)
 - `branding/images/` - Reference images and comparisons
 
-### License
+### Branding Elements
+
+All Mariko Earthgrids devices carry the Reality2 hallmark and may include:
+
+- **Mariko tree mark** - Auto-traced from the official logo, mirrored to read correctly after installation flip
+- **Reality2 hexagon** - Pointy-top ring with hub-and-five-spokes node network (top vertex direction empty)
+- **Braided river waves** - Decorative element flowing along device features
+
+Branding is debossed ~0.4mm into visible faces (prints as crisp first-layer engraving). Feature sizes are kept above ~0.45mm for 0.4mm nozzle compatibility.
+
+## Building
+
+All devices use OpenSCAD for parametric design. See individual device directories for:
+
+- Source files (`src/`)
+- STL exports (`stl/`)
+- Test and preview scenes (`test/`)
+- Verification tools (`scripts/`)
+
+## Contributing
+
+When adding a new device:
+
+1. Create a new directory following the structure of existing devices
+2. Include source, STL exports, documentation, and verification tools
+3. Update this README with the new device entry
+4. Document any device-specific invariants in CLAUDE.md
+
+## License
 
 Device-specific licensing is at the discretion of Mariko Earthgrids.
