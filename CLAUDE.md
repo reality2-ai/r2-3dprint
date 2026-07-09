@@ -2,10 +2,12 @@
 
 Parametric OpenSCAD enclosures for Mariko Earthgrids field devices, branded with the Reality2 network hallmark. This repository hosts designs for multiple devices.
 
+**Repository:** https://github.com/reality2-ai/r2-3dprint
+
 ## Project Structure
 
 ```
-mariko-xiao-case/
+r2-3dprint/
 ├── branding/           # Shared branding assets (logos, images)
 ├── xiao/              # Xiao + LoRa device case
 │   ├── src/          # Source SCAD files
@@ -31,7 +33,7 @@ Located in `xiao/` - parametric enclosure for Seeed Xiao + LoRa board.
 - `xiao/test/interference.scad`, `xiao/test/seated.scad` — test/preview scenes.
 
 **Non-negotiable invariants:**
-1. **Run `python3 xiao/scripts/check_fit.py` after ANY geometry change, before exporting STLs.** closed ≈ 0 mm³ AND lifted > 2 mm³ or the lid is broken.
+1. **Run `cd xiao && python3 scripts/check_fit.py` after ANY geometry change, before exporting STLs.** closed ≈ 0 mm³ AND lifted > 2 mm³ or the lid is broken.
 2. `LID_Z0` in check_fit.py must equal `outer_h - seat - lid_h` (currently 11.4). Update it if any height parameter changes.
 3. The case mounts INVERTED: print-floor = visible outer face; rim/lid face the phone. Therefore: floor face carries ALL branding, must stay unbroken (no cuts through it), and bottom-face marks can only be DEBOSSED (recessed).
 4. Asymmetric bottom-face graphics (the tree) are MIRRORED in the model so they read correctly after the installation flip.
@@ -70,9 +72,25 @@ When adding a new device case:
 
 ## Branding Assets
 
-The `branding/` directory contains shared assets:
+The `branding/` directory contains shared assets used across all devices:
 
 - `branding/logos/` - Logo source files (SCAD traces, SVGs)
-- `branding/images/` - Reference images and comparisons
+- `branding/images/` - Reference images, comparisons, and examples
 
-These are shared across all device cases where applicable.
+### Branding Elements
+
+All Mariko Earthgrids devices carry the Reality2 hallmark and may include:
+
+- **Mariko tree mark** - Auto-traced from the official logo, mirrored to read correctly after installation flip
+- **Reality2 hexagon** - Pointy-top ring with hub-and-five-spokes node network (top vertex direction empty)
+- **Braided river waves** - Decorative element flowing along device features
+
+Branding is debossed ~0.4mm into visible faces (prints as crisp first-layer engraving). Feature sizes are kept above ~0.45mm for 0.4mm nozzle compatibility.
+
+### Logo Tracing
+
+When tracing logos for new devices:
+- Use high-resolution source images
+- Maintain feature sizes above 0.45mm for printability
+- Consider the installation flip when placing asymmetric elements
+- Test print before committing to production
