@@ -31,10 +31,13 @@ def stl_volume(path):
     return abs(v)
 
 def run(lift, out):
-    scad = f"""use <xiao_case.scad>
+    # Run from repo root so relative paths work
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(repo_root)
+    scad = f"""use <src/xiao_case.scad>
 intersection(){{ case_body(); translate([0,0,{LID_Z0}+{lift}]) lid(); }}
 """
-    with tempfile.NamedTemporaryFile("w", suffix=".scad", dir=".",
+    with tempfile.NamedTemporaryFile("w", suffix=".scad", dir=repo_root,
                                      delete=False) as f:
         f.write(scad); tmp = f.name
     try:
