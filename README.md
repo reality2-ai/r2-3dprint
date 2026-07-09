@@ -2,6 +2,8 @@
 
 Parametric OpenSCAD enclosures for Mariko Earthgrids field devices, branded with the Reality2 network hallmark.
 
+![Branding example](branding/images/embossing.png)
+
 ## Overview
 
 This repository contains parametric case designs for various Mariko Earthgrids devices. Each device has its own directory with source files, STL exports, documentation, and verification tools.

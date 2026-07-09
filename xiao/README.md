@@ -3,7 +3,6 @@
 Parametric OpenSCAD enclosure for a Seeed Xiao + LoRa board that mounts on the back of a phone, connected by a short right-angle USB-C cable. Designed for and branded as a Mariko Earthgrids field device, carrying the Reality2 network hallmark.
 
 ![assembly](images/assembly.png)
-![embossing](images/embossing.png)
 
 ## Design overview
 
