@@ -1,5 +1,5 @@
 // =====================================================================
-use <mariko_logo_traced.scad>
+use <../branding/logos/mariko_logo_traced.scad>
 // Xiao + LoRa phone-mount case  (parametric, OpenSCAD)
 // Main box with click-in lid + separate enclosed antenna channel with its
 // own click-in lid. USB-C slot (open through floor) on one short side.

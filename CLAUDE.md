@@ -7,11 +7,11 @@ feedback from Roy; the design decisions below are settled — do not revisit
 without new evidence from a print.
 
 ## Files
-- `xiao_case.scad` — the design. All parameters at top.
-- `mariko_logo_traced.scad` — REQUIRED dependency (traced logo polygons).
+- `src/xiao_case.scad` — the design. All parameters at top.
+- `branding/logos/mariko_logo_traced.scad` — REQUIRED dependency (traced logo polygons).
 - `scripts/check_fit.py` — snap-fit interference test. See workflow below.
-- `interference.scad`, `seated.scad` — test/preview scenes.
-- `stl/` — current exports. `images/` — renders + logo trace comparison.
+- `test/interference.scad`, `test/seated.scad` — test/preview scenes.
+- `stl/` — current exports. `images/` — product renders. `branding/images/` — logo trace reference.
 
 ## Non-negotiable invariants
 1. **Run `python3 scripts/check_fit.py` after ANY geometry change, before
