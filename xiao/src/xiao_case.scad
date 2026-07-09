@@ -1,5 +1,5 @@
 // =====================================================================
-use <../branding/logos/mariko_logo_traced.scad>
+use <mariko_logo_traced.scad>
 // Xiao + LoRa phone-mount case  (parametric, OpenSCAD)
 // Main box with click-in lid + separate enclosed antenna channel with its
 // own click-in lid. USB-C slot (open through floor) on one short side.
@@ -27,10 +27,10 @@ usb_h        = 7.0;  // window height (Z) = end radius x 2
 usb_z0       = 3.0;  // window lower edge above print-floor
 
 // ---------- Antenna channel (+Y short side) ----------
+// The channel is the SAME OUTER WIDTH as the box, split lengthwise by a
+// central divider into two lanes -- one per antenna (LoRa | WiFi/BLE).
 ant_channel_len = 75;  // how far the channel extends past the case body
-ant_channel_w   = 12;  // DEPRECATED: now uses outer_w (full box width) for better RF separation
-ant_divider_w   = 1.2; // center divider wall thickness (same as floor)
-ant_chamfer     = 1.0; // small 45 chamfer softening the channel->box join
+divider_w       = 1.6; // central divider wall thickness
 
 // ---------- Case shell ----------
 wall         = 1.6;   // side wall thickness
@@ -63,12 +63,13 @@ outer_l = inner_l + 2*wall;
 outer_h = floor + inner_h;               // case body height (rim = top)
 lid_z0  = outer_h - seat - lid_h;        // lid underside when seated
 
-// antenna channel shares the box outer height (no vertical step at join)
-chan_ow = outer_w;                       // widened to box width for RF separation
-chan_oh = outer_h;                       // channel outer height == box
-chan_xL = 0;                             // channel left edge (X) aligned with box
-chan_xR = outer_w;                       // channel right edge (X) aligned with box
-chan_ih = outer_h - floor;               // channel interior depth
+// antenna channel: same outer width and height as the box, so box and
+// channel form one continuous meandering body with no join step at all
+chan_ow  = outer_w;                      // channel outer width == box
+chan_oh  = outer_h;                      // channel outer height == box
+chan_iw  = outer_w - 2*wall;             // channel interior width (== inner_w)
+chan_ih  = outer_h - floor;              // channel interior depth
+lane_w   = (chan_iw - divider_w)/2;      // width of each antenna lane
 
 // ---------- Antenna channel meander path ----------
 // The channel follows a gentle S-curve (the antennas are flexible wires, so
@@ -77,7 +78,8 @@ chan_ih = outer_h - floor;               // channel interior depth
 // so the channel leaves the box straight and finishes straight.
 ant_curve = 5;   // meander amplitude (max lateral swing ~0.77 * this)
 
-function ch_px(t)  = ant_curve * sin(360*t/ant_channel_len)
+function ch_px(t)  = t <= 0 ? 0 :        // straight & centred inside the box
+                     ant_curve * sin(360*t/ant_channel_len)
                                * sin(180*t/ant_channel_len);
 function ch_ang(t) = atan(ch_px(t+0.5) - ch_px(t-0.5));  // local tangent (deg)
 
@@ -203,20 +205,23 @@ chan_end_r   = 1.5;  // channel far-end corner radius
 // rounded rect, all corners
 module rrect(w,l,r){ offset(r=r) offset(delta=-r) square([w,l]); }
 
-// rect rounded only at the +Y (far) end
-module rrect_far(w,l,r){
+// rect rounded only at the -Y (front) corners; back edge square so the
+// equal-width channel strip continues it seamlessly
+module rrect_front(w,l,r){
     hull(){
-        translate([r,   l-r]) circle(r);
-        translate([w-r, l-r]) circle(r);
-        square([w, 0.001]);
+        translate([r,   r]) circle(r);
+        translate([w-r, r]) circle(r);
+        translate([0, l-0.001]) square([w, 0.001]);
     }
 }
 
 module outline(){
     union(){
-        rrect(outer_w, outer_l, corner_r);
+        rrect_front(outer_w, outer_l, corner_r);
+        // strip start buried 3mm into the box so the end-rounding offset
+        // (which also nibbles the start corners) stays hidden inside
         translate([outer_w/2, outer_l])
-            ch_strip(chan_ow, -0.5, ant_channel_len, 0, chan_end_r);
+            ch_strip(chan_ow, -3, ant_channel_len, 0, chan_end_r);
     }
 }
 
@@ -264,8 +269,9 @@ module case_body(){
         // Asymmetric glyphs are pre-MIRRORED so they read correctly after
         // the case is flipped over for installation. ----
 
-        // river waves flowing along the meander's underside
-        for(w = [[-2.1, 0], [2.1, 180]])
+        // river waves flowing along the meander's underside (widened for
+        // the full-width channel)
+        for(w = [[-3.2, 0], [3.2, 180]])
             translate([outer_w/2, outer_l, -0.01])
                 linear_extrude(deboss + 0.01)
                     wave_band(w[0], w[1], 4, ant_channel_len - wall - 16);
@@ -284,27 +290,18 @@ module case_body(){
                 linear_extrude(deboss + 0.01)
                     mirror([1,0]) hex_mark2d();
 
-        // antenna channel cavity: curved open-topped trough following the
-        // meander, leaving the far end wall. Widened to full box width.
+        // antenna channel cavity: full-interior-width curved trough
+        // following the meander, leaving the far end wall
         translate([outer_w/2, outer_l, floor])
             linear_extrude(chan_ih + 1)
-                ch_strip(chan_ow, -0.02, ant_channel_len - wall);
+                ch_strip(chan_iw, -0.02, ant_channel_len - wall);
 
-        // center divider wall: runs along the channel centerline, following
-        // the meander path, separating the two antenna wire paths for RF isolation.
-        // 1.2mm wide (same as floor thickness)
-        translate([outer_w/2, outer_l, floor])
-            linear_extrude(chan_ih)
-                ch_strip(ant_divider_w, -0.02, ant_channel_len - wall);
-
-        // pass-through slot in the shared wall so antennas exit the box
-        // into the channel (widened to full box width with center divider)
+        // pass-through: the shared wall is opened across the FULL channel
+        // interior width and height, so antennas exit freely and the wide
+        // lid ribbon passes over. The divider (added below) restores the
+        // central board back-stop.
         translate([wall, wall + inner_l - 0.01, floor])
-            cube([chan_ow, wall + 0.02, chan_ih + 1]);
-
-        // restore the center section of the wall (excluding the two antenna openings)
-        translate([outer_w/2 - ant_divider_w/2, wall + inner_l - 0.01, floor])
-            cube([ant_divider_w, wall + 0.02, chan_ih + 1]);
+            cube([chan_iw, wall + 0.02, chan_ih + 1]);
 
         // Recess z-band: aligned with the bump band of the SEATED lid.
         // Lid underside sits at lid_z0; bumps run z lid_z0+snap_z0 for snap_h.
@@ -318,12 +315,11 @@ module case_body(){
                 cube([snap_depth + 0.01, snap_len, snap_h]);
 
         // --- channel recesses: into the two channel side walls, placed in
-        // the local path frame so they follow the meander. Updated for full-width
-        // channel (recesses at the outer edges).
+        // the local path frame so they follow the meander ---
         for(s = [-1,1], tt = [10, ant_channel_len - 18])
             at_path(tt)
-                translate([s<0 ? -chan_ow/2 - snap_depth
-                               :  chan_ow/2 - 0.01,
+                translate([s<0 ? -chan_iw/2 - snap_depth
+                               :  chan_iw/2 - 0.01,
                            -snap_len/2, rz])
                     cube([snap_depth + 0.01, snap_len, snap_h]);
 
@@ -336,6 +332,15 @@ module case_body(){
             rotate([90,0,0])
                 cylinder(r=2.4, h=wall+2, center=true);
     }
+
+    // ---- central divider: splits the channel into two antenna lanes,
+    // following the meander. Runs from the box cavity's back plane (where
+    // it doubles as the board's central back-stop, since the shared wall
+    // is now fully open) to the channel's end wall. Its top stops 0.2mm
+    // below the seated lid so the lid ribbon passes freely over it.
+    translate([outer_w/2, outer_l, floor - 0.01])
+        linear_extrude(lid_z0 - 0.2 - floor + 0.01)
+            ch_strip(divider_w, -(wall + 0.01), ant_channel_len - wall + 0.01);
 }
 
 // =====================================================================
@@ -348,18 +353,13 @@ module lid(){
     translate([wall + tol, wall + tol, 0])
         cube([inner_w - 2*tol, inner_l - 2*tol, lid_h]);
 
-    // channel ribbon: TWO curved plates following the meander, through
-    // the pass-through slot to the trough's far end. Widened to full box
-    // width. Each ribbon is 8mm wide (leaves gap for center divider).
-    ribbon_w = 8;
+    // channel ribbon: full-interior-width curved plate following the
+    // meander, through the opened shared wall to the trough's far end,
+    // inset by tol; it rides 0.2mm above the central divider
     translate([outer_w/2, outer_l, 0])
         linear_extrude(lid_h)
-            ch_strip(ribbon_w, -(wall + 0.5), ant_channel_len - wall - tol,
-                     o = -chan_ow/4);
-    translate([outer_w/2, outer_l, 0])
-        linear_extrude(lid_h)
-            ch_strip(ribbon_w, -(wall + 0.5), ant_channel_len - wall - tol,
-                     o = chan_ow/4);
+            ch_strip(chan_iw - 2*tol,
+                     -(wall + 0.5), ant_channel_len - wall - tol);
 
     // snap bump: ramped underside (press-in lead-in), square top (catch).
     // Local profile (XZ): protrudes +X, centred on Y. Extruded snap_len.
@@ -377,11 +377,11 @@ module lid(){
             mirror([sx<0 ? 1 : 0, 0, 0]) bump();
 
     // channel bumps: on the curved ribbon edges, in the local path frame,
-    // aligned with the case recesses. Updated for full-width channel.
+    // aligned with the case recesses
     for(s = [-1,1], tt = [10, ant_channel_len - 18])
         at_path(tt)
-            translate([s<0 ? -chan_ow/2 - snap_depth
-                           :   chan_ow/2 - tol,
+            translate([s<0 ? -(chan_iw/2 - tol)
+                           :   chan_iw/2 - tol,
                        0, snap_z0])
                 mirror([s<0 ? 1 : 0, 0, 0]) bump();
 }
