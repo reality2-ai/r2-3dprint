@@ -1,0 +1,9 @@
+M8 CAP V3 — use with the V2 TPU gasket.
+14mm body diameter, 14.8mm overall across grip ribs, 9mm height.
+Same 0.30mm thread clearance and same V2 gasket pocket.
+Wall at retaining groove increased from 0.175mm to 1.175mm.
+PLA, 0.12mm layers, 4 walls, closed end down, no supports.
+Inspect layer preview: outer wall must be continuous around gasket groove.
+Check wider cap clears enclosure recess and permits gasket compression
+on metal shoulder without contacting surrounding enclosure plastic first.
+No water resistance rating established.
