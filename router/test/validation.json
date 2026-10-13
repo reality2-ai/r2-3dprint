@@ -1,0 +1,96 @@
+{
+  "status": "digital prototype; physical fit not verified",
+  "parts": {
+    "base": {
+      "triangles": 6380,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          0.0,
+          140.0
+        ],
+        [
+          0.0,
+          144.0
+        ],
+        [
+          0.0,
+          32.0
+        ]
+      ],
+      "volume_mm3": 89234.82
+    },
+    "lid": {
+      "triangles": 12328,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          0.0,
+          140.0
+        ],
+        [
+          0.0,
+          144.0
+        ],
+        [
+          0.0,
+          3.0
+        ]
+      ],
+      "volume_mm3": 42693.03
+    },
+    "hdmi-cover": {
+      "triangles": 260,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          -13.2,
+          13.2
+        ],
+        [
+          -7.2,
+          7.2
+        ],
+        [
+          0.0,
+          7.2
+        ]
+      ],
+      "volume_mm3": 496.14
+    },
+    "sd-cover": {
+      "triangles": 260,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          -11.2,
+          11.2
+        ],
+        [
+          -5.2,
+          5.2
+        ],
+        [
+          0.0,
+          7.2
+        ]
+      ],
+      "volume_mm3": 319.5
+    }
+  },
+  "hardware_envelope_overlap_mm3": 0.0,
+  "installed_cover_overlap_mm3": 0,
+  "service_port_overlap_mm3": 0,
+  "keyboard_access_overlap_mm3": 0,
+  "cover_retention_engagement_mm3": 0.214272,
+  "limits": [
+    "Simplified board/component envelopes, not exact manufacturer solids",
+    "Cable bend, LCD position/height and SMA thread fit require physical checks",
+    "Cover spring force, fatigue and insertion fit require a physical PETG test",
+    "Keyboard clearance uses a 32 x 12 x 8 mm plug envelope with upward cable exit"
+  ]
+}
