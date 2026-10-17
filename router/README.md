@@ -55,6 +55,8 @@ material for the prototype. Check bridge quality at the Ethernet and power openi
   artwork. It is not mirrored. All raised details are 0.6 mm high.
 - Six M3 screws secure a flat lid; no fragile snap clips or support-requiring
   underside skirt.
+- Lid screw posts merge fully into the adjacent walls, filling the narrow corner
+  pockets behind them. Their screw centres match the original lid.
 
 ## Hardware and assembly
 

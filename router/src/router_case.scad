@@ -44,6 +44,10 @@ clip_thickness = 0.8;
 clip_depth = 6;
 
 lid_screws = [[6,6],[98,4],[134,35],[134,138],[6,138],[6,76]];
+// Fill the pockets behind round bosses, joining each to its adjacent wall(s).
+// Screw centres stay fixed so the existing lid still fits.
+lid_boss_corners = [[0,0],[main_w,0],[outer_w,ethernet_step_y],
+                    [outer_w,outer_d],[0,outer_d]];
 pi_holes = [for(x=[3.5,61.5],y=[3.5,52.5]) [pi_xy[0]+x,pi_xy[1]+y]];
 // Official DFRobot layout: 66 x 38 mounting centres, 3.5 mm edge offsets.
 radio_holes = [for(x=[3.5,69.5],y=[3.5,41.5])
@@ -104,6 +108,27 @@ module installed_covers(pull=0) {
     multmatrix([[0,0,1,-cover_face-pull],[1,0,0,sd_xy[0]],
                 [0,1,0,sd_xy[1]],[0,0,0,1]]) service_cover(sd_size);
 }
+module lid_bosses() {
+    translate([0,0,floor_h-eps]) linear_extrude(base_h-floor_h+eps)
+        intersection() {
+            outline(); // retain the outside corner radii
+            union() for(i=[0:len(lid_screws)-1]) {
+                p=lid_screws[i];
+                r=p==[98,4]?3:4;
+                hull() {
+                    translate(p) circle(r=r);
+                    if(i<len(lid_boss_corners)) {
+                        c=lid_boss_corners[i];
+                        translate([min(p[0],c[0]),min(p[1],c[1])])
+                            square([abs(p[0]-c[0]),abs(p[1]-c[1])]);
+                    } else {
+                        // Mid-side boss: full-width attachment to the left wall.
+                        translate([0,p[1]-r]) square([p[0],2*r]);
+                    }
+                }
+            }
+        }
+}
 module base() {
     difference() {
         union() {
@@ -116,8 +141,7 @@ module base() {
                 cylinder(d=6,h=pcb_z-floor_h+eps);
             for(p=radio_holes) translate([p[0],p[1],floor_h-eps])
                 cylinder(d=6,h=radio_z-floor_h+eps);
-            for(p=lid_screws) translate([p[0],p[1],floor_h-eps])
-                cylinder(d=p==[98,4]?6:8,h=base_h-floor_h+eps);
+            lid_bosses();
             // Antenna pad is separated from electronics, with room for washer/nut.
             prism(antenna_x-10,outer_d-antenna_panel,antenna_z-9,20,antenna_panel,18);
         }

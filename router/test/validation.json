@@ -2,7 +2,7 @@
   "status": "digital prototype; physical fit not verified",
   "parts": {
     "base": {
-      "triangles": 6380,
+      "triangles": 5932,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -19,7 +19,7 @@
           32.0
         ]
       ],
-      "volume_mm3": 89234.82
+      "volume_mm3": 89491.47
     },
     "lid": {
       "triangles": 12328,
