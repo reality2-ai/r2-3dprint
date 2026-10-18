@@ -2,12 +2,14 @@
 
 A printable base, screw-on lid and two removable service-port covers for a **Raspberry Pi Model B+ V1.2** and
 **DFRobot DFR1195** connected by an internal USB-A to USB-C cable.
-The case is **140 × 144 × 35 mm**, including raised lettering and artwork,
+The case is **140 × 144 × 34.4 mm**,
 excluding feet, screws and antenna. Installed service covers project 1.2 mm
 from the front and left faces (141.2 × 145.2 mm overall footprint). It is a digital prototype, not yet physically
 fit-tested or thermally tested.
 
-![Exploded enclosure preview](images/assembly.png)
+![Original enclosure preview](images/assembly.png)
+
+Reference images show the earlier vents and embossed lid; current STLs have expanded side vents, floor vents, and a plain lid without vent slots.
 
 [Service view with covers/lid removed and keyboard plug shown in orange](images/service.png)
 
@@ -21,7 +23,7 @@ fit-tested or thermally tested.
 - [Digital validation results](test/validation.json)
 
 The base and lid are already oriented for printing: flat underside on the bed,
-open base cavity and raised lid artwork facing upwards. Designed without support
+open base cavity and plain lid top facing upwards. Designed without support
 structures; side windows require short bridges. Start with 0.2 mm layers,
 a 0.4 mm nozzle, four perimeters and 20–30% infill. PETG is a reasonable starting
 material for the prototype. Check bridge quality at the Ethernet and power openings.
@@ -42,17 +44,18 @@ material for the prototype. Check bridge quality at the Ethernet and power openi
   accepts a keyboard; the radio uses its upper socket. The checked keyboard plug
   envelope is 32 × 12 × 8 mm, with its cable extended past the radio plug and
   routed upward through the open top. Oversize adjacent plug housings need a fit check. Audio remains internal.
-- A tapered 26 × 16 mm LCD window. Display text and lid branding read in the
-  same direction. Optional clear PET sheet can be bonded beneath the window;
+- A tapered 26 × 16 mm LCD window. Optional clear PET sheet can be bonded beneath the window;
   the window itself is an opening, not a printed transparent lens.
 - Rear antenna bulkhead hole in the cable bay, clear of the raised radio PCB.
   The metal bulkhead's nut/washer secures it to the plastic; the antenna screws
   onto that connector. The case has no printed RF connector threads.
-- Side, floor and lid ventilation. Add four adhesive feet at least 2 mm high,
-  away from the floor vents.
-- Raised **Mariko tree, MARIKO EARTHGRIDS lettering, and Reality2 hallmark**.
-  The tree uses `../branding/logos/mariko_logo_traced.scad`, the existing shared
-  artwork. It is not mirrored. All raised details are 0.6 mm high.
+- Floor air inlets and 32 side vent slots (previously 12), each 3 × 10 mm.
+  Left-side vents stop around the middle lid screw post; right-side vents stay
+  clear of the corner posts. The plain lid keeps its LCD window and screw holes,
+  with no vent slots to interrupt the broad top surface.
+  Add four adhesive feet at least 2 mm high, clear of the floor vents.
+  Cooling with this vent layout needs a physical temperature test.
+- Plain lid without raised artwork or lettering.
 - Six M3 screws secure a flat lid; no fragile snap clips or support-requiring
   underside skirt.
 - Lid screw posts merge fully into the adjacent walls, filling the narrow corner
@@ -87,8 +90,18 @@ material for the prototype. Check bridge quality at the Ethernet and power openi
    M3 heat-set inserts are not included in this version.
 8. Press each cover into its matching opening until the two detents seat behind
    the wall. The wider cover is HDMI. Remove with a fingernail under the outer
-   flange; do not force a tight clip. The nominal 0.15 mm retention needs a trial
-   print; tune `clip_clearance` or `clip_bump` if necessary. Do not glue the caps.
+   flange; do not force a tight clip. Both covers fit the original openings
+   (**24 × 12 mm HDMI**, **20 × 8 mm SD**) and **2.4 mm wall**, using four
+   spring fingers: two tall side clips and two narrower top/bottom tabs.
+   Side fingers are 11.8 mm tall on HDMI and 7.8 mm on SD. Their relaxed shape
+   extends 0.15 mm past each hole edge at the wall to address lateral and
+   vertical rattle. Side hooks reach 0.65 mm beyond the hole edge, with their
+   peaks just 0.12 mm behind the wall to reduce outward play. Tapered tips
+   guide insertion. Fingers reach 4.8 mm inward.
+   Tune `hdmi_clip_preload` / `hdmi_clip_hook` or `sd_clip_preload` /
+   `sd_clip_hook` for each fit. Spring force still needs a trial print.
+   Outer cover dimensions and the case are unchanged; only covers need reprinting.
+   Do not glue the caps.
 9. Fit adhesive feet. Connect Ethernet and the Pi's micro-USB power externally.
 
 ## Confirm before a full print or batch
@@ -129,7 +142,9 @@ checks that each is a watertight single connected mesh, and checks the case/lid
 against simplified board and component envelopes. It also checks installed covers,
 HDMI/SD service paths and the keyboard envelope, and verifies that the cover
 detents engage the wall when pulled outward by 0.6 mm. Coplanar seating faces are
-allowed, but a nonzero collision volume fails validation. This does **not** prove
+allowed. The relaxed cover springs intentionally intersect four narrow wall-contact
+regions per cover by up to 0.15 mm; validation reports that contact separately and rejects
+collisions outside those regions, including all cover/electronics collisions. This does **not** prove
 physical cable, connector, display or thermal fit.
 
 For interactive inspection, open `src/router_case.scad`. Change `part` to `base`,
@@ -137,8 +152,7 @@ For interactive inspection, open `src/router_case.scad`. Change `part` to `base`
 (lid/covers removed, keyboard plug shown), or `layout` (all four printable parts).
 `display_window=false` generates a solid lid variant.
 
-The source needs the shared logo in its existing sibling directory. Keep that
-directory structure when copying the project; the exported STLs are standalone.
+The source and exported STLs are standalone; no shared artwork files are required.
 
 ## Mechanical references
 

@@ -94,6 +94,13 @@ def main():
             report[key] = round(overlap, 6)
             print(f"{scene}: passed", flush=True)
     with tempfile.TemporaryDirectory() as temp:
+        output = Path(temp) / "spring-contact.stl"
+        render(output, "cover-spring-contact")
+        overlap = volume(triangles(output)) if output.exists() else 0
+        assert overlap > 0.001, "Cover springs must preload the original openings"
+        report["cover_relaxed_spring_contact_mm3"] = round(overlap, 6)
+        print("Cover spring contact confined to intended wall regions: passed", flush=True)
+    with tempfile.TemporaryDirectory() as temp:
         output = Path(temp) / "retention.stl"
         render(output, "cover-retention")
         overlap = volume(triangles(output)) if output.exists() else 0
@@ -103,6 +110,7 @@ def main():
     report["limits"] = ["Simplified board/component envelopes, not exact manufacturer solids",
                         "Cable bend, LCD position/height and SMA thread fit require physical checks",
                         "Cover spring force, fatigue and insertion fit require a physical PETG test",
+                        "Relaxed cover springs intentionally overlap four wall contact zones per cover by up to 0.15 mm; deflection is not simulated",
                         "Keyboard clearance uses a 32 x 12 x 8 mm plug envelope with upward cable exit"]
     (ROOT / "test/validation.json").write_text(json.dumps(report, indent=2) + "\n")
     print("Hardware envelope check passed; see test/validation.json")

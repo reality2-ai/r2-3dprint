@@ -1,7 +1,5 @@
 // Reality2 home router — Raspberry Pi Model B+ V1.2 + DFR1195.
 // Millimetres. Prototype: check the actual cable and bulkhead before printing.
-// Shared, original Mariko artwork; deliberately NOT mirrored on this top face.
-use <../../branding/logos/mariko_logo_traced.scad>
 
 part = "assembly"; // base, lid, hdmi-cover, sd-cover, layout, assembly, closed, service
 $fn = 48;
@@ -9,7 +7,6 @@ wall = 2.4;
 floor_h = 2.4;
 base_h = 32;
 lid_h = 2.4;
-emboss_h = 0.6;
 main_w = 102;
 cable_bay = 38;
 outer_w = main_w + cable_bay;
@@ -38,10 +35,12 @@ sd_xy = [pi_xy[1]+28,7]; // centre in left panel: Y,Z
 sd_size = [20,8];
 cover_face = 1.2;
 cover_flange = 1.2;
-clip_clearance = 0.25;
-clip_bump = 0.4; // 0.15 mm nominal retention; tune after a PETG fit print
-clip_thickness = 0.8;
-clip_depth = 6;
+clip_height_clearance = 0.1; // clearance at both top and bottom of the opening
+sd_clip_preload = 0.15; // intentional spring deflection per edge in the original hole
+sd_clip_hook = 0.65; // side-hook reach beyond the nominal opening
+hdmi_clip_preload = 0.15;
+hdmi_clip_hook = 0.65;
+clip_depth = 4.8; // full-height fingers must stop before the Pi PCB at Y=5
 
 lid_screws = [[6,6],[98,4],[134,35],[134,138],[6,138],[6,76]];
 // Fill the pockets behind round bosses, joining each to its adjacent wall(s).
@@ -81,32 +80,64 @@ module port_cuts() {
     translate([antenna_x,outer_d+1,antenna_z]) rotate([90,0,0])
         cylinder(d=antenna_hole,h=antenna_panel+2);
     // Vertical vents have short 3 mm bridges; continuous material at top/bottom.
-    for(y=[38:6:62]) prism(-1,y,17,wall+2,3,10);
-    for(y=[85:6:121]) prism(outer_w-wall-1,y,17,wall+2,3,10);
+    // Two left banks leave the mid-side screw boss at Y=76 intact.
+    for(bank=[[14,62],[86,128]])
+        for(y=[bank[0]:6:bank[1]]) prism(-1,y,17,wall+2,3,10);
+    // Keep clear of the front cable-bay corner and both right screw bosses.
+    for(y=[41:6:125]) prism(outer_w-wall-1,y,17,wall+2,3,10);
 }
 
-// Covers print outer face down, two spring fingers upwards. The shoulder sits
-// behind the wall. Opposite ramps permit removal by levering the outside flange.
-// No text on the bed-facing surface; the different sizes identify the covers.
-module service_cover(size) {
+// Covers print outer face down. Four spring fingers preload the original hole;
+// side hooks seat immediately behind its 2.4 mm wall. Tips taper for insertion.
+module cover_finger(half_span, breadth, thickness, preload, hook_reach=0) {
+    translate([half_span,-breadth/2,cover_face-eps])
+        rotate([-90,0,0]) linear_extrude(breadth)
+            polygon(concat(
+                [[-0.1,0], [preload,-(wall-0.2+eps)],
+                 [preload,-(wall+0.02+eps)]],
+                hook_reach>0 ? [[hook_reach,-(wall+0.12+eps)]] : [],
+                [[-0.3,-(clip_depth+eps)],
+                 [-0.3-thickness,-(clip_depth+eps)],
+                 [preload-thickness,-(wall-0.2+eps)],
+                 [-0.1-thickness,0]]));
+}
+module service_cover(size, preload=hdmi_clip_preload, hook_reach=hdmi_clip_hook) {
     linear_extrude(cover_face)
         translate([-size[0]/2-cover_flange,-size[1]/2-cover_flange])
             rounded_rect(size[0]+2*cover_flange,size[1]+2*cover_flange,1);
-    for(side=[-1,1]) scale([side,1,1]) {
-        translate([size[0]/2-clip_clearance-clip_thickness,-2,cover_face-eps])
-            cube([clip_thickness,4,clip_depth+eps]);
-        // A ramped detent on the outer surface of each spring finger.
-        translate([size[0]/2-clip_clearance,-2,cover_face])
-            rotate([-90,0,0]) linear_extrude(4)
-                polygon([[-eps,-(wall+0.1)],[clip_bump,-(wall+0.6)],
-                         [-eps,-(wall+1.8)]]);
+    for(side=[-1,1]) scale([side,1,1])
+        cover_finger(size[0]/2,size[1]-2*clip_height_clearance,0.8,preload,hook_reach);
+    for(side=[-1,1]) rotate([0,0,side*90])
+        cover_finger(size[1]/2,8,0.6,preload);
+}
+module sd_cover() { service_cover(sd_size,sd_clip_preload,sd_clip_hook); }
+// These are validation masks only: they never cut or modify the case.
+// Only four narrow wall-contact regions per cover may intersect relaxed springs.
+// This is a deflection allowance, not a simulation of spring force.
+module spring_contact_zones(size, preload) {
+    for(side=[-1,1]) {
+        x=side*size[0]/2;
+        prism(x-(side<0?preload:0),-size[1]/2,0,preload,size[1],wall);
+        y=side*size[1]/2;
+        prism(-4,y-(side<0?preload:0),0,8,preload,wall);
     }
+}
+module sd_spring_contact_zones() {
+    multmatrix([[0,0,1,0],[1,0,0,sd_xy[0]],
+                [0,1,0,sd_xy[1]],[0,0,0,1]])
+        spring_contact_zones(sd_size,sd_clip_preload);
+}
+module cover_spring_contact_zones() {
+    sd_spring_contact_zones();
+    multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,0],
+                [0,1,0,hdmi_xy[1]],[0,0,0,1]])
+        spring_contact_zones(hdmi_size,hdmi_clip_preload);
 }
 module installed_covers(pull=0) {
     multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,-cover_face-pull],
                 [0,1,0,hdmi_xy[1]],[0,0,0,1]]) service_cover(hdmi_size);
     multmatrix([[0,0,1,-cover_face-pull],[1,0,0,sd_xy[0]],
-                [0,1,0,sd_xy[1]],[0,0,0,1]]) service_cover(sd_size);
+                [0,1,0,sd_xy[1]],[0,0,0,1]]) sd_cover();
 }
 module lid_bosses() {
     translate([0,0,floor_h-eps]) linear_extrude(base_h-floor_h+eps)
@@ -150,40 +181,17 @@ module base() {
         for(p=radio_holes) translate([p[0],p[1],radio_z-5]) cylinder(d=board_pilot,h=6);
         for(p=lid_screws) translate([p[0],p[1],base_h-12])
             cylinder(d=lid_pilot,h=13);
-        // Floor air inlets, clear of standoffs; add adhesive feet for airflow.
+        // Floor air inlets, clear of standoffs; add feet for airflow.
         for(x=[28:6:76]) prism(x,23,-1,3,23,floor_h+2);
         for(y=[102:6:120]) prism(25,y,-1,40,3,floor_h+2);
     }
 }
 
-module reality2_mark() {
-    difference() { circle(r=6,$fn=6); circle(r=5.2,$fn=6); }
-    circle(r=0.8);
-    for(a=[30,150,210,270,330]) {
-        hull() { circle(r=0.35); translate([2.7*cos(a),2.7*sin(a)]) circle(r=0.35); }
-        translate([2.7*cos(a),2.7*sin(a)]) circle(r=0.65);
-    }
-}
 module lid() {
-    // Flat underside: print this face on bed, embossing upwards. No skirt/supports.
+    // Plain, solid lid; print the flat underside on the bed.
     difference() {
-        union() {
-            linear_extrude(lid_h) outline();
-            translate([48,46,lid_h-eps]) linear_extrude(emboss_h+eps) mariko_logo2d(34);
-            translate([48,20,lid_h-eps]) linear_extrude(emboss_h+eps)
-                text("MARIKO",size=5,halign="center",font="DejaVu Sans:style=Bold");
-            translate([48,13,lid_h-eps]) linear_extrude(emboss_h+eps)
-                text("EARTHGRIDS",size=3,halign="center",font="DejaVu Sans");
-            translate([107,68,lid_h-eps]) linear_extrude(emboss_h+eps) rotate(90) reality2_mark();
-            translate([107,55,lid_h-eps]) linear_extrude(emboss_h+eps)
-                text("Reality2",size=3.6,halign="center",font="DejaVu Sans");
-            translate([107,49,lid_h-eps]) linear_extrude(emboss_h+eps)
-                text("ROUTER",size=2.7,halign="center",font="DejaVu Sans");
-        }
+        linear_extrude(lid_h) outline();
         for(p=lid_screws) translate([p[0],p[1],-1]) cylinder(d=3.4,h=lid_h+3);
-        // Exhaust openings, away from the logo.
-        for(x=[18:6:78]) prism(x,67,-1,3,14,lid_h+2);
-        for(y=[94:6:124]) prism(101,y,-1,22,3,lid_h+2);
         if(display_window) translate([screen_xy[0],screen_xy[1],-eps])
             linear_extrude(lid_h+2*eps,scale=[screen_size[0]/(screen_size[0]+4),screen_size[1]/(screen_size[1]+4)])
                 square([screen_size[0]+4,screen_size[1]+4],center=true);
@@ -257,16 +265,23 @@ if(part=="base") base();
 else if(part=="lid") lid();
 else if(part=="hardware") hardware();
 else if(part=="hdmi-cover") service_cover(hdmi_size);
-else if(part=="sd-cover") service_cover(sd_size);
+else if(part=="sd-cover") sd_cover();
 else if(part=="service") service_scene();
 else if(part=="closed") assembly(0);
 else if(part=="layout") {
     base(); translate([outer_w+10,0,0]) lid();
     translate([20,outer_d+15,0]) service_cover(hdmi_size);
-    translate([55,outer_d+15,0]) service_cover(sd_size);
+    translate([55,outer_d+15,0]) sd_cover();
 }
-else if(part=="cover-interference") intersection() {
-    installed_covers(); union() { base(); hardware(); }
+else if(part=="cover-interference") union() {
+    intersection() { installed_covers(); hardware(); }
+    difference() {
+        intersection() { installed_covers(); base(); }
+        cover_spring_contact_zones();
+    }
+}
+else if(part=="cover-spring-contact") intersection() {
+    installed_covers(); base(); cover_spring_contact_zones();
 }
 else if(part=="cover-retention") intersection() { installed_covers(0.6); base(); }
 else if(part=="port-interference") intersection() {

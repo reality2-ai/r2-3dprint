@@ -1,0 +1,8 @@
+{
+  "reference": "router/stl/router-base.stl",
+  "revision": "71c42c3cf5fec647d192b2e5270ed0cc7c653d89",
+  "unexpected_overlap_mm3": 0,
+  "relaxed_spring_contact_mm3": 5.144039,
+  "engagement_after_0_1mm_pull_mm3": 6.105961,
+  "limits": "Relaxed spring geometry only; physical grip and deflection require a print test."
+}
