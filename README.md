@@ -62,3 +62,13 @@ When adding a new device:
 ## License
 
 Device-specific licensing is at the discretion of Mariko Earthgrids.
+
+## AI-assisted work
+
+Run `./start-ai.sh` from this repository to select Codex or Claude Code, or
+use `./start-ai.sh codex --new`. The launcher starts in this repository and keeps
+its local session state separate from the PCB and core projects. It requires Bash,
+tmux, Python 3, a systemd user manager and the selected agent CLI. It uses the
+existing workspace convention of automatic tool permissions. Read the project
+instructions before changing designs; geometry validation requirements still apply.
+Use `./start-ai.sh --help` for recovery and session options.
