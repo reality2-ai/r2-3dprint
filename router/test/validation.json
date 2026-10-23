@@ -42,7 +42,7 @@
       "volume_mm3": 43225.97
     },
     "hdmi-cover": {
-      "triangles": 324,
+      "triangles": 516,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -59,10 +59,10 @@
           6.0
         ]
       ],
-      "volume_mm3": 608.39
+      "volume_mm3": 615.13
     },
     "sd-cover": {
-      "triangles": 324,
+      "triangles": 516,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -79,10 +79,10 @@
           6.0
         ]
       ],
-      "volume_mm3": 395.69
+      "volume_mm3": 401.85
     },
     "usb-cover": {
-      "triangles": 324,
+      "triangles": 516,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -99,7 +99,7 @@
           6.0
         ]
       ],
-      "volume_mm3": 692.02
+      "volume_mm3": 699.95
     }
   },
   "hardware_envelope_overlap_mm3": 0.0,
@@ -109,14 +109,20 @@
   "external_usb_insertion_overlap_mm3": 0.0,
   "internal_usb_overlap_mm3": 0.0,
   "ethernet_access_overlap_mm3": 0,
-  "cover_relaxed_spring_contact_mm3": 16.471235,
-  "cover_retention_engagement_mm3": 43.455945,
-  "usb_cover_relaxed_spring_contact_mm3": 7.222371,
-  "usb_cover_retention_engagement_mm3": 20.310608,
+  "cover_relaxed_spring_contact_mm3": 16.357036,
+  "cover_retention_engagement_mm3": 8.632247,
+  "hdmi_cover_relaxed_spring_contact_mm3": 5.108355,
+  "hdmi_cover_retention_engagement_mm3": 2.585824,
+  "sd_cover_relaxed_spring_contact_mm3": 4.07635,
+  "sd_cover_retention_engagement_mm3": 1.709273,
+  "usb_cover_relaxed_spring_contact_mm3": 7.172331,
+  "usb_cover_retention_engagement_mm3": 4.33715,
   "limits": [
     "Simplified board/component envelopes, not exact manufacturer solids",
     "Cable bend, LCD position/height and SMA thread fit require physical checks",
     "Cover spring force, fatigue and insertion fit require a physical PETG test",
+    "Previous PLA clips broke at the face; wider filleted roots and reduced hooks are geometry changes, not a validated strength or fatigue result",
+    "Retention volumes count only hook engagement beyond the spring-preload allowance, individually for HDMI, SD and USB covers",
     "Relaxed cover springs intentionally overlap four wall contact zones per cover by up to 0.15 mm; deflection is not simulated",
     "Both exposed USB sockets checked simultaneously with 32 x 12 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
     "Internal nano Wi-Fi dongle allowance is a 6 x 16 x 8 mm body protruding from the USB socket; actual dongle fit requires checking",

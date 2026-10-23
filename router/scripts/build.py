@@ -110,20 +110,24 @@ def main():
         assert overlap > 0.001, "Cover detents do not engage the wall when pulled"
         report["cover_retention_engagement_mm3"] = round(overlap, 6)
         print("Cover detents engage when pulled: passed", flush=True)
-    # Check the new cover separately so the existing HDMI/SD caps cannot mask
-    # a missing USB hook or a USB spring that does not reach its wall.
-    for scene, key in [("usb-cover-spring-contact", "usb_cover_relaxed_spring_contact_mm3"),
-                       ("usb-cover-retention", "usb_cover_retention_engagement_mm3")]:
-        with tempfile.TemporaryDirectory() as temp:
-            output = Path(temp) / "usb-cover.stl"
-            render(output, scene)
-            overlap = volume(triangles(output)) if output.exists() else 0
-            assert overlap > 0.001, f"{scene}: USB cover does not engage"
-            report[key] = round(overlap, 6)
-            print(f"{scene}: passed", flush=True)
+    # Every cover must engage independently: a passing cap cannot mask another
+    # cap's missing hook or spring that does not reach its wall.
+    for cover in ("hdmi", "sd", "usb"):
+        for check, metric in [("spring-contact", "relaxed_spring_contact"),
+                              ("retention", "retention_engagement")]:
+            scene = f"{cover}-cover-{check}"
+            with tempfile.TemporaryDirectory() as temp:
+                output = Path(temp) / "cover.stl"
+                render(output, scene)
+                overlap = volume(triangles(output)) if output.exists() else 0
+                assert overlap > 0.001, f"{scene}: cover does not engage"
+                report[f"{cover}_cover_{metric}_mm3"] = round(overlap, 6)
+                print(f"{scene}: passed", flush=True)
     report["limits"] = ["Simplified board/component envelopes, not exact manufacturer solids",
                         "Cable bend, LCD position/height and SMA thread fit require physical checks",
                         "Cover spring force, fatigue and insertion fit require a physical PETG test",
+                        "Previous PLA clips broke at the face; wider filleted roots and reduced hooks are geometry changes, not a validated strength or fatigue result",
+                        "Retention volumes count only hook engagement beyond the spring-preload allowance, individually for HDMI, SD and USB covers",
                         "Relaxed cover springs intentionally overlap four wall contact zones per cover by up to 0.15 mm; deflection is not simulated",
                         "Both exposed USB sockets checked simultaneously with 32 x 12 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
                         "Internal nano Wi-Fi dongle allowance is a 6 x 16 x 8 mm body protruding from the USB socket; actual dongle fit requires checking",

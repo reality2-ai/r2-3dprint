@@ -60,7 +60,10 @@ validates the base, matching lid, and HDMI, SD and USB covers. Keep all five
 parts connected and watertight, the closed-lid USB insertion paths clear, and
 the internal DFR1195 cable plus optional nano Wi-Fi dongle clear of the shell.
 Intentional cover spring preload is allowed only within the explicit contact
-masks; the USB cover also has its own contact and retention checks.
+masks; each cover also has its own contact and retention checks.
+PLA cover fingers previously broke at the face. Their roots now have an inward
+1.2 mm fillet and 0.4 mm embed into the face; side hooks project 0.45 mm. Preserve
+clearance around the thin spring arms. Physical PETG strength testing is pending.
 
 The USB pair nearest Ethernet is external, with one removable cover. The pair
 furthest from Ethernet stays internal: DFR1195 above, optional nano Wi-Fi below.

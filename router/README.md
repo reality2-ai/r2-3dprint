@@ -21,7 +21,14 @@ orange, the internal DFR1195 cable is grey, and the optional nano Wi-Fi dongle i
 
 **Reprint the base and lid together**, plus the new USB cover. The recess has changed
 and the front cable-bay lid screw has moved from Y=35 to Y=49 mm. The old lid is
-not compatible. Existing HDMI and SD covers can be reused.
+not compatible. This applies when upgrading from the case without external USB.
+
+**For the clip reinforcement update, only reprint the three covers.** Their outer
+dimensions and the case openings are unchanged. Earlier PLA clips broke where
+they met the face; all four fingers on each cover now have wider, rounded roots,
+and the side hooks are reduced to ease insertion. A physical PETG trial is next.
+
+![Reinforced HDMI, SD and USB covers, inside faces up](images/covers.png)
 
 ## Files
 
@@ -120,13 +127,19 @@ material for the prototype. Check bridge quality at the Ethernet and power openi
    spring fingers: two tall side clips and two narrower top/bottom tabs.
    Side fingers are 11.8 mm tall on HDMI, 7.8 mm on SD and 19.8 mm on USB. Their relaxed shape
    extends 0.15 mm past each hole edge at the wall to address lateral and
-   vertical rattle. Side hooks reach 0.65 mm beyond the hole edge, with their
+   vertical rattle. Side hooks reach 0.45 mm beyond the hole edge (previously 0.65 mm), with their
    peaks just 0.12 mm behind the wall to reduce outward play. Tapered tips
    guide insertion. Fingers reach 4.8 mm inward.
+   Each root has a **1.2 mm inward fillet** and extends **0.4 mm into the face**.
+   At the face, side fingers are **2.0 mm thick** and top/bottom tabs are
+   **1.8 mm thick**, tapering smoothly to the existing **0.8 / 0.6 mm** arms.
+   The reinforcement stays inside the opening and ends before the wall-contact
+   section, leaving the tips and spring arms free to move. The face stays 1.2 mm thick.
    Tune `hdmi_clip_preload` / `hdmi_clip_hook`, `sd_clip_preload` /
    `sd_clip_hook`, or `usb_clip_preload` / `usb_clip_hook` for each fit.
-   Spring force still needs a trial print. The new USB cover's outer face is
-   **17.4 × 22.4 mm**; print it face-down, fingers up. Existing HDMI/SD covers are unchanged.
+   `clip_root_radius` and `clip_root_embed` control the anchor geometry.
+   Spring force and root durability still need a trial print. The USB cover's outer face is
+   **17.4 × 22.4 mm**; print all three covers face-down, fingers up.
    Do not glue the caps.
 9. Fit adhesive feet. Connect Ethernet and the Pi's micro-USB power externally.
 10. To connect a device for flashing, remove the USB cover and plug its USB data
@@ -180,8 +193,10 @@ allowed. The relaxed cover springs intentionally intersect four narrow wall-cont
 regions per cover by up to 0.15 mm; validation reports that contact separately and rejects
 collisions outside those regions, including all cover/electronics collisions. This does **not** prove
 physical cable, connector, display or thermal fit.
-USB cover contact and retention are also checked individually, so a passing
-HDMI/SD cover cannot hide a USB cover failure.
+Contact and retention are also checked separately for each of the three covers,
+so a passing cover cannot hide another cover's failure. Retention counts only
+the hooks engaging beyond the spring-preload allowance. These are geometry
+checks, not a simulation or measurement of clip strength.
 
 For interactive inspection, open `src/router_case.scad`. Change `part` to `base`,
 `lid`, `hdmi-cover`, `sd-cover`, `usb-cover`, `closed`, `assembly` (exploded), `service`
@@ -191,6 +206,7 @@ USB sockets in use), or `layout` (all five printable parts).
 `lid_logo=false` omits the tree; `logo_width`, `logo_depth` and `logo_xy` control it.
 The OpenSCAD Customizer's `part` dropdown switches between these views without
 editing the source.
+Open `test/covers.scad` to inspect the reinforced roots on all three covers.
 
 The OpenSCAD source uses `../branding/logos/mariko_logo_traced.scad` relative to
 this directory; keep the repository's `branding/` folder when editing the model.

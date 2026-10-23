@@ -46,12 +46,14 @@ cover_face = 1.2;
 cover_flange = 1.2;
 clip_height_clearance = 0.1; // clearance at both top and bottom of the opening
 sd_clip_preload = 0.15; // intentional spring deflection per edge in the original hole
-sd_clip_hook = 0.65; // side-hook reach beyond the nominal opening
+sd_clip_hook = 0.45; // reduced insertion deflection; still engages behind the wall
 hdmi_clip_preload = 0.15;
-hdmi_clip_hook = 0.65;
+hdmi_clip_hook = 0.45;
 usb_clip_preload = 0.15;
-usb_clip_hook = 0.65;
+usb_clip_hook = 0.45;
 clip_depth = 4.8; // full-height fingers must stop before the Pi PCB at Y=5
+clip_root_radius = 1.2; // inward fillet spreads the root into the face
+clip_root_embed = 0.4; // root continues into the face, without changing its underside
 
 lid_screws = [[6,6],[98,4],[134,ethernet_step_y+6],[134,138],[6,138],[6,76]];
 // Fill the pockets behind round bosses, joining each to its adjacent wall(s).
@@ -104,17 +106,22 @@ module port_cuts() {
 
 // Covers print outer face down. Four spring fingers preload the original hole;
 // side hooks seat immediately behind its 2.4 mm wall. Tips taper for insertion.
+// Only the inward side of each root is flared: the port-contact profile stays
+// clear of the wall. The quarter-circle blends into the sloping thin arm.
 module cover_finger(half_span, breadth, thickness, preload, hook_reach=0) {
-    translate([half_span,-breadth/2,cover_face-eps])
+    translate([half_span,-breadth/2,cover_face])
         rotate([-90,0,0]) linear_extrude(breadth)
             polygon(concat(
-                [[-0.1,0], [preload,-(wall-0.2+eps)],
-                 [preload,-(wall+0.02+eps)]],
-                hook_reach>0 ? [[hook_reach,-(wall+0.12+eps)]] : [],
-                [[-0.3,-(clip_depth+eps)],
-                 [-0.3-thickness,-(clip_depth+eps)],
-                 [preload-thickness,-(wall-0.2+eps)],
-                 [-0.1-thickness,0]]));
+                [[-0.1,clip_root_embed], [-0.1,0],
+                 [preload,-(wall-0.2)], [preload,-(wall+0.02)]],
+                hook_reach>0 ? [[hook_reach,-(wall+0.12)]] : [],
+                [[-0.3,-clip_depth], [-0.3-thickness,-clip_depth],
+                 [preload-thickness,-(wall-0.2)]],
+                [for(a=[90:-7.5:0])
+                    let(z=clip_root_radius*(1-cos(a)),
+                        flare=clip_root_radius*(1-sin(a)))
+                    [-0.1+(preload+0.1)*z/(wall-0.2)-thickness-flare,-z]],
+                [[-0.1-thickness-clip_root_radius,clip_root_embed]]));
 }
 module service_cover(size, preload=hdmi_clip_preload, hook_reach=hdmi_clip_hook) {
     linear_extrude(cover_face)
@@ -127,6 +134,12 @@ module service_cover(size, preload=hdmi_clip_preload, hook_reach=hdmi_clip_hook)
 }
 module sd_cover() { service_cover(sd_size,sd_clip_preload,sd_clip_hook); }
 module usb_cover() { service_cover(usb_size,usb_clip_preload,usb_clip_hook); }
+module covers_scene() {
+    // Print orientation, inside faces visible: HDMI, SD, USB from left to right.
+    color("#b6c5cf") service_cover(hdmi_size);
+    translate([32,0,0]) color("#b8c8ae") sd_cover();
+    translate([62,0,0]) color("#d7c7a6") usb_cover();
+}
 module usb_cover_frame(outset=0) {
     multmatrix([[0,0,-1,main_w+outset],[1,0,0,usb_xy[0]],
                 [0,1,0,usb_xy[1]],[0,0,0,1]]) children();
@@ -155,12 +168,27 @@ module cover_spring_contact_zones() {
         spring_contact_zones(hdmi_size,hdmi_clip_preload);
     usb_cover_frame() spring_contact_zones(usb_size,usb_clip_preload);
 }
-module installed_covers(pull=0,usb=true) {
-    multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,-cover_face-pull],
+// Retention must come from the hooks, not just the relaxed spring preload.
+// These masks lie beyond that preload, in the side walls of each opening.
+module hook_contact_zones(size,preload) {
+    for(side=[-1,1]) scale([side,1,1])
+        prism(size[0]/2+preload+eps,-size[1]/2,0,1,size[1],wall);
+}
+module cover_hook_contact_zones() {
+    multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,0],
+                [0,1,0,hdmi_xy[1]],[0,0,0,1]])
+        hook_contact_zones(hdmi_size,hdmi_clip_preload);
+    multmatrix([[0,0,1,0],[1,0,0,sd_xy[0]],
+                [0,1,0,sd_xy[1]],[0,0,0,1]])
+        hook_contact_zones(sd_size,sd_clip_preload);
+    usb_cover_frame() hook_contact_zones(usb_size,usb_clip_preload);
+}
+module installed_covers(pull=0,usb=true,which="all") {
+    if(which=="all" || which=="hdmi") multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,-cover_face-pull],
                 [0,1,0,hdmi_xy[1]],[0,0,0,1]]) service_cover(hdmi_size);
-    multmatrix([[0,0,1,-cover_face-pull],[1,0,0,sd_xy[0]],
+    if(which=="all" || which=="sd") multmatrix([[0,0,1,-cover_face-pull],[1,0,0,sd_xy[0]],
                 [0,1,0,sd_xy[1]],[0,0,0,1]]) sd_cover();
-    if(usb) installed_usb_cover(pull);
+    if(usb && (which=="all" || which=="usb")) installed_usb_cover(pull);
 }
 module lid_bosses() {
     translate([0,0,floor_h-eps]) linear_extrude(base_h-floor_h+eps)
@@ -313,6 +341,10 @@ assert(!lid_logo || (logo_depth>0 && lid_h-logo_depth>=1.2),
 assert(usb_xy[0]+usb_size[0]/2+cover_flange<ethernet_step_y,
        "USB cover must clear the cable-bay front wall");
 assert(97+wifi_size[0]<main_w-wall,"Nano dongle must fit behind the recessed wall");
+assert(clip_root_radius>0 && clip_root_radius<wall-0.2,
+       "Clip fillet must end before the thin spring's wall-contact section");
+assert(clip_root_embed>0 && clip_root_embed<cover_face,
+       "Clip roots must embed within the cover face");
 if(part=="base") base();
 else if(part=="lid") lid();
 else if(part=="hardware") hardware();
@@ -338,8 +370,16 @@ else if(part=="cover-interference") union() {
 else if(part=="cover-spring-contact") intersection() {
     installed_covers(); base(); cover_spring_contact_zones();
 }
-else if(part=="cover-retention") intersection() { installed_covers(0.6); base(); }
-else if(part=="usb-cover-retention") intersection() { installed_usb_cover(0.6); base(); }
+else if(part=="cover-retention") intersection() { installed_covers(0.6); base(); cover_hook_contact_zones(); }
+else if(part=="hdmi-cover-retention") intersection() { installed_covers(0.6,which="hdmi"); base(); cover_hook_contact_zones(); }
+else if(part=="sd-cover-retention") intersection() { installed_covers(0.6,which="sd"); base(); cover_hook_contact_zones(); }
+else if(part=="hdmi-cover-spring-contact") intersection() {
+    installed_covers(which="hdmi"); base(); cover_spring_contact_zones();
+}
+else if(part=="sd-cover-spring-contact") intersection() {
+    installed_covers(which="sd"); base(); cover_spring_contact_zones();
+}
+else if(part=="usb-cover-retention") intersection() { installed_usb_cover(0.6); base(); cover_hook_contact_zones(); }
 else if(part=="usb-cover-spring-contact") intersection() {
     installed_usb_cover(); base(); usb_cover_frame() spring_contact_zones(usb_size,usb_clip_preload);
 }
