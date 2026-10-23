@@ -74,6 +74,25 @@ The lid carries only the original Mariko tree, recessed 0.4 mm into the top
 face with 2 mm of plastic beneath it. Use the shared traced artwork without
 mirroring; do not restore the wording or Reality2 mark.
 
+### Heltec router variant
+
+`router-heltec/` is independent of `router/`. Run its `scripts/build.py` after
+geometry changes and keep all nine exports connected and watertight. Preserve
+the latest Pi mounting positions, external/internal USB split, HDMI/SD/power and
+Ethernet access, reinforced covers and recessed Mariko tree. The build compares
+inherited interfaces and covers with the original variant.
+
+Use the user-confirmed screen cover 33 × 18.6 mm, PCB underside-to-screen height
+7.1 mm, GPS PCB 18 × 16 mm, total GPS thickness 7 mm and approximately 38 mm
+extension from the Heltec end. The factory display cover stays fitted. Retain
+by the PCB, without clamping the glass. USB-C plug height drives both cradle
+height and the lid relief; retain at least 1.2 mm above that relief. GPS antenna
+faces upward in a removable tray, retained by a screw-on bridge. Both rear
+antenna positions are symmetrical, X=28/112 and Z=20, with independent hole sizes.
+The source uses simplified envelopes; physical fit, spring durability, antenna
+routing and thermal validation remain necessary. See its README and
+`references/dimensions.json` for measured versus provisional dimensions.
+
 ## Adding a New Device
 
 When adding a new device case:

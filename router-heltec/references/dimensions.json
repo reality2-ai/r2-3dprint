@@ -1,0 +1,104 @@
+{
+  "units": "mm",
+  "date": "2026-10-24",
+  "user_confirmed": {
+    "screen_cover_xy": [
+      33,
+      18.6
+    ],
+    "heltec_pcb_underside_to_screen_top": 7.1,
+    "gps_pcb_xy": [
+      18,
+      16
+    ],
+    "gps_total_connector_to_antenna_thickness": 7,
+    "gps_extension_from_heltec_edge_approx": 38
+  },
+  "manufacturer_sources": [
+    {
+      "url": "https://resource.heltec.cn/download/WiFi_LoRa_32_V4-R8/datasheet/WiFi_LoRa_32_V4R8.pdf",
+      "location": "Rev 1.4, August 2025, page 15/16",
+      "facts": {
+        "board_xy": [
+          51.69,
+          25.4
+        ],
+        "screen_cover_xy": [
+          33,
+          18.6
+        ],
+        "pcb_underside_to_screen_top": 7.1
+      },
+      "notes": "Screen cover position about [15,3.4] from USB-end PCB corner, transcribed from drawing; physically verify."
+    },
+    {
+      "url": "https://resource.heltec.cn/download/WiFi_LoRa_32_V4/3D/HTIT-WB32LAF_V4.3.1%281%29.step",
+      "facts": {
+        "board_xy": [
+          51.689,
+          25.4
+        ],
+        "support_pad_centres_from_usb_end": [
+          [
+            16.879,
+            5.7
+          ],
+          [
+            16.879,
+            19.7
+          ],
+          [
+            45.879,
+            5.7
+          ],
+          [
+            45.879,
+            19.7
+          ]
+        ],
+        "hole_diameter": 2.8
+      },
+      "notes": "Measured with OpenCascade. V4 reference, not exact V4R8 populated CAD. Omits screen/cover; hole diameter differs from 1.9 mm drawing annotation. Not redistributed."
+    },
+    {
+      "url": "https://heltec.org/project/l76-gnss-module/",
+      "drawing_url": "https://heltec.org/wp-content/uploads/2025/07/L76K_DIMENSION.png",
+      "notes": "Accessory drawing distinguishes complete module from receiver IC dimensions. Actual user dimensions supersede the drawing. GPS antenna is mounted upward in this case."
+    }
+  ],
+  "provisional": {
+    "usb_c_plug_lwh": [
+      20,
+      12,
+      8
+    ],
+    "screen_cover_offset_from_usb_end": [
+      15,
+      3.4
+    ],
+    "bulkhead_hole_diameters": [
+      6.5,
+      6.5
+    ],
+    "bulkhead_panel_thickness": 4,
+    "gps_component_height_split": "Illustrative only; total 7 mm conservative envelope is measured",
+    "gps_cable": "Illustrative route; actual bend and connector engagement require physical fit"
+  },
+  "derived_default": {
+    "heltec_pcb_underside_z": 26.1,
+    "screen_cover_top_z": 33.2,
+    "lid_top_z": 34.4,
+    "screen_recess": 1.2,
+    "minimum_usb_relief_roof": 1.2,
+    "rear_antenna_centres_xz": [
+      [
+        28,
+        20
+      ],
+      [
+        112,
+        20
+      ]
+    ]
+  }
+}

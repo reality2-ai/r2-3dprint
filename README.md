@@ -13,6 +13,7 @@ This repository contains parametric case designs for various Mariko Earthgrids d
 | Device | Description | Status |
 |--------|-------------|--------|
 | [Xiao + LoRa](xiao/) | Phone-mount case for Seeed Xiao + LoRa board | ✅ Production |
+| [Heltec router](router-heltec/) | Pi 3 + Heltec V4R8, close-fitting screen opening, GPS holder and two rear antenna mounts | Digital prototype; physical fit pending |
 | [Home router](router/) | Pi + DFR1195 enclosure with external USB access and removable covers | USB access revision; print fit pending |
 
 ## Project Structure
@@ -22,6 +23,7 @@ mariko-xiao-case/
 ├── branding/           # Shared branding assets (logos, images)
 ├── xiao/              # Xiao + LoRa device case
 ├── router/            # Pi + DFR1195 home router enclosure
+├── router-heltec/     # Pi 3 + Heltec V4R8 + GPS variant
 ├── CLAUDE.md          # Project context and invariants
 └── README.md          # This file
 ```
