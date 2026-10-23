@@ -13,6 +13,7 @@ This repository contains parametric case designs for various Mariko Earthgrids d
 | Device | Description | Status |
 |--------|-------------|--------|
 | [Xiao + LoRa](xiao/) | Phone-mount case for Seeed Xiao + LoRa board | ✅ Production |
+| [Home router](router/) | Pi + DFR1195 enclosure with external USB access and removable covers | USB access revision; print fit pending |
 
 ## Project Structure
 
@@ -20,6 +21,7 @@ This repository contains parametric case designs for various Mariko Earthgrids d
 mariko-xiao-case/
 ├── branding/           # Shared branding assets (logos, images)
 ├── xiao/              # Xiao + LoRa device case
+├── router/            # Pi + DFR1195 home router enclosure
 ├── CLAUDE.md          # Project context and invariants
 └── README.md          # This file
 ```

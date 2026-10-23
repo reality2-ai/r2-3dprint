@@ -1,17 +1,27 @@
-# Reality2 home router enclosure — first fit prototype
+# Reality2 home router enclosure — external USB access revision
 
-A printable base, screw-on lid and two removable service-port covers for a **Raspberry Pi Model B+ V1.2** and
+A printable base, screw-on lid and three removable service-port covers for a **Raspberry Pi Model B+ V1.2** and
 **DFRobot DFR1195** connected by an internal USB-A to USB-C cable.
 The case is **140 × 144 × 34.4 mm**,
 excluding feet, screws and antenna. Installed service covers project 1.2 mm
-from the front and left faces (141.2 × 145.2 mm overall footprint). It is a digital prototype, not yet physically
-fit-tested or thermally tested.
+from the front and left faces (141.2 × 145.2 mm overall footprint). The USB cover
+sits within the side recess, so it adds no overall width. The user has used the
+previous case with both **Pi 2B and Pi 3**; the board mounting positions are unchanged.
+This revised recess and USB cover have not yet been physically fit-tested or thermally tested.
 
-![Original enclosure preview](images/assembly.png)
+![Current enclosure, exploded lid and installed service covers](images/assembly.png)
 
-Reference images show the earlier vents and embossed lid; current STLs have expanded side vents, floor vents, and a plain lid without vent slots.
+![Both external USB sockets in use with the lid fitted](images/flashing.png)
 
-[Service view with covers/lid removed and keyboard plug shown in orange](images/service.png)
+[Closed case with the USB cover fitted](images/closed.png).
+[Lid detail showing the recessed Mariko tree](images/lid.png).
+
+[Service view with lid/covers removed](images/service.png): external USB plugs are
+orange, the internal DFR1195 cable is grey, and the optional nano Wi-Fi dongle is blue.
+
+**Reprint the base and lid together**, plus the new USB cover. The recess has changed
+and the front cable-bay lid screw has moved from Y=35 to Y=49 mm. The old lid is
+not compatible. Existing HDMI and SD covers can be reused.
 
 ## Files
 
@@ -19,11 +29,12 @@ Reference images show the earlier vents and embossed lid; current STLs have expa
 - [Lid STL, with display window](stl/router-lid.stl)
 - [HDMI clip-in cover STL](stl/router-hdmi-cover.stl)
 - [SD-card clip-in cover STL](stl/router-sd-cover.stl)
+- [USB-pair clip-in cover STL](stl/router-usb-cover.stl)
 - [Parametric OpenSCAD source](src/router_case.scad)
 - [Digital validation results](test/validation.json)
 
 The base and lid are already oriented for printing: flat underside on the bed,
-open base cavity and plain lid top facing upwards. Designed without support
+open base cavity and recessed-logo lid top facing upwards. Designed without support
 structures; side windows require short bridges. Start with 0.2 mm layers,
 a 0.4 mm nozzle, four perimeters and 20–30% infill. PETG is a reasonable starting
 material for the prototype. Check bridge quality at the Ethernet and power openings.
@@ -33,37 +44,48 @@ material for the prototype. Check bridge quality at the Ethernet and power openi
 - Four Pi mounting posts on the manufacturer's 58 × 49 mm hole pattern.
 - Four raised DFR1195 posts on its 66 × 38 mm pattern. Both boards screw into
   printed pilot holes; the radio is raised so its LCD sits closer to the lid.
-- Recessed Ethernet opening with clearance above/below the jack for a plug boot
-  and release tab. The external notch keeps the network cable separate from the
-  internal USB cable bay. No Ethernet extension cable is required.
+- Extended side recess exposes Ethernet and the adjacent USB pair. The socket
+  faces sit about 9 mm behind the outer wall. The Ethernet opening is now
+  19 × 22 mm, leaving a 1.5 mm web between it and the USB opening. No extension
+  cables are required for these external sockets.
 - Separate micro-USB power opening, a **24 × 12 mm full-size HDMI opening**,
   and a **20 × 8 mm microSD service opening**. HDMI and SD each have a removable
   clip-in cover; both can be serviced without taking off the lid. The SD opening
   is recessed from the board, so a fingernail or nonconductive tool may be needed.
-- With the lid removed, the lower socket in the USB stack furthest from Ethernet
-  accepts a keyboard; the radio uses its upper socket. The checked keyboard plug
-  envelope is 32 × 12 × 8 mm, with its cable extended past the radio plug and
-  routed upward through the open top. Oversize adjacent plug housings need a fit check. Audio remains internal.
+- Both sockets in the USB stack **nearest Ethernet** are accessible with the lid
+  fitted, for flashing devices or attaching a keyboard. One removable clip-in
+  cover closes their shared **15 × 20 mm** opening when unused. Both sockets are
+  checked simultaneously with **32 × 12 × 8 mm** plug housings and straight
+  insertion/removal paths. Oversized housings need a fit check.
+- Both sockets in the USB stack **furthest from Ethernet** remain internal:
+  upper for the DFR1195 cable, lower for an optional nano Wi-Fi dongle. The dongle
+  body allowance is **6 mm protrusion × 16 mm width × 8 mm height**, centred on
+  the lower socket. This allows a little extra length over the user's reported
+  roughly 5 mm protrusion. Omit it when using onboard Wi-Fi. Audio remains internal.
 - A tapered 26 × 16 mm LCD window. Optional clear PET sheet can be bonded beneath the window;
   the window itself is an opening, not a printed transparent lens.
 - Rear antenna bulkhead hole in the cable bay, clear of the raised radio PCB.
   The metal bulkhead's nut/washer secures it to the plastic; the antenna screws
   onto that connector. The case has no printed RF connector threads.
-- Floor air inlets and 32 side vent slots (previously 12), each 3 × 10 mm.
+- Floor air inlets and 29 side vent slots, each 3 × 10 mm.
   Left-side vents stop around the middle lid screw post; right-side vents stay
-  clear of the corner posts. The plain lid keeps its LCD window and screw holes,
+  clear of the corner posts. The lid keeps its LCD window and screw holes,
   with no vent slots to interrupt the broad top surface.
   Add four adhesive feet at least 2 mm high, clear of the floor vents.
   Cooling with this vent layout needs a physical temperature test.
-- Plain lid without raised artwork or lettering.
+- The original Mariko tree symbol is recessed **0.4 mm** into the lid's top face,
+  **40 mm** wide and centred at X=53, Y=46 mm, clear of the display window and
+  screws. The recess leaves **2 mm** of lid thickness. There are no words or
+  Reality2 marks, and the artwork is not mirrored.
 - Six M3 screws secure a flat lid; no fragile snap clips or support-requiring
   underside skirt.
 - Lid screw posts merge fully into the adjacent walls, filling the narrow corner
-  pockets behind them. Their screw centres match the original lid.
+  pockets behind them. The front cable-bay post moves with the enlarged recess;
+  the other five screw centres are unchanged.
 
 ## Hardware and assembly
 
-1. Print one base, one lid, one HDMI cover and one SD cover. Print the covers
+1. Print one base, one matching lid, one HDMI cover, one SD cover and one USB cover. Print the covers
    with their flat outer faces on the bed and clips upward; use PETG for the
    flexible clips. Covers are unlabelled and distinguished by size. Clear bridge strands and check pilot-hole fit on
    spare material before installing electronics.
@@ -79,7 +101,10 @@ material for the prototype. Check bridge quality at the Ethernet and power openi
    connector. Match SMA versus RP-SMA to the actual antenna. A roughly 150 mm
    pigtail provides routing slack; keep it clear of screw posts and the lid.
 6. Connect the short USB data cable internally, using the upper socket of the
-   Pi USB stack furthest from Ethernet. Reserve its lower socket for the keyboard.
+   Pi USB stack furthest from Ethernet. Its lower socket accepts the optional
+   nano Wi-Fi dongle. The main section is widened from 102 to 106 mm while the
+   cable bay narrows from 38 to 34 mm, keeping the overall width at 140 mm and
+   leaving space for the dongle behind the new recessed wall.
    The design allowance is for
    roughly **15–20 cm**, with straight plug housings around 24 mm long at USB-A
    and 20 mm at USB-C. The preview shows illustrative plug/cable envelopes,
@@ -90,19 +115,23 @@ material for the prototype. Check bridge quality at the Ethernet and power openi
    M3 heat-set inserts are not included in this version.
 8. Press each cover into its matching opening until the two detents seat behind
    the wall. The wider cover is HDMI. Remove with a fingernail under the outer
-   flange; do not force a tight clip. Both covers fit the original openings
-   (**24 × 12 mm HDMI**, **20 × 8 mm SD**) and **2.4 mm wall**, using four
+   flange; do not force a tight clip. The covers fit
+   **24 × 12 mm HDMI**, **20 × 8 mm SD**, and **15 × 20 mm USB** openings in a **2.4 mm wall**, using four
    spring fingers: two tall side clips and two narrower top/bottom tabs.
-   Side fingers are 11.8 mm tall on HDMI and 7.8 mm on SD. Their relaxed shape
+   Side fingers are 11.8 mm tall on HDMI, 7.8 mm on SD and 19.8 mm on USB. Their relaxed shape
    extends 0.15 mm past each hole edge at the wall to address lateral and
    vertical rattle. Side hooks reach 0.65 mm beyond the hole edge, with their
    peaks just 0.12 mm behind the wall to reduce outward play. Tapered tips
    guide insertion. Fingers reach 4.8 mm inward.
-   Tune `hdmi_clip_preload` / `hdmi_clip_hook` or `sd_clip_preload` /
-   `sd_clip_hook` for each fit. Spring force still needs a trial print.
-   Outer cover dimensions and the case are unchanged; only covers need reprinting.
+   Tune `hdmi_clip_preload` / `hdmi_clip_hook`, `sd_clip_preload` /
+   `sd_clip_hook`, or `usb_clip_preload` / `usb_clip_hook` for each fit.
+   Spring force still needs a trial print. The new USB cover's outer face is
+   **17.4 × 22.4 mm**; print it face-down, fingers up. Existing HDMI/SD covers are unchanged.
    Do not glue the caps.
 9. Fit adhesive feet. Connect Ethernet and the Pi's micro-USB power externally.
+10. To connect a device for flashing, remove the USB cover and plug its USB data
+    cable into either exposed socket beside Ethernet. The lid, internal radio
+    cable and Wi-Fi dongle stay in place. Refit the cover after unplugging.
 
 ## Confirm before a full print or batch
 
@@ -121,12 +150,15 @@ Check these against your actual assembly:
 - USB housings and bend radii; particularly the 29 mm gap between board edges.
   A stiff or very short cable may need a different layout or right-angle plugs.
 - Antenna thread, nut/washer diameter, panel thickness and pigtail length.
-- Ethernet plug boot and latch accessibility, and micro-USB power housing size.
+- Ethernet plug boot and latch accessibility in the revised 19 mm-wide opening,
+  and micro-USB power housing size.
 - Screw and pilot-hole fit for your printer/material.
 - Clip insertion/removal force and durability; the digital check confirms geometric
   engagement, not spring strength. Print a cover before committing to the full base.
 - HDMI plug housing clearance (checked at 22 × 10 mm cross-section), SD-card
-  reach, and the keyboard plug/cable. Remove a port cover before plugging in.
+  reach, both external USB plugs, and the actual nano dongle. Remove a port cover
+  before plugging in. The internal radio plug has 0.6 mm nominal clearance
+  to the cable-bay front wall in the simplified envelope; verify its actual housing.
 - Sustained operating temperature with the actual router workload and lid fitted.
 
 ## Regenerate and check
@@ -137,22 +169,32 @@ Requires OpenSCAD and Python 3. From this directory:
 python3 scripts/build.py
 ```
 
-Set `OPENSCAD=/path/to/openscad` if necessary. The script exports all four STL files,
+Set `OPENSCAD=/path/to/openscad` if necessary. The script exports all five STL files,
 checks that each is a watertight single connected mesh, and checks the case/lid
 against simplified board and component envelopes. It also checks installed covers,
-HDMI/SD service paths and the keyboard envelope, and verifies that the cover
+HDMI/SD service paths, Ethernet access, both external USB insertion paths with
+the lid fitted, and simultaneous internal radio-cable/nano-dongle clearance.
+It verifies that the cover
 detents engage the wall when pulled outward by 0.6 mm. Coplanar seating faces are
 allowed. The relaxed cover springs intentionally intersect four narrow wall-contact
 regions per cover by up to 0.15 mm; validation reports that contact separately and rejects
 collisions outside those regions, including all cover/electronics collisions. This does **not** prove
 physical cable, connector, display or thermal fit.
+USB cover contact and retention are also checked individually, so a passing
+HDMI/SD cover cannot hide a USB cover failure.
 
 For interactive inspection, open `src/router_case.scad`. Change `part` to `base`,
-`lid`, `hdmi-cover`, `sd-cover`, `closed`, `assembly` (exploded), `service`
-(lid/covers removed, keyboard plug shown), or `layout` (all four printable parts).
+`lid`, `hdmi-cover`, `sd-cover`, `usb-cover`, `closed`, `assembly` (exploded), `service`
+(lid/covers removed), `flashing` (lid fitted, USB cover removed, both external
+USB sockets in use), or `layout` (all five printable parts).
 `display_window=false` generates a solid lid variant.
+`lid_logo=false` omits the tree; `logo_width`, `logo_depth` and `logo_xy` control it.
+The OpenSCAD Customizer's `part` dropdown switches between these views without
+editing the source.
 
-The source and exported STLs are standalone; no shared artwork files are required.
+The OpenSCAD source uses `../branding/logos/mariko_logo_traced.scad` relative to
+this directory; keep the repository's `branding/` folder when editing the model.
+The exported STLs are standalone and need no artwork files.
 
 ## Mechanical references
 

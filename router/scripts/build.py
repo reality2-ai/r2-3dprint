@@ -75,7 +75,7 @@ def render(output, part):
 def main():
     (ROOT / "stl").mkdir(exist_ok=True)
     report = {"status": "digital prototype; physical fit not verified", "parts": {}}
-    for part in ["base", "lid", "hdmi-cover", "sd-cover"]:
+    for part in ["base", "lid", "hdmi-cover", "sd-cover", "usb-cover"]:
         output = ROOT / f"stl/router-{part}.stl"
         render(output, part)
         report["parts"][part] = inspect(output)
@@ -83,7 +83,10 @@ def main():
     for scene, key in [("interference", "hardware_envelope_overlap_mm3"),
                        ("cover-interference", "installed_cover_overlap_mm3"),
                        ("port-interference", "service_port_overlap_mm3"),
-                       ("keyboard-interference", "keyboard_access_overlap_mm3")]:
+                       ("keyboard-interference", "keyboard_access_overlap_mm3"),
+                       ("usb-access-interference", "external_usb_insertion_overlap_mm3"),
+                       ("internal-usb-interference", "internal_usb_overlap_mm3"),
+                       ("ethernet-access-interference", "ethernet_access_overlap_mm3")]:
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / "interference.stl"
             render(output, scene)
@@ -107,11 +110,26 @@ def main():
         assert overlap > 0.001, "Cover detents do not engage the wall when pulled"
         report["cover_retention_engagement_mm3"] = round(overlap, 6)
         print("Cover detents engage when pulled: passed", flush=True)
+    # Check the new cover separately so the existing HDMI/SD caps cannot mask
+    # a missing USB hook or a USB spring that does not reach its wall.
+    for scene, key in [("usb-cover-spring-contact", "usb_cover_relaxed_spring_contact_mm3"),
+                       ("usb-cover-retention", "usb_cover_retention_engagement_mm3")]:
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / "usb-cover.stl"
+            render(output, scene)
+            overlap = volume(triangles(output)) if output.exists() else 0
+            assert overlap > 0.001, f"{scene}: USB cover does not engage"
+            report[key] = round(overlap, 6)
+            print(f"{scene}: passed", flush=True)
     report["limits"] = ["Simplified board/component envelopes, not exact manufacturer solids",
                         "Cable bend, LCD position/height and SMA thread fit require physical checks",
                         "Cover spring force, fatigue and insertion fit require a physical PETG test",
                         "Relaxed cover springs intentionally overlap four wall contact zones per cover by up to 0.15 mm; deflection is not simulated",
-                        "Keyboard clearance uses a 32 x 12 x 8 mm plug envelope with upward cable exit"]
+                        "Both exposed USB sockets checked simultaneously with 32 x 12 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
+                        "Internal nano Wi-Fi dongle allowance is a 6 x 16 x 8 mm body protruding from the USB socket; actual dongle fit requires checking",
+                        "DFR1195 upper internal USB cable and lower internal Wi-Fi dongle checked together against the closed shell and installed covers",
+                        "Ethernet access checked with an 18 x 20 mm boot/latch envelope through the narrowed opening",
+                        "User reports previous case fits Pi 2B and Pi 3; this revision preserves board mounts but new recess and cover are not physically tested"]
     (ROOT / "test/validation.json").write_text(json.dumps(report, indent=2) + "\n")
     print("Hardware envelope check passed; see test/validation.json")
 

@@ -1,17 +1,19 @@
 // Reality2 home router — Raspberry Pi Model B+ V1.2 + DFR1195.
 // Millimetres. Prototype: check the actual cable and bulkhead before printing.
+// Original Mariko tree only, read from above without mirroring.
+use <../../branding/logos/mariko_logo_traced.scad>
 
-part = "assembly"; // base, lid, hdmi-cover, sd-cover, layout, assembly, closed, service
+part = "assembly"; // [assembly, closed, flashing, service, base, lid, usb-cover, hdmi-cover, sd-cover, layout]
 $fn = 48;
 wall = 2.4;
 floor_h = 2.4;
 base_h = 32;
 lid_h = 2.4;
-main_w = 102;
-cable_bay = 38;
+main_w = 106; // room behind the recess for a nano Wi-Fi dongle
+cable_bay = 34; // overall width remains 140 mm
 outer_w = main_w + cable_bay;
 outer_d = 144;
-ethernet_step_y = 29;
+ethernet_step_y = 43; // expose the USB pair beside Ethernet; retain the other pair inside
 corner_r = 4;
 pcb_z = 8.4; // board underside; 6 mm air space above floor
 pcb_t = 1.6;
@@ -25,6 +27,10 @@ antenna_panel = 4; // total local wall thickness, including reinforcement
 antenna_x = 112; // cable bay: connector tail must not pass through raised radio
 antenna_z = 20;
 display_window = true;
+lid_logo = true;
+logo_width = 40;
+logo_depth = 0.4; // recessed into the outer lid face; 2 mm remains underneath
+logo_xy = [main_w/2,46];
 // Estimated from manufacturer's annotated image; confirm against the actual LCD.
 screen_xy = [35,98];
 screen_size = [26,16]; // aperture includes margin around nominal 22 x 11 mm LCD
@@ -33,6 +39,9 @@ hdmi_xy = [pi_xy[0]+32,14]; // centre in front panel: X,Z
 hdmi_size = [24,12];
 sd_xy = [pi_xy[1]+28,7]; // centre in left panel: Y,Z
 sd_size = [20,8];
+usb_xy = [pi_xy[1]+29,18]; // centre in recessed right panel: Y,Z
+usb_size = [15,20]; // both sockets, separated from Ethernet by a 1.5 mm web
+wifi_size = [6,16,8]; // exposed nano-dongle body: X protrusion, Y width, Z height
 cover_face = 1.2;
 cover_flange = 1.2;
 clip_height_clearance = 0.1; // clearance at both top and bottom of the opening
@@ -40,11 +49,13 @@ sd_clip_preload = 0.15; // intentional spring deflection per edge in the origina
 sd_clip_hook = 0.65; // side-hook reach beyond the nominal opening
 hdmi_clip_preload = 0.15;
 hdmi_clip_hook = 0.65;
+usb_clip_preload = 0.15;
+usb_clip_hook = 0.65;
 clip_depth = 4.8; // full-height fingers must stop before the Pi PCB at Y=5
 
-lid_screws = [[6,6],[98,4],[134,35],[134,138],[6,138],[6,76]];
+lid_screws = [[6,6],[98,4],[134,ethernet_step_y+6],[134,138],[6,138],[6,76]];
 // Fill the pockets behind round bosses, joining each to its adjacent wall(s).
-// Screw centres stay fixed so the existing lid still fits.
+// The cable-bay front screw moves with the recess; print the matching new lid.
 lid_boss_corners = [[0,0],[main_w,0],[outer_w,ethernet_step_y],
                     [outer_w,outer_d],[0,outer_d]];
 pi_holes = [for(x=[3.5,61.5],y=[3.5,52.5]) [pi_xy[0]+x,pi_xy[1]+y]];
@@ -67,8 +78,12 @@ module radio_frame() { translate([radio_xy[0],radio_xy[1],0]) children(); }
 
 module port_cuts() {
     // Ethernet: open above and below socket for boot and latch access.
-    // Socket at x~97; case wall at x102 gives a shallow 5 mm recess.
-    prism(main_w-wall-1,pi_xy[1]+1,pcb_z-2,wall+4,21,22);
+    // Socket at x~97; case wall at x106 leaves 9 mm for plug insertion.
+    // End at Y=25 to retain a solid web for the adjacent USB cover's hook.
+    // Reach the socket face so the corner boss cannot obstruct a wide boot.
+    prism(97,pi_xy[1]+1,pcb_z-2,main_w-97+2,19,22);
+    prism(main_w-wall-1,usb_xy[0]-usb_size[0]/2,usb_xy[1]-usb_size[1]/2,
+          wall+4,usb_size[0],usb_size[1]);
     // Micro-USB power: generous moulded-plug opening, directly at Pi edge.
     prism(pi_xy[0]+10.6-7,-1,pcb_z-1,14,wall+2,10);
     // Full-size HDMI and microSD service openings, each with a removable cap.
@@ -84,7 +99,7 @@ module port_cuts() {
     for(bank=[[14,62],[86,128]])
         for(y=[bank[0]:6:bank[1]]) prism(-1,y,17,wall+2,3,10);
     // Keep clear of the front cable-bay corner and both right screw bosses.
-    for(y=[41:6:125]) prism(outer_w-wall-1,y,17,wall+2,3,10);
+    for(y=[ethernet_step_y+12:6:125]) prism(outer_w-wall-1,y,17,wall+2,3,10);
 }
 
 // Covers print outer face down. Four spring fingers preload the original hole;
@@ -111,6 +126,12 @@ module service_cover(size, preload=hdmi_clip_preload, hook_reach=hdmi_clip_hook)
         cover_finger(size[1]/2,8,0.6,preload);
 }
 module sd_cover() { service_cover(sd_size,sd_clip_preload,sd_clip_hook); }
+module usb_cover() { service_cover(usb_size,usb_clip_preload,usb_clip_hook); }
+module usb_cover_frame(outset=0) {
+    multmatrix([[0,0,-1,main_w+outset],[1,0,0,usb_xy[0]],
+                [0,1,0,usb_xy[1]],[0,0,0,1]]) children();
+}
+module installed_usb_cover(pull=0) { usb_cover_frame(cover_face+pull) usb_cover(); }
 // These are validation masks only: they never cut or modify the case.
 // Only four narrow wall-contact regions per cover may intersect relaxed springs.
 // This is a deflection allowance, not a simulation of spring force.
@@ -132,12 +153,14 @@ module cover_spring_contact_zones() {
     multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,0],
                 [0,1,0,hdmi_xy[1]],[0,0,0,1]])
         spring_contact_zones(hdmi_size,hdmi_clip_preload);
+    usb_cover_frame() spring_contact_zones(usb_size,usb_clip_preload);
 }
-module installed_covers(pull=0) {
+module installed_covers(pull=0,usb=true) {
     multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,-cover_face-pull],
                 [0,1,0,hdmi_xy[1]],[0,0,0,1]]) service_cover(hdmi_size);
     multmatrix([[0,0,1,-cover_face-pull],[1,0,0,sd_xy[0]],
                 [0,1,0,sd_xy[1]],[0,0,0,1]]) sd_cover();
+    if(usb) installed_usb_cover(pull);
 }
 module lid_bosses() {
     translate([0,0,floor_h-eps]) linear_extrude(base_h-floor_h+eps)
@@ -188,9 +211,11 @@ module base() {
 }
 
 module lid() {
-    // Plain, solid lid; print the flat underside on the bed.
+    // Flat underside on the bed, recessed tree on top. No text or other marks.
     difference() {
         linear_extrude(lid_h) outline();
+        if(lid_logo) translate([logo_xy[0],logo_xy[1],lid_h-logo_depth])
+            linear_extrude(logo_depth+eps) mariko_logo2d(logo_width);
         for(p=lid_screws) translate([p[0],p[1],-1]) cylinder(d=3.4,h=lid_h+3);
         if(display_window) translate([screen_xy[0],screen_xy[1],-eps])
             linear_extrude(lid_h+2*eps,scale=[screen_size[0]/(screen_size[0]+4),screen_size[1]/(screen_size[1]+4)])
@@ -238,43 +263,73 @@ module assembly(explode=18) {
     color("#aebdb4") installed_covers();
     hardware();
     cable_envelopes();
+    color("#397b99") wifi_envelope();
     color("#e6e8df",explode>0?0.65:1) translate([0,0,base_h+explode]) lid();
 }
-module keyboard_envelope() {
-    // Lower socket of the stack furthest from Ethernet; radio uses upper socket.
-    // Run keyboard cable past radio's plug before turning upwards.
-    prism(97,pi_xy[1]+47-6,9.5,32,12,8);
-    hull() {
-        translate([129,pi_xy[1]+47,13.5]) sphere(d=5);
-        translate([132,pi_xy[1]+47,19]) sphere(d=5);
+module wifi_envelope() {
+    // Lower internal socket; DFR1195 cable stays in the upper internal socket.
+    // User's nano dongle protrudes ~5 mm; reserve 6 mm plus a 16 x 8 mm body.
+    prism(97,pi_xy[1]+47-wifi_size[1]/2,13.5-wifi_size[2]/2,
+          wifi_size[0],wifi_size[1],wifi_size[2]);
+}
+module external_usb_plugs(sweep=false) {
+    // Two simultaneous 32 x 12 x 8 mm housings; sweep from seated to outside.
+    for(z=[9.5,18.5]) {
+        prism(97,usb_xy[0]-6,z,sweep?outer_w+25-97:32,12,8);
+        if(!sweep) translate([129,usb_xy[0],z+4]) rotate([0,90,0]) cylinder(d=5,h=30);
     }
-    translate([132,pi_xy[1]+47,19]) cylinder(d=5,h=31);
+}
+module keyboard_envelope() {
+    // A keyboard now uses the lower externally accessible socket.
+    prism(97,usb_xy[0]-6,9.5,32,12,8);
+    translate([129,usb_xy[0],13.5]) rotate([0,90,0]) cylinder(d=5,h=30);
 }
 module service_scene() {
     color("#d8ddd9") base();
     hardware();
     cable_envelopes();
-    color("#cf8c3b") keyboard_envelope();
+    color("#397b99") wifi_envelope();
+    color("#cf8c3b") external_usb_plugs();
+}
+module flashing_scene() {
+    color("#d8ddd9") base();
+    color("#aebdb4") installed_covers(usb=false);
+    hardware();
+    cable_envelopes();
+    color("#397b99") wifi_envelope();
+    color("#cf8c3b") external_usb_plugs();
+    color("#e6e8df") translate([0,0,base_h]) lid();
+}
+module closed_shell(usb=true) {
+    base(); translate([0,0,base_h]) lid(); installed_covers(usb=usb);
 }
 
 assert(antenna_panel>=wall && antenna_panel<10,"Check SMA thread length against panel");
 assert(cable_bay>=30,"Straight USB plugs need cable space");
 assert(base_h>pcb_z+pcb_t+18,"Lid must clear Pi USB stack");
 assert(base_h>radio_z+pcb_t+8.5,"Lid must clear radio headers");
+assert(!lid_logo || (logo_depth>0 && lid_h-logo_depth>=1.2),
+       "Recessed logo must leave at least 1.2 mm of lid thickness");
+assert(usb_xy[0]+usb_size[0]/2+cover_flange<ethernet_step_y,
+       "USB cover must clear the cable-bay front wall");
+assert(97+wifi_size[0]<main_w-wall,"Nano dongle must fit behind the recessed wall");
 if(part=="base") base();
 else if(part=="lid") lid();
 else if(part=="hardware") hardware();
 else if(part=="hdmi-cover") service_cover(hdmi_size);
 else if(part=="sd-cover") sd_cover();
+else if(part=="usb-cover") usb_cover();
 else if(part=="service") service_scene();
+else if(part=="flashing") flashing_scene();
 else if(part=="closed") assembly(0);
 else if(part=="layout") {
     base(); translate([outer_w+10,0,0]) lid();
     translate([20,outer_d+15,0]) service_cover(hdmi_size);
     translate([55,outer_d+15,0]) sd_cover();
+    translate([85,outer_d+15,0]) usb_cover();
 }
 else if(part=="cover-interference") union() {
-    intersection() { installed_covers(); hardware(); }
+    intersection() { installed_covers(); union() { hardware(); cable_envelopes(); wifi_envelope(); translate([0,0,base_h]) lid(); } }
     difference() {
         intersection() { installed_covers(); base(); }
         cover_spring_contact_zones();
@@ -284,6 +339,10 @@ else if(part=="cover-spring-contact") intersection() {
     installed_covers(); base(); cover_spring_contact_zones();
 }
 else if(part=="cover-retention") intersection() { installed_covers(0.6); base(); }
+else if(part=="usb-cover-retention") intersection() { installed_usb_cover(0.6); base(); }
+else if(part=="usb-cover-spring-contact") intersection() {
+    installed_usb_cover(); base(); usb_cover_frame() spring_contact_zones(usb_size,usb_clip_preload);
+}
 else if(part=="port-interference") intersection() {
     base();
     union() {
@@ -293,7 +352,19 @@ else if(part=="port-interference") intersection() {
     }
 }
 else if(part=="keyboard-interference") intersection() {
-    keyboard_envelope(); union() { base(); installed_covers(); cable_envelopes(); }
+    keyboard_envelope(); union() { closed_shell(usb=false); hardware(); cable_envelopes(); wifi_envelope(); }
+}
+else if(part=="usb-access-interference") intersection() {
+    external_usb_plugs(sweep=true);
+    union() { closed_shell(usb=false); hardware(); cable_envelopes(); wifi_envelope(); }
+}
+else if(part=="ethernet-access-interference") intersection() {
+    prism(97,pi_xy[1]+1.5,7,outer_w+25-97,18,20);
+    closed_shell();
+}
+else if(part=="internal-usb-interference") union() {
+    intersection() { union() { cable_envelopes(); wifi_envelope(); } closed_shell(); }
+    intersection() { wifi_envelope(); union() { cable_envelopes(); hardware(); } }
 }
 else if(part=="interference") intersection() {
     union() { base(); translate([0,0,base_h]) lid(); }

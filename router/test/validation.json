@@ -2,7 +2,7 @@
   "status": "digital prototype; physical fit not verified",
   "parts": {
     "base": {
-      "triangles": 6332,
+      "triangles": 6304,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -19,10 +19,10 @@
           32.0
         ]
       ],
-      "volume_mm3": 88051.47
+      "volume_mm3": 87146.36
     },
     "lid": {
-      "triangles": 1480,
+      "triangles": 3884,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -39,7 +39,7 @@
           2.4
         ]
       ],
-      "volume_mm3": 44354.49
+      "volume_mm3": 43225.97
     },
     "hdmi-cover": {
       "triangles": 324,
@@ -80,19 +80,48 @@
         ]
       ],
       "volume_mm3": 395.69
+    },
+    "usb-cover": {
+      "triangles": 324,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          -8.7,
+          8.7
+        ],
+        [
+          -11.2,
+          11.2
+        ],
+        [
+          0.0,
+          6.0
+        ]
+      ],
+      "volume_mm3": 692.02
     }
   },
   "hardware_envelope_overlap_mm3": 0.0,
   "installed_cover_overlap_mm3": 0,
   "service_port_overlap_mm3": 0,
-  "keyboard_access_overlap_mm3": 0,
-  "cover_relaxed_spring_contact_mm3": 9.248864,
-  "cover_retention_engagement_mm3": 23.145338,
+  "keyboard_access_overlap_mm3": 0.0,
+  "external_usb_insertion_overlap_mm3": 0.0,
+  "internal_usb_overlap_mm3": 0.0,
+  "ethernet_access_overlap_mm3": 0,
+  "cover_relaxed_spring_contact_mm3": 16.471235,
+  "cover_retention_engagement_mm3": 43.455945,
+  "usb_cover_relaxed_spring_contact_mm3": 7.222371,
+  "usb_cover_retention_engagement_mm3": 20.310608,
   "limits": [
     "Simplified board/component envelopes, not exact manufacturer solids",
     "Cable bend, LCD position/height and SMA thread fit require physical checks",
     "Cover spring force, fatigue and insertion fit require a physical PETG test",
     "Relaxed cover springs intentionally overlap four wall contact zones per cover by up to 0.15 mm; deflection is not simulated",
-    "Keyboard clearance uses a 32 x 12 x 8 mm plug envelope with upward cable exit"
+    "Both exposed USB sockets checked simultaneously with 32 x 12 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
+    "Internal nano Wi-Fi dongle allowance is a 6 x 16 x 8 mm body protruding from the USB socket; actual dongle fit requires checking",
+    "DFR1195 upper internal USB cable and lower internal Wi-Fi dongle checked together against the closed shell and installed covers",
+    "Ethernet access checked with an 18 x 20 mm boot/latch envelope through the narrowed opening",
+    "User reports previous case fits Pi 2B and Pi 3; this revision preserves board mounts but new recess and cover are not physically tested"
   ]
 }

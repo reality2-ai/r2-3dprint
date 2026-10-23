@@ -52,6 +52,25 @@ Located in `xiao/` - parametric enclosure for Seeed Xiao + LoRa board.
 - USB window: `usb_w` 12.6 / `usb_h` 7.0 / `usb_z0` 3.0.
 - Meander drama: `ant_curve` (5). Branding: `deboss` (0.4), `wave_*`, `hex_R` (4.2), `r2_*`.
 
+### Router enclosure geometry checks
+
+The router source is `router/src/router_case.scad`; run
+`cd router && python3 scripts/build.py` after geometry changes. It exports and
+validates the base, matching lid, and HDMI, SD and USB covers. Keep all five
+parts connected and watertight, the closed-lid USB insertion paths clear, and
+the internal DFR1195 cable plus optional nano Wi-Fi dongle clear of the shell.
+Intentional cover spring preload is allowed only within the explicit contact
+masks; the USB cover also has its own contact and retention checks.
+
+The USB pair nearest Ethernet is external, with one removable cover. The pair
+furthest from Ethernet stays internal: DFR1195 above, optional nano Wi-Fi below.
+Board mounts are unchanged from the case the user has used with Pi 2B and Pi 3.
+The USB access revision needs a new base and matching lid; see `router/README.md`
+for dimensions, assumptions and physical checks still required.
+The lid carries only the original Mariko tree, recessed 0.4 mm into the top
+face with 2 mm of plastic beneath it. Use the shared traced artwork without
+mirroring; do not restore the wording or Reality2 mark.
+
 ## Adding a New Device
 
 When adding a new device case:
