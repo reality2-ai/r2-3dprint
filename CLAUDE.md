@@ -80,7 +80,11 @@ mirroring; do not restore the wording or Reality2 mark.
 geometry changes and keep all nine exports connected and watertight. Preserve
 the latest Pi mounting positions, external/internal USB split, HDMI/SD/power and
 Ethernet access, reinforced covers and recessed Mariko tree. The build compares
-inherited interfaces and covers with the original variant.
+unchanged mounts, SD cover and clip design with the original variant. The
+Heltec-only alignment revision puts HDMI and power bottoms at Z=7.4 mm and
+Ethernet/USB bottoms/tops at Z=6.4/28.4 mm. Its HDMI opening is 24 × 12.6 mm and
+USB opening 15 × 22 mm, with resized matching covers. Preserve existing plug
+clearances; do not apply these changes to the DFR1195 router unless requested.
 
 Use the user-confirmed screen cover 33 × 18.6 mm, PCB underside-to-screen height
 7.1 mm, GPS PCB 18 × 16 mm, total GPS thickness 7 mm and approximately 38 mm

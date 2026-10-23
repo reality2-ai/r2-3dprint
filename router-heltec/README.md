@@ -3,12 +3,14 @@
 A separate variant of the [original router](../router/), using a Raspberry Pi 3,
 Heltec WiFi LoRa 32 V4R8 with its factory screen cover, and a GPS accessory.
 The case remains **140 × 144 × 34.4 mm**, excluding cover flanges and connectors.
-The latest Pi mounting positions, port openings, recessed Mariko tree and
-reinforced HDMI, SD and USB covers are retained.
+The latest Pi mounting positions, port access, recessed Mariko tree and reinforced
+cover clip design are retained. HDMI and USB covers fit the aligned openings
+described below.
 
 **Digital prototype: a physical fit and temperature test is still required.**
 The original `router/` design is unchanged.
 
+![Fitted covers and electronics with the lid raised](images/assembly.png)
 ![Interior, including the two removable board holders](images/service.png)
 ![Closed enclosure with the protected screen visible](images/closed.png)
 ![Rear wall with symmetrical Wi-Fi and LoRa antenna mounts](images/rear.png)
@@ -43,10 +45,17 @@ adjusted independently to match the actual bulkhead. Confirm connector type and
 usable thread length for each pigtail; the printed case has no RF connector threads.
 
 The two USB sockets nearest Ethernet remain accessible with the lid closed.
-Their shared opening accepts the existing reinforced cover. The other USB stack
+Their shared opening accepts the matching taller reinforced USB cover. The other USB stack
 stays internal: upper socket for the Heltec cable, lower socket free. Pi 3 has
 onboard Wi-Fi; the inherited nano-dongle envelope is still checked for clearance.
-HDMI, SD, Ethernet and micro-USB power access match the latest original router.
+The HDMI opening now shares its bottom edge with micro-USB power at **Z=7.4 mm**.
+HDMI's top stays at Z=20 mm, making the opening **24 × 12.6 mm**. Ethernet and the
+external USB opening share both edges at **Z=6.4 and 28.4 mm**; the USB opening is
+now **15 × 22 mm**. Ethernet and power dimensions are unchanged. These changes
+only enlarge openings, preserving all prior plug clearance and the 1.5 mm web
+between Ethernet and USB. SD access is unchanged.
+
+![Aligned front and side openings, covers removed](images/ports.png)
 
 ## Files and printing
 
@@ -65,13 +74,17 @@ the lid prints with its recessed logo upward. The USB relief in the lid requires
 a short bridge. Check this bridge and the small ledges over the GPS connector
 reliefs in the cradle when slicing.
 
-The reinforced port covers are geometrically identical to the current `router/`
-covers, so existing copies can be reused. This variant needs its own base and lid.
+For this alignment revision, **reprint the Heltec base, HDMI cover and USB cover**.
+The lid, SD cover and internal holders are unchanged and can be reused. The HDMI
+and USB covers have grown with their openings; earlier copies will not latch
+correctly. Their reinforced roots and reduced hook reach are retained. The SD
+cover remains geometrically identical to the original `router/` cover.
 PETG is the intended next trial material for the flexible arms and covers; neither
 spring force nor fatigue has been physically verified. Start with the existing
 router's 0.2 mm layers, 0.4 mm nozzle and four perimeters, then inspect the slicer
 preview around the narrow support rings and spring roots.
 
+![Matching HDMI, SD and USB covers, inside faces up](images/covers.png)
 ![Cradle, GPS tray and removable retaining bridge](images/holders.png)
 
 ## Assembly
@@ -144,7 +157,9 @@ The build exports nine meshes and checks connected, watertight geometry;
 hardware, holders, antenna fittings and cable envelopes; screen clearance;
 closed-lid USB insertion; HDMI/SD and Ethernet access; and individual cover
 preload/retention. It also checks that the cradle and GPS retainers engage when
-their boards are lifted, and compares inherited cover meshes and Pi interface
-source definitions against `router/`. Geometric retention does not establish
+their boards are lifted, measures the aligned edges of the actual wall openings,
+checks that previous port clearance is preserved, and compares the SD cover, Pi
+mounts and unchanged
+clip design against `router/`. Geometric retention does not establish
 material strength or insertion force. The results apply to the simplified
 envelopes and parameters in the source.

@@ -1,10 +1,10 @@
 // Mariko router — Raspberry Pi 3 + Heltec WiFi LoRa 32 V4R8 + GNSS.
-// Independent variant; Pi interfaces and strengthened covers match router/.
+// Independent variant; aligned port edges with matching strengthened covers.
 // Millimetres. Prototype: check the actual cable and bulkhead before printing.
 // Original Mariko tree only, read from above without mirroring.
 use <../../branding/logos/mariko_logo_traced.scad>
 
-part = "assembly"; // [assembly, closed, flashing, service, holders, base, lid, heltec-cradle, gps-holder, gps-keeper, screen-fit, usb-cover, hdmi-cover, sd-cover, layout]
+part = "assembly"; // [assembly, closed, flashing, service, ports, holders, base, lid, heltec-cradle, gps-holder, gps-keeper, screen-fit, usb-cover, hdmi-cover, sd-cover, layout]
 $fn = 48;
 wall = 2.4;
 floor_h = 2.4;
@@ -70,12 +70,16 @@ screen_xy = [heltec_origin[0]-screen_local[0]-screen_cover[0]/2,
              heltec_origin[1]-screen_local[1]-screen_cover[1]/2];
 screen_size = screen_cover+[2*screen_clearance,2*screen_clearance];
 eps = 0.02;
-hdmi_xy = [pi_xy[0]+32,14]; // centre in front panel: X,Z
-hdmi_size = [24,12];
+front_opening_bottom = pcb_z-1; // power and HDMI share Z=7.4
+hdmi_top = 20; // retain all existing HDMI plug clearance
+hdmi_xy = [pi_xy[0]+32,(front_opening_bottom+hdmi_top)/2]; // X,Z
+hdmi_size = [24,hdmi_top-front_opening_bottom];
 sd_xy = [pi_xy[1]+28,7]; // centre in left panel: Y,Z
 sd_size = [20,8];
-usb_xy = [pi_xy[1]+29,18]; // centre in recessed right panel: Y,Z
-usb_size = [15,20]; // both sockets, separated from Ethernet by a 1.5 mm web
+side_opening_bottom = pcb_z-2; // Ethernet and USB share Z=6.4..28.4
+side_opening_height = 22;
+usb_xy = [pi_xy[1]+29,side_opening_bottom+side_opening_height/2]; // Y,Z
+usb_size = [15,side_opening_height]; // retain the 1.5 mm web beside Ethernet
 wifi_size = [6,16,8]; // exposed nano-dongle body: X protrusion, Y width, Z height
 cover_face = 1.2;
 cover_flange = 1.2;
@@ -121,11 +125,11 @@ module port_cuts() {
     // Socket at x~97; case wall at x106 leaves 9 mm for plug insertion.
     // End at Y=25 to retain a solid web for the adjacent USB cover's hook.
     // Reach the socket face so the corner boss cannot obstruct a wide boot.
-    prism(97,pi_xy[1]+1,pcb_z-2,main_w-97+2,19,22);
+    prism(97,pi_xy[1]+1,side_opening_bottom,main_w-97+2,19,side_opening_height);
     prism(main_w-wall-1,usb_xy[0]-usb_size[0]/2,usb_xy[1]-usb_size[1]/2,
           wall+4,usb_size[0],usb_size[1]);
     // Micro-USB power: generous moulded-plug opening, directly at Pi edge.
-    prism(pi_xy[0]+10.6-7,-1,pcb_z-1,14,wall+2,10);
+    prism(pi_xy[0]+10.6-7,-1,front_opening_bottom,14,wall+2,10);
     // Full-size HDMI and microSD service openings, each with a removable cap.
     prism(hdmi_xy[0]-hdmi_size[0]/2,-1,hdmi_xy[1]-hdmi_size[1]/2,
           hdmi_size[0],wall+2,hdmi_size[1]);
@@ -398,6 +402,11 @@ module flashing_scene() {
 module closed_shell(usb=true) {
     base(); translate([0,0,base_h]) lid(); installed_covers(usb=usb);
 }
+module ports_scene() {
+    // Bare openings with lid fitted, so the aligned edges are easy to inspect.
+    color("#d8ddd9") base();
+    color("#e6e8df") translate([0,0,base_h]) lid();
+}
 
 // The lid surrounds the existing plastic bezel with clearance. All retention
 // acts on the PCB cradle; nothing clamps the glass or loads the screen cover.
@@ -582,6 +591,7 @@ else if(part=="hdmi-cover") service_cover(hdmi_size);
 else if(part=="sd-cover") sd_cover();
 else if(part=="usb-cover") usb_cover();
 else if(part=="service") service_scene();
+else if(part=="ports") ports_scene();
 else if(part=="flashing") flashing_scene();
 else if(part=="closed") assembly(0);
 else if(part=="layout") {
@@ -624,6 +634,15 @@ else if(part=="port-interference") intersection() {
         prism(hdmi_xy[0]-11,-30,9,22,34,10);
         prism(-20,sd_xy[0]-6,5.9,30,12,2.3);
     }
+}
+else if(part=="port-alignment") difference() {
+    // Sample the actual wall openings, including the effects of bosses/cuts.
+    // Separate slabs isolate power/HDMI and Ethernet/USB for bounds checks.
+    union() {
+        prism(12,0.8,5,44,0.4,17);
+        prism(104,5,4,0.4,37.5,26);
+    }
+    base();
 }
 else if(part=="keyboard-interference") intersection() {
     keyboard_envelope(); union() { closed_shell(usb=false); hardware(); cable_envelopes(); wifi_envelope(); }

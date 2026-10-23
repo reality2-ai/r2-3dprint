@@ -72,6 +72,50 @@ def render(output, part):
     return log
 
 
+def check_port_alignment():
+    with tempfile.TemporaryDirectory() as temp:
+        output = Path(temp) / "openings.stl"
+        render(output, "port-alignment")
+        neighbours = collections.defaultdict(set)
+        for face in triangles(output):
+            vertices = [tuple(round(n, 4) for n in p) for p in face]
+            for p in vertices:
+                neighbours[p].update(vertices)
+        pending = set(neighbours)
+        bounds = []
+        while pending:
+            points = set()
+            stack = [pending.pop()]
+            while stack:
+                p = stack.pop()
+                points.add(p)
+                for q in neighbours[p]:
+                    if q in pending:
+                        pending.remove(q)
+                        stack.append(q)
+            bounds.append([[min(p[i] for p in points), max(p[i] for p in points)]
+                           for i in range(3)])
+    front = sorted((b for b in bounds if b[0][1] < 60), key=lambda b: b[0][0])
+    side = sorted((b for b in bounds if b[0][0] > 100), key=lambda b: b[1][0])
+    assert len(front) == len(side) == 2, "Expected four separate port openings"
+    power, hdmi = front
+    ethernet, usb = side
+    assert abs(power[2][0]-hdmi[2][0]) < 0.001, "Power/HDMI bottoms differ"
+    assert all(abs(a-b) < 0.001 for a,b in zip(ethernet[2], usb[2])), "Ethernet/USB edges differ"
+    # The cosmetic change must preserve the former clearances and horizontal
+    # locations, rather than achieving alignment by shrinking another opening.
+    for name, b, axis, span, old_z in [
+        ("power", power, 0, [13.6,27.6], [7.4,17.4]),
+        ("hdmi", hdmi, 0, [30,54], [8,20]),
+        ("ethernet", ethernet, 1, [6,25], [6.4,28.4]),
+        ("usb", usb, 1, [26.5,41.5], [8,28]),
+    ]:
+        assert all(abs(a-c) < 0.001 for a,c in zip(b[axis], span)), f"{name}: shifted horizontally"
+        assert b[2][0] <= old_z[0]+0.001 and b[2][1] >= old_z[1]-0.001, f"{name}: lost clearance"
+    return dict(power_z_mm=power[2], hdmi_z_mm=hdmi[2],
+                ethernet_z_mm=ethernet[2], usb_z_mm=usb[2])
+
+
 def main():
     (ROOT / "stl").mkdir(exist_ok=True)
     report = {"status": "digital prototype; physical fit not verified", "parts": {}}
@@ -134,28 +178,31 @@ def main():
             assert overlap > 0.01, f"{part}: module is not retained when lifted"
             report[f"{part}_retention_mm3"] = round(overlap, 6)
             print(f"{part} retention: passed", flush=True)
-    # Prove inherited cover geometry and Pi-facing interface source match.
+    report["port_alignment"] = check_port_alignment()
+    print("Port edges align without reducing existing clearances: passed", flush=True)
+    # Preserve the SD cover and unchanged mounting/access definitions. HDMI
+    # and USB covers now fit the deliberately enlarged, aligned openings.
     original = ROOT.parent / "router"
     def canonical(path):
         return sorted(tuple(sorted(tuple(round(n, 4) for n in p) for p in f))
                       for f in triangles(path))
-    for part in ("hdmi-cover", "sd-cover", "usb-cover"):
+    for part in ("sd-cover",):
         assert canonical(ROOT / f"stl/router-heltec-{part}.stl") == canonical(original / f"stl/router-{part}.stl"), f"Changed inherited {part}"
     source = (ROOT / "src/router_heltec_case.scad").read_text()
     old_source = (original / "src/router_case.scad").read_text()
     def module_text(text, name):
         start = text.index(f"module {name}(")
         return text[start:text.index("\n}", start)+2]
-    for name in ("port_cuts", "outline", "external_usb_plugs", "installed_covers"):
+    for name in ("outline", "external_usb_plugs", "installed_covers", "cover_finger", "service_cover"):
         assert module_text(source, name) == module_text(old_source, name), f"Changed Pi interface: {name}"
     for name in ("wall", "floor_h", "base_h", "lid_h", "main_w", "cable_bay",
                  "outer_w", "outer_d", "ethernet_step_y", "corner_r", "pcb_z",
-                 "pcb_t", "pi_xy", "pi_holes", "hdmi_xy", "hdmi_size", "sd_xy",
-                 "sd_size", "usb_xy", "usb_size", "lid_screws"):
+                 "pcb_t", "pi_xy", "pi_holes", "sd_xy", "sd_size", "lid_screws"):
         definition = lambda text: next(line.split(";", 1)[0] for line in text.splitlines()
                                        if line.startswith(name+" ="))
         assert definition(source) == definition(old_source), f"Changed Pi geometry parameter: {name}"
-    report["inherited_cover_geometry_and_pi_interfaces"] = "identical"
+    report["inherited_pi_mounts_sd_cover_and_clip_design"] = "identical"
+    report["resized_covers"] = ["hdmi-cover", "usb-cover"]
     report["limits"] = ["Simplified board/component envelopes, not exact manufacturer solids",
                         "User confirmed screen cover 33 x 18.6 mm and PCB underside-to-top height 7.1 mm",
                         "User measured GPS PCB 18 x 16 mm, total stack 7 mm and 38 mm extension from Heltec end",
