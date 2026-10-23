@@ -57,6 +57,44 @@ between Ethernet and USB. SD access is unchanged.
 
 ![Aligned front and side openings, covers removed](images/ports.png)
 
+## Optional contrasting logo inlay
+
+The [logo inlay](stl/router-heltec-logo-inlay.stl) fits the existing recessed tree.
+It is one connected piece, **0.4 mm thick**, with its top nominally flush with the
+lid. It uses the exact same traced profile and dimensions as the lid. **No new
+lid is needed.** The preview colours are illustrative; print the inlay in your
+preferred contrasting filament.
+
+![Contrasting tree seated in the existing lid](images/logo-inlay.png)
+
+Most edges have **0.05 mm clearance per side**. Six small grip spots extend
+**0.04 mm into the nominal recess wall** for a light press-fit. The first 0.1 mm
+has clearance to help it enter; the upper 0.3 mm provides the grip. This is a
+shallow friction fit, with no undercut or snap catch. Actual retention depends
+on the printer and material; CAD interference does not guarantee holding force.
+
+Start with the [root fit piece](stl/router-heltec-logo-root-fit.stl), which uses
+three of the same grip spots and fits the lower root area of the actual lid.
+It is a cropped part of the logo, with no extra test socket to print. The full
+tree has three additional contacts, so check its fit gently too.
+
+Print **0.1 mm layers, including the first layer**, with the flat seating face
+on the bed and no supports. Keep the original orientation; do not mirror it.
+Release the thin part carefully, align it with the recess, and seat it by
+pressing the broad root and circular leaf ends rather than bending the branches.
+
+If the test is too tight, lower `edge_grip` in
+[src/logo_inlay.scad](src/logo_inlay.scad); try 0.02 mm or 0 for a glue-in fit.
+If it is loose, try 0.06 mm. Regenerate both parts with
+`python3 scripts/build_inlay.py` from this directory. A tiny spot of superglue
+under a broad area is an optional fallback, as suggested by the user; keep it
+thin so it does not lift the inlay above the lid surface. Fit and durability
+still need a physical print trial.
+
+The [inlay validation report](test/inlay-validation.json) checks both meshes,
+clearance of the main outline, and small intentional contact at each of the six
+grip spots. It also checks there is no interference elsewhere with the actual lid.
+
 ## Files and printing
 
 - [Editable CAD](src/router_heltec_case.scad)
@@ -65,6 +103,7 @@ between Ethernet and USB. SD access is unchanged.
 - [GPS holder](stl/router-heltec-gps-holder.stl) and [retaining bridge](stl/router-heltec-gps-keeper.stl)
 - [HDMI](stl/router-heltec-hdmi-cover.stl), [SD](stl/router-heltec-sd-cover.stl) and [USB](stl/router-heltec-usb-cover.stl) covers
 - [Screen fit coupon](stl/router-heltec-screen-fit.stl)
+- Optional [logo inlay](stl/router-heltec-logo-inlay.stl) and [root fit piece](stl/router-heltec-logo-root-fit.stl)
 - [Validation report](test/validation.json) and [dimension provenance](references/dimensions.json)
 
 Print the screen coupon and holders first to check the actual components before
@@ -153,7 +192,8 @@ docker run --rm --init --user "$(id -u):$(id -g)" \
   r2-3dprint-tools:local python3 scripts/build.py
 ```
 
-The build exports nine meshes and checks connected, watertight geometry;
+The build exports nine enclosure meshes plus the optional inlay and root fit piece.
+It checks connected, watertight geometry;
 hardware, holders, antenna fittings and cable envelopes; screen clearance;
 closed-lid USB insertion; HDMI/SD and Ethernet access; and individual cover
 preload/retention. It also checks that the cradle and GPS retainers engage when

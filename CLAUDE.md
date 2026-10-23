@@ -97,6 +97,16 @@ The source uses simplified envelopes; physical fit, spring durability, antenna
 routing and thermal validation remain necessary. See its README and
 `references/dimensions.json` for measured versus provisional dimensions.
 
+The optional logo inlay is `router-heltec/src/logo_inlay.scad`. It reads the
+shared profile and dimensions from the existing lid, which must stay compatible.
+The full build also runs `scripts/build_inlay.py`; use that focused script for
+inlay-only fit tuning. Both inlay and cropped root fit piece must be single,
+watertight solids with thickness matching the recess. The default is 0.05 mm
+edge clearance with six local 0.04 mm interference spots above a 0.1 mm lead-in.
+Check each grip spot and exclude any other lid interference. Geometric contact
+does not validate friction/holding force; the user permits a tiny glue spot if
+needed. Print-fit and handling of the thin tree remain physical checks.
+
 ## Adding a New Device
 
 When adding a new device case:

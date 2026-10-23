@@ -1,0 +1,72 @@
+{
+  "status": "digital fit checked; physical grip requires a print trial",
+  "parts": {
+    "logo-inlay": {
+      "triangles": 2576,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          -20.1187,
+          19.9612
+        ],
+        [
+          -22.0881,
+          22.2455
+        ],
+        [
+          0.0,
+          0.4
+        ]
+      ],
+      "volume_mm3": 250.25
+    },
+    "logo-root-fit": {
+      "triangles": 980,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          -18.7689,
+          18.6114
+        ],
+        [
+          -22.0881,
+          -7.0
+        ],
+        [
+          0.0,
+          0.4
+        ]
+      ],
+      "volume_mm3": 107.1
+    }
+  },
+  "core_contact_mm3": 0.0,
+  "unexpected_contact_mm3": 0.0,
+  "individual_grip_contact_mm3": [
+    0.017021,
+    0.017259,
+    0.017021,
+    0.016779,
+    0.016753,
+    0.017471
+  ],
+  "grip_contact_mm3": 0.102303,
+  "fit": {
+    "edge_clearance_mm": 0.05,
+    "local_edge_grip_mm": 0.04,
+    "lead_in_mm": 0.1,
+    "thickness_mm": 0.4,
+    "logo_width_mm": 40
+  },
+  "limits": [
+    "Shared traced profile and dimensions come directly from the existing lid source",
+    "Contact volumes show geometric interference, not measured friction or retention force",
+    "Print at 0.1 mm layer height including the first layer to resolve the lead-in and three gripping layers",
+    "The root trial uses the actual recess and three root grip spots; the full tree adds three more contacts",
+    "Fit depends on printer/material and first-layer expansion; tune edge_grip before forcing thin branches",
+    "A tiny spot of glue can retain the inlay if needed; the 0.4 mm recess gives only shallow friction engagement",
+    "Lid geometry is unchanged; no undercut or snap catch is added"
+  ]
+}

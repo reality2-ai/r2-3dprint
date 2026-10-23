@@ -293,12 +293,15 @@ module base() {
     }
 }
 
+// Shared by the optional contrasting-colour inlay; keep one source of truth.
+function lid_logo_spec() = [logo_width,logo_depth,logo_xy,lid_h,base_h];
+module lid_logo_profile() { mariko_logo2d(logo_width); }
 module lid() {
     // Flat underside on the bed, recessed tree on top. No text or other marks.
     difference() {
         linear_extrude(lid_h) outline();
         if(lid_logo) translate([logo_xy[0],logo_xy[1],lid_h-logo_depth])
-            linear_extrude(logo_depth+eps) mariko_logo2d(logo_width);
+            linear_extrude(logo_depth+eps) lid_logo_profile();
         for(p=lid_screws) translate([p[0],p[1],-1]) cylinder(d=3.4,h=lid_h+3);
         if(display_window) screen_aperture();
         // A shallow underside pocket clears the moulded USB-C plug. Its

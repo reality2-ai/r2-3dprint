@@ -221,6 +221,8 @@ def main():
                         "User reports previous case fits Pi 2B and Pi 3; this revision preserves board mounts but new recess and cover are not physically tested"]
     (ROOT / "test/validation.json").write_text(json.dumps(report, indent=2) + "\n")
     print("Hardware envelope check passed; see test/validation.json")
+    from build_inlay import main as build_inlay
+    build_inlay()
 
 
 if __name__ == "__main__":

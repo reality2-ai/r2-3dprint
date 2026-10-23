@@ -57,7 +57,7 @@ renders are current. No tests are still running. The user approved this version
 for commit and push after reviewing it on RDP.
 
 
-## Current revision — port-edge alignment
+## Committed revision — port-edge alignment
 
 The user requested aligned HDMI/power bottoms and aligned Ethernet/USB tops and
 bottoms, explicitly for the Heltec variant only. HDMI now extends down 0.6 mm to
@@ -85,3 +85,36 @@ Renders have been refreshed. The user approved the bare-opening RDP view, then
 requested covers and internal boards too. `test/assembly.scad` is now open and
 visibly verified in RDP (window 83886086), with covers fitted, electronics visible
 and the lid raised. The earlier `test/ports.scad` view remains behind it.
+
+
+## Current revision — optional contrasting logo inlay
+
+The user requested an insert matching the existing recessed Earthgrids/Mariko
+tree, to print in a contrasting colour. They want it snug enough to stay in, and
+explicitly allow a tiny spot of superglue if necessary. The inlay uses the same
+traced profile and dimensions via `lid_logo_profile()` and `lid_logo_spec()` in
+the enclosure source. All nine original enclosure meshes, including the lid, were compared
+triangle-for-triangle with HEAD and are unchanged; their original export bytes
+were retained to avoid unrelated mesh ordering differences.
+
+`src/logo_inlay.scad` produces a single connected 0.4 mm-thick tree, flush with
+the existing recess. It has 0.05 mm clearance around most edges and six local
+0.04 mm grip patches: three on the root, one on each outer side leaf, one on the
+top leaf. The first 0.1 mm is a clearance lead-in; print all layers at 0.1 mm.
+The cropped root test piece is also a single connected solid, with the same
+three root contacts. Actual friction, fit and thin-part handling require a
+print trial. Glue is a fallback; there is no snap undercut in the shallow recess.
+
+`scripts/build_inlay.py` exports/checks both parts and verifies clearance against
+the actual lid, allowing interference only in the six grip spots and measuring
+each spot independently. The full enclosure build invokes it too. The full build passed, including the inlay checks and CAD-derived fit parameters.
+Both new meshes are single connected, watertight solids at Z=0, 0.4 mm thick.
+Core and unexpected contact are zero; all six grip spots independently contact
+the nominal recess, totalling 0.102303 mm³ of intentional interference. This
+is geometric evidence only, not a force/durability measurement. Results are in
+`test/inlay-validation.json`; no build or validation process remains running.
+`test/logo-inlay.scad` is open in RDP (window 88080390). The session is currently
+locked, so the rendered preview is also saved as `images/logo-inlay.png` and the
+user has been told it will be available when they unlock. Do not bypass the
+screen lock. Existing lids can be reused. The user subsequently asked whether
+this revision was committed and pushed; publication is now being completed.
