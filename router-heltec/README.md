@@ -56,30 +56,30 @@ adjusted independently to match the actual bulkhead. Confirm connector type and
 usable thread length for each pigtail; the printed case has no RF connector threads.
 
 The two USB sockets nearest Ethernet remain accessible with the lid closed.
-Their shared opening accepts the matching taller reinforced USB cover. The other USB stack
-stays internal: upper socket for the Heltec cable, lower socket free. Pi 3 has
-onboard Wi-Fi; the inherited nano-dongle envelope is still checked for clearance.
-The HDMI opening now shares its bottom edge with micro-USB power at **Z=7.4 mm**.
-HDMI's top stays at Z=20 mm. Ethernet and external USB share both edges at
-**Z=6.4 and 28.4 mm**. The webs between power/HDMI and Ethernet/USB are now both
-**3 mm wide**, increased from 2.4 mm and 1.5 mm respectively. Their wall depth
-remains 2.4 mm so the reinforced cover hooks still latch correctly.
+The user measured a **15 mm-wide USB plug** that would not pass the previous
+12.5 mm opening. The base now follows their hand-cut fix: remove the divider
+between Ethernet and USB, and extend the USB edge **2 mm towards the corner**.
+The joined opening is **36 × 22 mm**, spanning Y=6.25..42.25 and Z=6.4..28.4.
+Both USB sockets are checked simultaneously with **16 mm-wide housings**.
+The user's 15 mm plug has 0.75 mm nominal clearance on the corner side; the
+16 mm test envelope has 0.25 mm. Socket positions have not moved.
 
-To make that room, the openings and matching covers are narrower, with the
-socket centres and aligned heights retained:
+The matching USB cover fills the USB area and the former divider gap, leaving
+the **18.5 × 22 mm Ethernet opening** accessible with the cover fitted. Its
+three hooked fingers grip the top, bottom and corner-side wall; there is no
+clip or projecting flange on the Ethernet edge. The corner flange is 0.6 mm
+wide to clear the stepped wall. The strengthened clip roots are retained.
+The build checks each hook independently, clear space between clip roots,
+and Ethernet insertion with the cover installed.
 
-| Opening | Width × height | Checked plug width | Clearance each side |
-|---|---|---|---|
-| HDMI | 22.8 × 12.6 mm | 22 mm | 0.4 mm |
-| Ethernet | 18.5 × 22 mm | 18 mm boot/latch | 0.25 mm |
-| External USB pair | 12.5 × 22 mm | 12 mm housings | 0.25 mm |
-
-Power and SD access are unchanged. Check your plug housings against these
-dimensions; the former openings had more spare width. Reprint the base and
-matching HDMI/USB covers for this port-web revision.
-The narrower USB cover uses 6.5 mm-wide top/bottom fingers, leaving 0.9 mm
-between adjacent clip roots at the corners. The strengthened root profile and
-side hooks are retained; the geometry checks probe all four corner clearances.
+The other USB stack stays internal: upper socket for the Heltec cable, lower
+socket free. Pi 3 has onboard Wi-Fi; the inherited nano-dongle envelope is
+still checked. HDMI remains 22.8 × 12.6 mm, with its bottom aligned to power
+at Z=7.4 mm and the 3 mm divider between them retained. Power and SD access
+are unchanged. Reprint the **base and USB cover** for this revision; the HDMI
+and SD covers, either lid, logo inlay and internal holders can be reused.
+A cover fitted to the hand-trimmed base may need adjustment because its exact
+cutback was estimated at 1–2 mm; the exported pair uses 2 mm.
 
 ![Aligned front and side openings, covers removed](images/ports.png)
 
@@ -161,12 +161,10 @@ the lid prints with its recessed logo upward. The USB relief in the lid requires
 a short bridge. Check this bridge and the small ledges over the GPS connector
 reliefs in the cradle when slicing.
 
-For the port-web revision, **reprint the Heltec base, HDMI cover and USB cover**.
-The SD cover and internal holders can be reused. The enlarged,
-original-vector logo additionally requires its matching new lid and inlay. The HDMI
-and USB covers have narrowed with their openings; earlier copies will not latch
-correctly. Their reinforced roots and reduced hook reach are retained. The SD
-cover remains geometrically identical to the original `router/` cover.
+For this USB-access revision, **reprint the Heltec base and USB cover**.
+The HDMI and SD covers, both lids and internal holders can be reused. The USB
+cover from the divided opening is incompatible with the new joined opening.
+The SD cover remains geometrically identical to the original `router/` cover.
 PETG is the intended next trial material for the flexible arms and covers; neither
 spring force nor fatigue has been physically verified. Start with the existing
 router's 0.2 mm layers, 0.4 mm nozzle and four perimeters, then inspect the slicer

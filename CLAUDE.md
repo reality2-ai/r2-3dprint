@@ -82,17 +82,23 @@ the latest Pi mounting positions, external/internal USB split, HDMI/SD/power and
 Ethernet access, reinforced covers and recessed Mariko tree. The build compares
 unchanged mounts, SD cover and clip design with the original variant. The
 Heltec-only alignment revision puts HDMI and power bottoms at Z=7.4 mm and
-Ethernet/USB bottoms/tops at Z=6.4/28.4 mm. The printability revision widens both
-power/HDMI and Ethernet/USB webs to 3 mm. HDMI is 22.8 × 12.6 mm, USB 12.5 × 22 mm
-and Ethernet 18.5 × 22 mm, with resized matching HDMI/USB covers. Preserve the
-22 mm HDMI, 12 mm USB and 18 mm Ethernet plug envelopes, with at least 0.25 mm
-side clearance. Verify measured wall voids and both 3 mm webs. Antenna bores use
+Ethernet/USB bottoms/tops at Z=6.4/28.4 mm. Keep the power/HDMI web at 3 mm
+and HDMI at 22.8 × 12.6 mm. The user found the 12.5 mm USB opening too small for
+a measured 15 mm plug: remove the Ethernet/USB divider and extend the USB end
+2 mm towards the corner, to Y=42.25. The joined opening is Y=6.25..42.25,
+36 × 22 mm. Keep socket centres fixed; check two 16 mm-wide USB housings.
+The new USB cover fills Y=24.75..42.25 plus its corner flange, leaving Ethernet
+accessible. It has three hooked fingers (top, bottom and corner), no Ethernet
+finger/flange, and 0.6 mm corner flange to clear the stepped wall. Preserve the
+22 mm HDMI and 18 mm Ethernet plug envelopes, with at least 0.25 mm clearance.
+Verify the actual continuous wall void and each of the three USB hooks.
+Antenna bores use
 128 segments, verified on the actual void through the reinforced panel; this
 addresses CAD faceting, not print-process ovality. Do not apply these changes
 to the DFR1195 router unless requested.
-The narrowed USB cover uses 6.5 mm end fingers to preserve 0.9 mm corner gaps;
-the build probes clear channels between the roots. Its individual finger/root
-profile is identical to the original, with matching spring-contact masks.
+The USB cover uses 8 mm end fingers; the build probes clear channels between
+the roots and the open Ethernet edge. The individual finger/root profile is
+identical to the original, with matching three-sided spring-contact masks.
 
 Use the user-confirmed screen cover 33 × 18.6 mm, PCB underside-to-screen height
 7.1 mm, GPS PCB 18 × 16 mm, total GPS thickness 7 mm and approximately 38 mm

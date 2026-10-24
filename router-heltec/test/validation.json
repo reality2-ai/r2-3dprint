@@ -2,7 +2,7 @@
   "status": "digital prototype; physical fit not verified",
   "parts": {
     "base": {
-      "triangles": 7156,
+      "triangles": 7136,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -19,7 +19,7 @@
           32.0
         ]
       ],
-      "volume_mm3": 87534.09
+      "volume_mm3": 87270.09
     },
     "lid": {
       "triangles": 19864,
@@ -82,13 +82,13 @@
       "volume_mm3": 401.85
     },
     "usb-cover": {
-      "triangles": 516,
+      "triangles": 444,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
         [
-          -7.45,
-          7.45
+          -8.75,
+          9.35
         ],
         [
           -12.2,
@@ -99,7 +99,7 @@
           6.0
         ]
       ],
-      "volume_mm3": 677.11
+      "volume_mm3": 686.74
     },
     "heltec-cradle": {
       "triangles": 4164,
@@ -189,19 +189,25 @@
   "logo_layout_margin_overlap_mm3": 0,
   "installed_cover_overlap_mm3": 0.0,
   "usb_cover_root_gap_overlap_mm3": 0,
+  "usb_cover_open_edge_overlap_mm3": 0,
   "service_port_overlap_mm3": 0,
   "keyboard_access_overlap_mm3": 0.0,
   "external_usb_insertion_overlap_mm3": 0.0,
   "internal_usb_overlap_mm3": 0.0,
   "ethernet_access_overlap_mm3": 0,
-  "cover_relaxed_spring_contact_mm3": 16.640833,
-  "cover_retention_engagement_mm3": 9.201826,
+  "cover_relaxed_spring_contact_mm3": 14.21562,
+  "cover_retention_engagement_mm3": 8.566587,
   "hdmi_cover_relaxed_spring_contact_mm3": 5.263139,
   "hdmi_cover_retention_engagement_mm3": 2.717306,
   "sd_cover_relaxed_spring_contact_mm3": 4.07635,
   "sd_cover_retention_engagement_mm3": 1.709273,
-  "usb_cover_relaxed_spring_contact_mm3": 7.301344,
-  "usb_cover_retention_engagement_mm3": 4.775246,
+  "usb_cover_relaxed_spring_contact_mm3": 4.876131,
+  "usb_cover_individual_hook_retention_mm3": {
+    "top": 0.876192,
+    "bottom": 0.876192,
+    "corner": 2.387623
+  },
+  "usb_cover_retention_engagement_mm3": 4.140007,
   "cradle_retention_mm3": 2.8,
   "gps_retention_mm3": 2.22,
   "port_alignment": {
@@ -222,10 +228,16 @@
       28.4
     ],
     "power_hdmi_web_mm": 3.0,
-    "ethernet_usb_web_mm": 3.0,
+    "ethernet_usb_web_mm": 0,
     "hdmi_width_mm": 22.8,
-    "ethernet_width_mm": 18.5,
-    "usb_width_mm": 12.5
+    "combined_ethernet_usb_y_mm": [
+      6.25,
+      42.25
+    ],
+    "combined_ethernet_usb_width_mm": 36.0,
+    "checked_usb_plug_width_mm": 16,
+    "user_measured_usb_plug_width_mm": 15,
+    "checked_usb_corner_clearance_mm": 0.25
   },
   "antenna_bores": [
     {
@@ -259,8 +271,9 @@
     "Cover spring force, fatigue and insertion fit require a physical PETG test",
     "Previous PLA clips broke at the face; wider filleted roots and reduced hooks are geometry changes, not a validated strength or fatigue result",
     "Retention volumes count only hook engagement beyond the spring-preload allowance, individually for HDMI, SD and USB covers",
-    "Relaxed cover springs intentionally overlap four wall contact zones per cover by up to 0.15 mm; deflection is not simulated",
-    "Both exposed USB sockets checked simultaneously with 32 x 12 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
+    "Relaxed springs overlap their wall contact zones by up to 0.15 mm: four for HDMI/SD and three for USB; deflection is not simulated",
+    "User measured a 15 mm-wide USB plug; both exposed sockets checked with larger 32 x 16 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
+    "USB cover fills the former divider gap; three hooks grip top, bottom and corner while Ethernet remains accessible",
     "Internal nano Wi-Fi dongle allowance is a 6 x 16 x 8 mm body protruding from the USB socket; actual dongle fit requires checking",
     "Heltec upper internal USB cable and lower internal Wi-Fi dongle checked together against the closed shell and installed covers",
     "Ethernet access checked with an 18 x 20 mm boot/latch envelope through the narrowed opening",

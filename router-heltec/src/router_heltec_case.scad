@@ -80,10 +80,14 @@ sd_xy = [pi_xy[1]+28,7]; // centre in left panel: Y,Z
 sd_size = [20,8];
 side_opening_bottom = pcb_z-2; // Ethernet and USB share Z=6.4..28.4
 side_opening_height = 22;
-usb_xy = [pi_xy[1]+29,side_opening_bottom+side_opening_height/2]; // Y,Z
-usb_size = [12.5,side_opening_height]; // 12 mm plug envelope + 0.25 mm per side
 ethernet_width = 18.5; // 18 mm boot/latch envelope + 0.25 mm per side
-port_web_min = 3; // solid material between power/HDMI and Ethernet/USB
+usb_socket_y = pi_xy[1]+29; // socket centre stays fixed when the cover shifts
+usb_opening_y = [pi_xy[1]+10.5+ethernet_width/2,42.25]; // remove divider; cut 2 mm towards corner
+usb_xy = [(usb_opening_y[0]+usb_opening_y[1])/2,side_opening_bottom+side_opening_height/2];
+usb_size = [usb_opening_y[1]-usb_opening_y[0],side_opening_height];
+usb_plug_width = 16; // user measured 15 mm; check an extra 1 mm overall
+usb_corner_flange = 0.6; // clear the cable-bay wall after the 2 mm cutback
+port_web_min = 3; // retain the solid power/HDMI divider only
 wifi_size = [6,16,8]; // exposed nano-dongle body: X protrusion, Y width, Z height
 cover_face = 1.2;
 cover_flange = 1.2;
@@ -127,12 +131,12 @@ module gps_frame(z=0) { translate([gps_origin[0],gps_origin[1],z]) children(); }
 module port_cuts() {
     // Ethernet: open above and below socket for boot and latch access.
     // Socket at x~97; case wall at x106 leaves 9 mm for plug insertion.
-    // Leave a 3 mm web for the adjacent USB cover's hook.
+    // Ethernet and USB now form one opening, matching the user's hand-cut base.
     // Reach the socket face so the corner boss cannot obstruct a wide boot.
     prism(97,pi_xy[1]+10.5-ethernet_width/2,side_opening_bottom,
           main_w-97+2,ethernet_width,side_opening_height);
-    prism(main_w-wall-1,usb_xy[0]-usb_size[0]/2,usb_xy[1]-usb_size[1]/2,
-          wall+4,usb_size[0],usb_size[1]);
+    prism(main_w-wall-1,usb_opening_y[0]-eps,usb_xy[1]-usb_size[1]/2,
+          wall+4,usb_size[0]+eps,usb_size[1]);
     // Micro-USB power: generous moulded-plug opening, directly at Pi edge.
     prism(pi_xy[0]+10.6-7,-1,front_opening_bottom,14,wall+2,10);
     // Full-size HDMI and microSD service openings, each with a removable cap.
@@ -180,12 +184,21 @@ module service_cover(size, preload=hdmi_clip_preload, hook_reach=hdmi_clip_hook)
             rounded_rect(size[0]+2*cover_flange,size[1]+2*cover_flange,1);
     for(side=[-1,1]) scale([side,1,1])
         cover_finger(size[0]/2,size[1]-2*clip_height_clearance,0.8,preload,hook_reach);
-    // Shorter end fingers keep 0.9 mm corner gaps on the narrowed USB cover.
     for(side=[-1,1]) rotate([0,0,side*90])
-        cover_finger(size[1]/2,min(8,size[0]-6),0.6,preload);
+        cover_finger(size[1]/2,8,0.6,preload);
 }
 module sd_cover() { service_cover(sd_size,sd_clip_preload,sd_clip_hook); }
-module usb_cover() { service_cover(usb_size,usb_clip_preload,usb_clip_hook); }
+module usb_cover() {
+    // Three clips: corner, top and bottom. The Ethernet edge has no flange
+    // or finger, so a network plug can still pass with this cover installed.
+    linear_extrude(cover_face)
+        translate([-usb_size[0]/2,-usb_size[1]/2-cover_flange])
+            rounded_rect(usb_size[0]+usb_corner_flange,usb_size[1]+2*cover_flange,1);
+    cover_finger(usb_size[0]/2,usb_size[1]-2*clip_height_clearance,
+                 0.8,usb_clip_preload,usb_clip_hook);
+    for(side=[-1,1]) rotate([0,0,side*90])
+        cover_finger(usb_size[1]/2,8,0.6,usb_clip_preload,usb_clip_hook);
+}
 module covers_scene() {
     // Print orientation, inside faces visible: HDMI, SD, USB from left to right.
     color("#b6c5cf") service_cover(hdmi_size);
@@ -198,10 +211,11 @@ module usb_cover_frame(outset=0) {
 }
 module installed_usb_cover(pull=0) { usb_cover_frame(cover_face+pull) usb_cover(); }
 // These are validation masks only: they never cut or modify the case.
-// Only four narrow wall-contact regions per cover may intersect relaxed springs.
+// Only narrow wall-contact regions may intersect relaxed springs: four for
+// HDMI/SD, three for USB because its Ethernet-side divider is removed.
 // This is a deflection allowance, not a simulation of spring force.
 module spring_contact_zones(size, preload) {
-    end_width=min(8,size[0]-6); // match narrower end fingers on the USB cover
+    end_width=8;
     for(side=[-1,1]) {
         x=side*size[0]/2;
         prism(x-(side<0?preload:0),-size[1]/2,0,preload,size[1],wall);
@@ -214,18 +228,28 @@ module sd_spring_contact_zones() {
                 [0,1,0,sd_xy[1]],[0,0,0,1]])
         spring_contact_zones(sd_size,sd_clip_preload);
 }
+module usb_spring_contact_zones() {
+    prism(usb_size[0]/2,-usb_size[1]/2,0,usb_clip_preload,usb_size[1],wall);
+    for(side=[-1,1])
+        prism(-4,side*usb_size[1]/2-(side<0?usb_clip_preload:0),0,8,usb_clip_preload,wall);
+}
 module cover_spring_contact_zones() {
     sd_spring_contact_zones();
     multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,0],
                 [0,1,0,hdmi_xy[1]],[0,0,0,1]])
         spring_contact_zones(hdmi_size,hdmi_clip_preload);
-    usb_cover_frame() spring_contact_zones(usb_size,usb_clip_preload);
+    usb_cover_frame() usb_spring_contact_zones();
 }
 // Retention must come from the hooks, not just the relaxed spring preload.
 // These masks lie beyond that preload, in the side walls of each opening.
 module hook_contact_zones(size,preload) {
     for(side=[-1,1]) scale([side,1,1])
         prism(size[0]/2+preload+eps,-size[1]/2,0,1,size[1],wall);
+}
+module usb_hook_contact_zones() {
+    prism(usb_size[0]/2+usb_clip_preload+eps,-usb_size[1]/2,0,1,usb_size[1],wall);
+    for(side=[-1,1]) scale([1,side,1])
+        prism(-4,usb_size[1]/2+usb_clip_preload+eps,0,8,1,wall);
 }
 module cover_hook_contact_zones() {
     multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,0],
@@ -234,7 +258,7 @@ module cover_hook_contact_zones() {
     multmatrix([[0,0,1,0],[1,0,0,sd_xy[0]],
                 [0,1,0,sd_xy[1]],[0,0,0,1]])
         hook_contact_zones(sd_size,sd_clip_preload);
-    usb_cover_frame() hook_contact_zones(usb_size,usb_clip_preload);
+    usb_cover_frame() usb_hook_contact_zones();
 }
 module installed_covers(pull=0,usb=true,which="all") {
     if(which=="all" || which=="hdmi") multmatrix([[1,0,0,hdmi_xy[0]],[0,0,1,-cover_face-pull],
@@ -381,16 +405,16 @@ module wifi_envelope() {
           wifi_size[0],wifi_size[1],wifi_size[2]);
 }
 module external_usb_plugs(sweep=false) {
-    // Two simultaneous 32 x 12 x 8 mm housings; sweep from seated to outside.
+    // Two simultaneous 32 x 16 x 8 mm housings; user measured a 15 mm plug.
     for(z=[9.5,18.5]) {
-        prism(97,usb_xy[0]-6,z,sweep?outer_w+25-97:32,12,8);
-        if(!sweep) translate([129,usb_xy[0],z+4]) rotate([0,90,0]) cylinder(d=5,h=30);
+        prism(97,usb_socket_y-usb_plug_width/2,z,sweep?outer_w+25-97:32,usb_plug_width,8);
+        if(!sweep) translate([129,usb_socket_y,z+4]) rotate([0,90,0]) cylinder(d=5,h=30);
     }
 }
 module keyboard_envelope() {
     // A keyboard now uses the lower externally accessible socket.
-    prism(97,usb_xy[0]-6,9.5,32,12,8);
-    translate([129,usb_xy[0],13.5]) rotate([0,90,0]) cylinder(d=5,h=30);
+    prism(97,usb_socket_y-usb_plug_width/2,9.5,32,usb_plug_width,8);
+    translate([129,usb_socket_y,13.5]) rotate([0,90,0]) cylinder(d=5,h=30);
 }
 module service_scene() {
     color("#d8ddd9") base();
@@ -577,8 +601,10 @@ module holders_scene() {
 assert(antenna_panel>=wall && antenna_panel<10,"Check SMA thread length against panel");
 assert(hdmi_xy[0]-hdmi_size[0]/2-(pi_xy[0]+10.6+7)>=port_web_min-0.001,
        "Power/HDMI web must remain printable");
-assert(usb_xy[0]-usb_size[0]/2-(pi_xy[1]+10.5+ethernet_width/2)>=port_web_min-0.001,
-       "Ethernet/USB web must remain printable");
+assert(usb_opening_y[0]<=pi_xy[1]+10.5+ethernet_width/2,
+       "USB opening must join Ethernet without a divider");
+assert(usb_opening_y[1]-(usb_socket_y+usb_plug_width/2)>=0.25,
+       "Wider USB plug must clear the corner side");
 assert(cable_bay>=30,"Straight USB plugs need cable space");
 assert(base_h>pcb_z+pcb_t+18,"Lid must clear Pi USB stack");
 assert(heltec_bottom-cradle_z>12,"Cradle must clear downward header pins");
@@ -587,7 +613,7 @@ assert(heltec_top+screen_stack-heltec_size[2]>base_h,"Screen should enter the li
 assert(usb_pocket_roof>=1.2,"USB relief must leave a printable roof");
 assert(!lid_logo || (logo_depth>0 && lid_h-logo_depth>=1.2),
        "Recessed logo must leave at least 1.2 mm of lid thickness");
-assert(usb_xy[0]+usb_size[0]/2+cover_flange<ethernet_step_y,
+assert(usb_opening_y[1]+usb_corner_flange<ethernet_step_y,
        "USB cover must clear the cable-bay front wall");
 assert(97+wifi_size[0]<main_w-wall,"Nano dongle must fit behind the recessed wall");
 assert(clip_root_radius>0 && clip_root_radius<wall-0.2,
@@ -640,7 +666,7 @@ else if(part=="sd-cover-spring-contact") intersection() {
 }
 else if(part=="usb-cover-retention") intersection() { installed_usb_cover(0.6); base(); cover_hook_contact_zones(); }
 else if(part=="usb-cover-spring-contact") intersection() {
-    installed_usb_cover(); base(); usb_cover_frame() spring_contact_zones(usb_size,usb_clip_preload);
+    installed_usb_cover(); base(); usb_cover_frame() usb_spring_contact_zones();
 }
 else if(part=="port-interference") intersection() {
     base();
@@ -652,7 +678,7 @@ else if(part=="port-interference") intersection() {
 }
 else if(part=="port-alignment") difference() {
     // Sample the actual wall openings, including the effects of bosses/cuts.
-    // Separate slabs isolate power/HDMI and Ethernet/USB for bounds checks.
+    // Separate slabs isolate power/HDMI and the joined Ethernet/USB opening.
     union() {
         prism(12,0.8,5,44,0.4,17);
         prism(104,5,4,0.4,37.5,26);
@@ -670,9 +696,14 @@ else if(part=="usb-cover-corner-interference") intersection() {
     // Probe 0.8 mm-wide free channels between adjacent clip roots, above
     // the continuous face. These gaps must survive a 0.6 mm nozzle print.
     usb_cover();
-    for(sx=[-1,1],sy=[-1,1]) scale([sx,sy,1])
-        prism(min(8,usb_size[0]-6)/2+0.05,usb_size[1]/2-1.85,
+    for(sy=[-1,1]) scale([1,sy,1])
+        prism(4.05,usb_size[1]/2-1.85,
               cover_face+0.02,0.8,1.7,0.2);
+}
+else if(part=="usb-cover-open-side-interference") intersection() {
+    usb_cover();
+    prism(-usb_size[0]/2-eps,-usb_size[1]/2-2,cover_face+0.02,
+          2.5,usb_size[1]+4,clip_depth);
 }
 else if(part=="keyboard-interference") intersection() {
     keyboard_envelope(); union() { closed_shell(usb=false); hardware(); cable_envelopes(); wifi_envelope(); }

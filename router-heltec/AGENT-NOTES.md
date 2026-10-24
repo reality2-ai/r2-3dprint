@@ -226,3 +226,43 @@ existing RDP CAD container. The user reviewed the result and said all looks good
 The user explicitly authorized committing and pushing the accumulated
 original-SVG logo, port-web and plain-lid revision. All requested implementation
 and digital validation are complete; physical print fit remains unverified.
+
+
+## Current revision — joined USB/Ethernet opening and three-sided cover
+
+The previous port-web revision was committed and pushed as `035168d`. The user
+found its 12.5 mm USB opening too small for their measured 15 mm plug. They
+clipped 1–2 mm towards the cable-bay corner and removed the Ethernet/USB divider.
+The CAD base now follows that modification with a 2 mm cutback: joined opening
+Y=6.25..42.25, Z=6.4..28.4. Socket centres remain fixed at Y=34 for external USB.
+Two 16 mm-wide plug envelopes are checked, giving 0.25 mm corner clearance
+(0.75 mm for the measured 15 mm plug). The front power/HDMI web stays 3 mm.
+
+The USB cover fills Y=24.75..42.25, including the former divider gap, leaving
+Ethernet accessible. It has three hooked fingers: top, bottom and corner side;
+none on the Ethernet edge. The corner flange is 0.6 mm to clear the stepped
+wall. Strengthened root profile is unchanged. Tests check all three hook
+contacts, the open cover edge, corner gaps, wider USB insertion and Ethernet
+access with the cover fitted. HDMI/SD covers, lids and holders are unchanged.
+
+The final full build has passed all nine mesh checks, every assembly/access
+clearance, all cover and holder retention checks, measured opening bounds and
+antenna bores. All overlap checks are zero. Individual USB hook engagement is
+0.876192 mm³ at each top/bottom hook and 2.387623 mm³ at the corner hook.
+The complete build exited successfully, including inlay core/unexpected
+contact (zero), six grip contacts (0.408039 mm³ total), and the plain lid.
+No build or validation process remains running. The log is retained at
+`/tmp/r2-heltec-usb-build.log`.
+Earlier focused sessions were lost across a system restart; the current full
+build is the final evidence. All nine case/cover renders are refreshed.
+Validation report prose was corrected to say three USB contact zones; no
+measured results were changed.
+
+The new RDP session is display :10. CAD is open in `r2-router-heltec-preview`
+with ports, covers and closed views; screenshot visually verified. The user
+reviewed it, said it looks good, and explicitly requested commit and push.
+All ten unchanged STL exports retain their original bytes after canonical
+triangle comparison; only the base and USB cover geometry changed. The full
+validation report and documentation are current. Publication is authorized. A hand-cut existing base may need
+cover adjustment because its cutback was approximate; the exported base/cover
+are a matching pair. Physical fit/retention of the new cover remains untested.

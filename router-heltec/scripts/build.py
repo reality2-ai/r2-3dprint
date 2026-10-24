@@ -100,34 +100,33 @@ def check_port_alignment():
                            for i in range(3)])
     front = sorted((b for b in bounds if b[0][1] < 60), key=lambda b: b[0][0])
     side = sorted((b for b in bounds if b[0][0] > 100), key=lambda b: b[1][0])
-    assert len(front) == len(side) == 2, "Expected four separate port openings"
+    assert len(front) == 2 and len(side) == 1, "Expected power, HDMI and one joined Ethernet/USB opening"
     power, hdmi = front
-    ethernet, usb = side
+    combined = side[0]
     assert abs(power[2][0]-hdmi[2][0]) < 0.001, "Power/HDMI bottoms differ"
-    assert all(abs(a-b) < 0.001 for a,b in zip(ethernet[2], usb[2])), "Ethernet/USB edges differ"
-    # Keep the socket centres and aligned heights. Reduce excess opening width
-    # to obtain printable webs while retaining clearance around the plug models.
+    # The side opening must be continuous after removing the divider, and
+    # extend 2 mm towards the corner without changing the aligned heights.
     for name, b, axis, span, old_z in [
         ("power", power, 0, [13.6,27.6], [7.4,17.4]),
         ("hdmi", hdmi, 0, [30.6,53.4], [8,20]),
-        ("ethernet", ethernet, 1, [6.25,24.75], [6.4,28.4]),
-        ("usb", usb, 1, [27.75,40.25], [8,28]),
+        ("ethernet-usb", combined, 1, [6.25,42.25], [6.4,28.4]),
     ]:
         assert all(abs(a-c) < 0.001 for a,c in zip(b[axis], span)), f"{name}: shifted horizontally"
         assert b[2][0] <= old_z[0]+0.001 and b[2][1] >= old_z[1]-0.001, f"{name}: lost clearance"
     front_web=hdmi[0][0]-power[0][1]
-    side_web=usb[1][0]-ethernet[1][1]
-    assert min(front_web,side_web)>=2.999, 'Port webs must be at least 3 mm wide'
+    assert front_web>=2.999, 'Power/HDMI web must be at least 3 mm wide'
     for name,b,axis,plug_span in [('HDMI',hdmi,0,[31,53]),
-                                  ('Ethernet',ethernet,1,[6.5,24.5]),
-                                  ('USB',usb,1,[28,40])]:
+                                  ('Ethernet',combined,1,[6.5,24.5]),
+                                  ('USB',combined,1,[26,42])]:
         assert min(plug_span[0]-b[axis][0],b[axis][1]-plug_span[1])>=0.249, f'{name}: insufficient plug clearance'
     return dict(power_z_mm=power[2], hdmi_z_mm=hdmi[2],
-                ethernet_z_mm=ethernet[2], usb_z_mm=usb[2],
-                power_hdmi_web_mm=round(front_web,3),ethernet_usb_web_mm=round(side_web,3),
+                ethernet_z_mm=combined[2], usb_z_mm=combined[2],
+                power_hdmi_web_mm=round(front_web,3),ethernet_usb_web_mm=0,
                 hdmi_width_mm=round(hdmi[0][1]-hdmi[0][0],3),
-                ethernet_width_mm=round(ethernet[1][1]-ethernet[1][0],3),
-                usb_width_mm=round(usb[1][1]-usb[1][0],3))
+                combined_ethernet_usb_y_mm=combined[1],
+                combined_ethernet_usb_width_mm=round(combined[1][1]-combined[1][0],3),
+                checked_usb_plug_width_mm=16,user_measured_usb_plug_width_mm=15,
+                checked_usb_corner_clearance_mm=round(combined[1][1]-42,3))
 
 
 def check_antenna_bores():
@@ -169,6 +168,7 @@ def main():
                        ("logo-layout-interference", "logo_layout_margin_overlap_mm3"),
                        ("cover-interference", "installed_cover_overlap_mm3"),
                        ("usb-cover-corner-interference", "usb_cover_root_gap_overlap_mm3"),
+                       ("usb-cover-open-side-interference", "usb_cover_open_edge_overlap_mm3"),
                        ("port-interference", "service_port_overlap_mm3"),
                        ("keyboard-interference", "keyboard_access_overlap_mm3"),
                        ("usb-access-interference", "external_usb_insertion_overlap_mm3"),
@@ -215,6 +215,19 @@ def main():
                 render(output, scene)
                 overlap = volume(triangles(output)) if output.exists() else 0
                 assert overlap > 0.001, f"{scene}: cover does not engage"
+                if cover == 'usb' and check == 'retention':
+                    # Each of the three hooks must engage independently.
+                    contacts = {'top': [], 'bottom': [], 'corner': []}
+                    for face in triangles(output):
+                        y,z = [sum(p[i] for p in face)/3 for i in (1,2)]
+                        if z >= 28.399: contacts['top'].append(face)
+                        elif z <= 6.401: contacts['bottom'].append(face)
+                        else:
+                            assert y > 42.25, 'USB hook contact on the removed divider'
+                            contacts['corner'].append(face)
+                    volumes = {edge: round(volume(faces),6) for edge,faces in contacts.items()}
+                    assert all(v > 0.001 for v in volumes.values()), f'Missing USB hook engagement: {volumes}'
+                    report['usb_cover_individual_hook_retention_mm3'] = volumes
                 report[f"{cover}_cover_{metric}_mm3"] = round(overlap, 6)
                 print(f"{scene}: passed", flush=True)
     for part in ("cradle", "gps"):
@@ -226,11 +239,11 @@ def main():
             report[f"{part}_retention_mm3"] = round(overlap, 6)
             print(f"{part} retention: passed", flush=True)
     report["port_alignment"] = check_port_alignment()
-    print("Port edges align; 3 mm webs and plug clearances: passed", flush=True)
+    print("Port edges align; 3 mm front web, joined side opening and 16 mm USB clearance: passed", flush=True)
     report["antenna_bores"]=check_antenna_bores()
     print("Both antenna bores are circular with fine facets: passed", flush=True)
-    # Preserve the SD cover and unchanged mounting/access definitions. HDMI
-    # and USB covers fit the aligned openings with reinforced port webs.
+    # Preserve the SD cover, mounts and individual finger profile. The USB
+    # opening and three-sided cover intentionally differ from the original.
     original = ROOT.parent / "router"
     def canonical(path):
         return sorted(tuple(sorted(tuple(round(n, 4) for n in p) for p in f))
@@ -242,13 +255,8 @@ def main():
     def module_text(text, name):
         start = text.index(f"module {name}(")
         return text[start:text.index("\n}", start)+2]
-    for name in ("outline", "external_usb_plugs", "installed_covers", "cover_finger", "service_cover"):
+    for name in ("outline", "installed_covers", "cover_finger", "service_cover"):
         current=module_text(source,name)
-        if name=="service_cover":
-            # The narrower USB cover uses 6.5 mm end fingers to leave 0.9 mm
-            # corner gaps. All other finger geometry stays identical.
-            current=current.replace('min(8,size[0]-6)','8').replace(
-                '    // Shorter end fingers keep 0.9 mm corner gaps on the narrowed USB cover.\n','')
         assert current == module_text(old_source, name), f"Changed Pi interface: {name}"
     for name in ("wall", "floor_h", "base_h", "lid_h", "main_w", "cable_bay",
                  "outer_w", "outer_d", "ethernet_step_y", "corner_r", "pcb_z",
@@ -268,8 +276,9 @@ def main():
                         "Cover spring force, fatigue and insertion fit require a physical PETG test",
                         "Previous PLA clips broke at the face; wider filleted roots and reduced hooks are geometry changes, not a validated strength or fatigue result",
                         "Retention volumes count only hook engagement beyond the spring-preload allowance, individually for HDMI, SD and USB covers",
-                        "Relaxed cover springs intentionally overlap four wall contact zones per cover by up to 0.15 mm; deflection is not simulated",
-                        "Both exposed USB sockets checked simultaneously with 32 x 12 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
+                        "Relaxed springs overlap their wall contact zones by up to 0.15 mm: four for HDMI/SD and three for USB; deflection is not simulated",
+                        "User measured a 15 mm-wide USB plug; both exposed sockets checked with larger 32 x 16 x 8 mm housings and straight insertion paths, lid fitted and USB cover removed",
+                        "USB cover fills the former divider gap; three hooks grip top, bottom and corner while Ethernet remains accessible",
                         "Internal nano Wi-Fi dongle allowance is a 6 x 16 x 8 mm body protruding from the USB socket; actual dongle fit requires checking",
                         "Heltec upper internal USB cable and lower internal Wi-Fi dongle checked together against the closed shell and installed covers",
                         "Ethernet access checked with an 18 x 20 mm boot/latch envelope through the narrowed opening",
