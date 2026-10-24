@@ -87,7 +87,7 @@ visibly verified in RDP (window 83886086), with covers fitted, electronics visib
 and the lid raised. The earlier `test/ports.scad` view remains behind it.
 
 
-## Current revision — optional contrasting logo inlay
+## Committed revision — original 40 mm flush logo inlay
 
 The user requested an insert matching the existing recessed Earthgrids/Mariko
 tree, to print in a contrasting colour. They want it snug enough to stay in, and
@@ -117,4 +117,112 @@ is geometric evidence only, not a force/durability measurement. Results are in
 locked, so the rendered preview is also saved as `images/logo-inlay.png` and the
 user has been told it will be available when they unlock. Do not bypass the
 screen lock. Existing lids can be reused. The user subsequently asked whether
-this revision was committed and pushed; publication is now being completed.
+this revision was committed and pushed as `6f43060`.
+
+
+## Current revision — enlarged original-vector logo inlay
+
+The user found the original 40 mm inlay too fiddly. The tree is now 80 mm wide
+at [53,47.5], with a 0.8 mm recess leaving 1.6 mm of lid. The matching inlay is
+1.2 mm thick: 0.8 mm seated and 0.4 mm proud. Print the matching new lid and
+inlay together. The eight other enclosure parts and original DFR1195 variant
+remain unchanged. The 3 mm logo layout margin is checked against lid edges,
+the display opening and screw holes.
+
+A first attempt rounded the old bitmap-traced polygon, but the user still saw
+raster artefacts and requested the original SVG. Website/GitHub searches did
+not find the tree SVG (the supplied Reality2 website repo only had its hexagon
+favicon). The user then placed `mariko-sticker.svg` in this repository's root.
+This is the authoritative source now; do not redraw or refit its curves.
+
+`scripts/import_logo.py` extracts only path id="tree", preserving all 411 cubic
+Bezier segments and the two closed contours. It omits sticker text, ring, bleed
+and cutline. Exact cubic bounds set the width to 80 mm and height to 88.322 mm;
+SVG Y is converted to CAD Y without mirroring X. Adaptive subdivision keeps
+chord error within 0.005 mm. Generated outputs:
+- `src/mariko_logo_vector.scad`: shared lid/inlay profile and six grip centres.
+- `references/mariko-tree.svg`: original tree path text preserved verbatim.
+- `references/logo-source.json`: source hash, dimensions and sampling details.
+The former smoothing generator and its outputs were removed. The supplied
+sticker and original shared branding files are unchanged. Generation is
+reproducible and the extracted SVG path was compared exactly with the source.
+
+Fit remains 0.05 mm edge clearance and six local 0.04 mm interference spots.
+Grip centres are reprojected onto the original vector outline. The 0.2 mm
+lead-in and 0.6 mm grip band end at the lid surface. Print 0.2 mm layers: four
+seated and two raised. The root fit piece follows the same three root contacts.
+Actual fit/handling still needs a print trial; a tiny glue spot is permitted.
+
+The full build exited successfully. All nine enclosure exports passed mesh
+checks, all assembly clearances and retention checks passed, and the actual
+logo maintains the 3 mm margin. Both inlay meshes are watertight, single
+connected solids at Z=0, 1.2 mm thick. Core contact and unexpected contact are
+zero; all six grip spots engage, totalling 0.408039 mm³. Reports are current in
+`test/validation.json` and `test/inlay-validation.json`. No validation process
+remains running. The eight unchanged parts were compared triangle-for-triangle
+with HEAD and their original STL bytes retained.
+
+All six lid-containing renders are refreshed. `test/logo-inlay.scad` was freshly
+opened in Docker `r2-router-heltec-preview` on RDP display :10. The session is
+locked; do not bypass it. The rendered `images/logo-inlay.png` has been visually
+checked, but the live desktop view cannot be verified until unlocked. The user
+has authorized committing and pushing the accumulated changes.
+
+## Current follow-up — antenna roundness and printable port webs
+
+The user says the antenna holes are not quite round and both power/HDMI and
+USB/Ethernet pillars are too thin for printing. The user confirmed the
+holes become flattened/oval after printing. Current nozzle is 0.6 mm (they
+initially said 0.4 and mentioned 0.2); layer height was not provided. They will
+try supports on the next print. Keep circular bores for slicer-generated
+supports; do not add modeled sacrificial webs. Do not claim printed ovality is
+solved by increasing CAD resolution. The user reiterated that the port webs
+need actual extra width; confirmed both are now 3 mm rather than just deeper.
+
+Both antenna bores now use local `antenna_fn=128` (formerly global 48), retaining
+6.5 mm diameter, centres and panel thickness. A test samples the actual bore void
+through 3.8 mm of the 4 mm panel, checking centre, radius and facet count. Binary
+STL avoids ASCII coordinate rounding at X=112. Both pass, with radial facet error
+about 0.00098 mm. This addresses faceting only; print distortion remains unverified.
+
+Both port webs are now 3 mm wide (formerly front 2.4, side 1.5), wall depth still
+2.4 mm so existing clip hooks can latch. Power unchanged. HDMI narrows from 24 to
+22.8 mm, Ethernet 19 to 18.5 mm, USB 15 to 12.5 mm; socket centres and aligned
+Z edges are retained. Matching HDMI and USB covers resize automatically. The
+22 mm HDMI housing has 0.4 mm side clearance; 12 mm USB housings and 18 mm Ethernet
+boot have 0.25 mm each side. Larger plugs need physical checking. These changes
+are Heltec-only. The logo, lid and internal holders are unchanged by this follow-up.
+
+Focused wall-void measurement and antenna tests passed. The USB cover's
+top/bottom fingers now use 6.5 mm
+breadth rather than 8, leaving 0.9 mm between adjacent roots. A new actual-geometry
+check probes 0.8 mm clear channels at all four corners above the continuous face.
+The clip-root profile itself is unchanged. All nine enclosure meshes, assembly
+clearances, port insertion paths, corner gaps, individual cover retention,
+holder retention, 3 mm webs and antenna bores passed the final full build.
+The full build exited successfully, including both inlay meshes and all contact
+checks: core/unexpected overlap zero, six grip spots totalling 0.408039 mm³.
+Reports are current. No build or validation process remains running.
+Independent collision tests now run in three isolated OpenSCAD processes, as do
+the three inlay contact tests, retaining every assertion and deterministic report
+order. This reduces the long serial waits for the detailed SVG geometry.
+The five unchanged enclosure parts (SD, Heltec cradle, GPS holder/keeper,
+screen-fit) retain HEAD bytes after canonical triangle comparison.
+All case/cover renders refreshed; holders image stays unchanged. New bare-bore
+view: `test/antenna-bores.scad`, `images/antenna-bores.png`. CAD ports and bare-bore
+views opened in the existing preview Docker container on RDP. The desktop is
+locked; do not bypass the lock.
+
+The user also requested a plain lid. `src/plain_lid.scad` uses the existing
+`lid_logo=false` switch, preserving the shared screen aperture, fasteners and
+USB-C underside relief. `scripts/build_plain_lid.py` exports
+`stl/router-heltec-lid-plain.stl`; the full build now invokes it after the inlay
+checks. It passed separately while the original full build was finishing:
+one watertight solid, Z=0..2.4 mm, matching 140 x 144 mm overall bounds.
+Results are in `test/plain-lid-validation.json`. Both lid choices remain available.
+The plain-lid render was visually checked and its editable source opened in the
+existing RDP CAD container. The user reviewed the result and said all looks good.
+
+The user explicitly authorized committing and pushing the accumulated
+original-SVG logo, port-web and plain-lid revision. All requested implementation
+and digital validation are complete; physical print fit remains unverified.

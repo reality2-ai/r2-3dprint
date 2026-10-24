@@ -1,0 +1,28 @@
+{
+  "status": "digital geometry checked; physical fit requires a print trial",
+  "parts": {
+    "lid-plain": {
+      "triangles": 1664,
+      "components": 1,
+      "manifold": true,
+      "bounds_mm": [
+        [
+          0.0,
+          140.0
+        ],
+        [
+          0.0,
+          144.0
+        ],
+        [
+          0.0,
+          2.4
+        ]
+      ],
+      "volume_mm3": 42806.48
+    }
+  },
+  "same_bounds_as_logo_lid": true,
+  "added_material_mm3": 2071.69,
+  "design": "Shared lid with lid_logo=false; same screen aperture, screw holes and USB-C relief"
+}

@@ -5,7 +5,9 @@ Requires OpenSCAD on PATH, or OPENSCAD=/path/to/openscad.
 Uses Python's standard library. All outputs are relative to this project.
 """
 import collections
+from concurrent.futures import ThreadPoolExecutor
 import json
+import math
 import os
 from pathlib import Path
 import struct
@@ -63,8 +65,9 @@ def inspect(path):
                 bounds_mm=bounds, volume_mm3=round(volume(faces), 2))
 
 
-def render(output, part):
-    result = subprocess.run([SCAD, "-o", str(output), "-D", f'part="{part}"',
+def render(output, part, export_format=None):
+    options = ["--export-format",export_format] if export_format else []
+    result = subprocess.run([SCAD, *options, "-o", str(output), "-D", f'part="{part}"',
                              str(ROOT / "src/router_heltec_case.scad")], capture_output=True, text=True)
     log = result.stdout + result.stderr
     if "ERROR:" in log or (result.returncode and "Current top level object is empty" not in log):
@@ -102,18 +105,53 @@ def check_port_alignment():
     ethernet, usb = side
     assert abs(power[2][0]-hdmi[2][0]) < 0.001, "Power/HDMI bottoms differ"
     assert all(abs(a-b) < 0.001 for a,b in zip(ethernet[2], usb[2])), "Ethernet/USB edges differ"
-    # The cosmetic change must preserve the former clearances and horizontal
-    # locations, rather than achieving alignment by shrinking another opening.
+    # Keep the socket centres and aligned heights. Reduce excess opening width
+    # to obtain printable webs while retaining clearance around the plug models.
     for name, b, axis, span, old_z in [
         ("power", power, 0, [13.6,27.6], [7.4,17.4]),
-        ("hdmi", hdmi, 0, [30,54], [8,20]),
-        ("ethernet", ethernet, 1, [6,25], [6.4,28.4]),
-        ("usb", usb, 1, [26.5,41.5], [8,28]),
+        ("hdmi", hdmi, 0, [30.6,53.4], [8,20]),
+        ("ethernet", ethernet, 1, [6.25,24.75], [6.4,28.4]),
+        ("usb", usb, 1, [27.75,40.25], [8,28]),
     ]:
         assert all(abs(a-c) < 0.001 for a,c in zip(b[axis], span)), f"{name}: shifted horizontally"
         assert b[2][0] <= old_z[0]+0.001 and b[2][1] >= old_z[1]-0.001, f"{name}: lost clearance"
+    front_web=hdmi[0][0]-power[0][1]
+    side_web=usb[1][0]-ethernet[1][1]
+    assert min(front_web,side_web)>=2.999, 'Port webs must be at least 3 mm wide'
+    for name,b,axis,plug_span in [('HDMI',hdmi,0,[31,53]),
+                                  ('Ethernet',ethernet,1,[6.5,24.5]),
+                                  ('USB',usb,1,[28,40])]:
+        assert min(plug_span[0]-b[axis][0],b[axis][1]-plug_span[1])>=0.249, f'{name}: insufficient plug clearance'
     return dict(power_z_mm=power[2], hdmi_z_mm=hdmi[2],
-                ethernet_z_mm=ethernet[2], usb_z_mm=usb[2])
+                ethernet_z_mm=ethernet[2], usb_z_mm=usb[2],
+                power_hdmi_web_mm=round(front_web,3),ethernet_usb_web_mm=round(side_web,3),
+                hdmi_width_mm=round(hdmi[0][1]-hdmi[0][0],3),
+                ethernet_width_mm=round(ethernet[1][1]-ethernet[1][0],3),
+                usb_width_mm=round(usb[1][1]-usb[1][0],3))
+
+
+def check_antenna_bores():
+    with tempfile.TemporaryDirectory() as temp:
+        path=Path(temp)/'bores.stl'
+        # ASCII STL rounds coordinates near X=112 to 0.001 mm, obscuring the
+        # sub-micron facet error. Binary STL retains sufficient precision.
+        render(path,'antenna-bore-check',export_format='binstl')
+        points={p for f in triangles(path) for p in f}
+    report=[]
+    for centre_x in (28,112):
+        section={(p[0],p[2]) for p in points if abs(p[0]-centre_x)<4}
+        assert section, 'Missing antenna bore'
+        radii=[math.hypot(x-centre_x,z-20) for x,z in section]
+        assert max(abs(r-3.25) for r in radii)<0.0002, 'Antenna bore is not circular or has shifted'
+        ring=sorted(section,key=lambda p:math.atan2(p[1]-20,p[0]-centre_x))
+        assert len(ring)>=128, 'Antenna bore has coarse facets'
+        mid_radii=[math.hypot((a[0]+b[0])/2-centre_x,(a[1]+b[1])/2-20)
+                   for a,b in zip(ring,ring[1:]+ring[:1])]
+        deviation=max(3.25-r for r in mid_radii)
+        assert deviation<0.0012, 'Antenna facets deviate too far from a circle'
+        report.append(dict(centre_x_mm=centre_x,centre_z_mm=20,diameter_mm=6.5,
+                           segments=len(ring),maximum_radial_facet_error_mm=round(deviation,6)))
+    return report
 
 
 def main():
@@ -124,16 +162,20 @@ def main():
         render(output, part)
         report["parts"][part] = inspect(output)
         print(f"{part}: watertight, one connected solid", flush=True)
-    for scene, key in [("interference", "hardware_envelope_overlap_mm3"),
+    scenes = [("interference", "hardware_envelope_overlap_mm3"),
                        ("holder-interference", "holder_overlap_mm3"),
                        ("antenna-clearance-interference", "antenna_bulkhead_overlap_mm3"),
                        ("screen-clearance-interference", "screen_clearance_overlap_mm3"),
+                       ("logo-layout-interference", "logo_layout_margin_overlap_mm3"),
                        ("cover-interference", "installed_cover_overlap_mm3"),
+                       ("usb-cover-corner-interference", "usb_cover_root_gap_overlap_mm3"),
                        ("port-interference", "service_port_overlap_mm3"),
                        ("keyboard-interference", "keyboard_access_overlap_mm3"),
                        ("usb-access-interference", "external_usb_insertion_overlap_mm3"),
                        ("internal-usb-interference", "internal_usb_overlap_mm3"),
-                       ("ethernet-access-interference", "ethernet_access_overlap_mm3")]:
+                       ("ethernet-access-interference", "ethernet_access_overlap_mm3")]
+    def check_clearance(item):
+        scene,key=item
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / "interference.stl"
             render(output, scene)
@@ -141,8 +183,13 @@ def main():
             # Board/standoff seating faces intentionally touch; zero-volume faces
             # can produce a non-manifold intermediate mesh from CGAL.
             assert overlap < 0.01, f"{scene}: collision {overlap:.4f} mm³"
-            report[key] = round(overlap, 6)
             print(f"{scene}: passed", flush=True)
+            return key,round(overlap,6)
+    # Independent OpenSCAD processes, each with its own temporary output.
+    # Preserve every assertion and deterministic report order while avoiding
+    # serial waits for the detailed vector-logo Boolean operations.
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        report.update(executor.map(check_clearance,scenes))
     with tempfile.TemporaryDirectory() as temp:
         output = Path(temp) / "spring-contact.stl"
         render(output, "cover-spring-contact")
@@ -179,9 +226,11 @@ def main():
             report[f"{part}_retention_mm3"] = round(overlap, 6)
             print(f"{part} retention: passed", flush=True)
     report["port_alignment"] = check_port_alignment()
-    print("Port edges align without reducing existing clearances: passed", flush=True)
+    print("Port edges align; 3 mm webs and plug clearances: passed", flush=True)
+    report["antenna_bores"]=check_antenna_bores()
+    print("Both antenna bores are circular with fine facets: passed", flush=True)
     # Preserve the SD cover and unchanged mounting/access definitions. HDMI
-    # and USB covers now fit the deliberately enlarged, aligned openings.
+    # and USB covers fit the aligned openings with reinforced port webs.
     original = ROOT.parent / "router"
     def canonical(path):
         return sorted(tuple(sorted(tuple(round(n, 4) for n in p) for p in f))
@@ -194,7 +243,13 @@ def main():
         start = text.index(f"module {name}(")
         return text[start:text.index("\n}", start)+2]
     for name in ("outline", "external_usb_plugs", "installed_covers", "cover_finger", "service_cover"):
-        assert module_text(source, name) == module_text(old_source, name), f"Changed Pi interface: {name}"
+        current=module_text(source,name)
+        if name=="service_cover":
+            # The narrower USB cover uses 6.5 mm end fingers to leave 0.9 mm
+            # corner gaps. All other finger geometry stays identical.
+            current=current.replace('min(8,size[0]-6)','8').replace(
+                '    // Shorter end fingers keep 0.9 mm corner gaps on the narrowed USB cover.\n','')
+        assert current == module_text(old_source, name), f"Changed Pi interface: {name}"
     for name in ("wall", "floor_h", "base_h", "lid_h", "main_w", "cable_bay",
                  "outer_w", "outer_d", "ethernet_step_y", "corner_r", "pcb_z",
                  "pcb_t", "pi_xy", "pi_holes", "sd_xy", "sd_size", "lid_screws"):
@@ -223,6 +278,8 @@ def main():
     print("Hardware envelope check passed; see test/validation.json")
     from build_inlay import main as build_inlay
     build_inlay()
+    from build_plain_lid import main as build_plain_lid
+    build_plain_lid()
 
 
 if __name__ == "__main__":

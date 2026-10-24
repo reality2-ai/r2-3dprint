@@ -14,6 +14,7 @@ The original `router/` design is unchanged.
 ![Interior, including the two removable board holders](images/service.png)
 ![Closed enclosure with the protected screen visible](images/closed.png)
 ![Rear wall with symmetrical Wi-Fi and LoRa antenna mounts](images/rear.png)
+![Bare rear wall showing the circular antenna bores](images/antenna-bores.png)
 
 ## Design
 
@@ -40,6 +41,16 @@ No fragile snap fingers are used on the GPS holder.
 Two rear antenna holes are at **X=28 and X=112 mm**, both **Z=20 mm**, so each is
 28 mm from its nearest side. Both currently use **6.5 mm clearance holes** and
 **4 mm reinforced panels**, with room for an 11 mm nut and 10 mm internal tail.
+The bores use 128 segments, independently of the other geometry, keeping the
+CAD facet error at about 0.001 mm radially. Printed ovality or a sagging upper edge
+is a separate print-process issue; this resolution change addresses CAD facets.
+The user reports oval/flattened holes after printing and currently uses a
+0.6 mm nozzle. They will try slicer-generated supports on the next print.
+Use local support enforcers at the two bores, permitting supports to start on
+the model rather than restricting them to the build plate. See
+[Prusa's bridging guidance](https://help.prusa3d.com/article/poor-bridging_1802).
+Remove those supports before fitting the bulkheads; no sacrificial webs are
+built into the STL.
 The left position is for Wi-Fi; the right is for LoRa. Each hole diameter can be
 adjusted independently to match the actual bulkhead. Confirm connector type and
 usable thread length for each pigtail; the printed case has no RF connector threads.
@@ -49,56 +60,93 @@ Their shared opening accepts the matching taller reinforced USB cover. The other
 stays internal: upper socket for the Heltec cable, lower socket free. Pi 3 has
 onboard Wi-Fi; the inherited nano-dongle envelope is still checked for clearance.
 The HDMI opening now shares its bottom edge with micro-USB power at **Z=7.4 mm**.
-HDMI's top stays at Z=20 mm, making the opening **24 × 12.6 mm**. Ethernet and the
-external USB opening share both edges at **Z=6.4 and 28.4 mm**; the USB opening is
-now **15 × 22 mm**. Ethernet and power dimensions are unchanged. These changes
-only enlarge openings, preserving all prior plug clearance and the 1.5 mm web
-between Ethernet and USB. SD access is unchanged.
+HDMI's top stays at Z=20 mm. Ethernet and external USB share both edges at
+**Z=6.4 and 28.4 mm**. The webs between power/HDMI and Ethernet/USB are now both
+**3 mm wide**, increased from 2.4 mm and 1.5 mm respectively. Their wall depth
+remains 2.4 mm so the reinforced cover hooks still latch correctly.
+
+To make that room, the openings and matching covers are narrower, with the
+socket centres and aligned heights retained:
+
+| Opening | Width × height | Checked plug width | Clearance each side |
+|---|---|---|---|
+| HDMI | 22.8 × 12.6 mm | 22 mm | 0.4 mm |
+| Ethernet | 18.5 × 22 mm | 18 mm boot/latch | 0.25 mm |
+| External USB pair | 12.5 × 22 mm | 12 mm housings | 0.25 mm |
+
+Power and SD access are unchanged. Check your plug housings against these
+dimensions; the former openings had more spare width. Reprint the base and
+matching HDMI/USB covers for this port-web revision.
+The narrower USB cover uses 6.5 mm-wide top/bottom fingers, leaving 0.9 mm
+between adjacent clip roots at the corners. The strengthened root profile and
+side hooks are retained; the geometry checks probe all four corner clearances.
 
 ![Aligned front and side openings, covers removed](images/ports.png)
 
 ## Optional contrasting logo inlay
 
-The [logo inlay](stl/router-heltec-logo-inlay.stl) fits the existing recessed tree.
-It is one connected piece, **0.4 mm thick**, with its top nominally flush with the
-lid. It uses the exact same traced profile and dimensions as the lid. **No new
-lid is needed.** The preview colours are illustrative; print the inlay in your
-preferred contrasting filament.
+The [logo inlay](stl/router-heltec-logo-inlay.stl) is now **80 mm wide**, twice the
+width and height of the original tree. The user reported that the 40 mm version
+fitted but was fiddly even with fine printing and a fine nozzle. The branches
+are now twice as wide, and the inlay is **1.2 mm thick overall**: **0.8 mm seated
+inside the lid**, with the face **0.4 mm proud**. This makes a more substantial
+piece to handle; the enlarged version still needs a physical print trial.
 
-![Contrasting tree seated in the existing lid](images/logo-inlay.png)
+**Print the matching new lid and inlay together.** The old 40 mm lid recess and
+inlay are not compatible with these files. The base, covers and internal holders
+are unchanged and can be reused. The new recess leaves **1.6 mm of lid material**
+below it. Its centre is at X=53, Y=47.5 mm, with at least **3 mm clearance** to the
+lid edge, screen opening and screw holes.
 
-Most edges have **0.05 mm clearance per side**. Six small grip spots extend
-**0.04 mm into the nominal recess wall** for a light press-fit. The first 0.1 mm
-has clearance to help it enter; the upper 0.3 mm provides the grip. This is a
-shallow friction fit, with no undercut or snap catch. Actual retention depends
-on the printer and material; CAD interference does not guarantee holding force.
+![Enlarged tree seated 0.8 mm deep and standing 0.4 mm proud](images/logo-inlay.png)
+
+The inlay remains one connected piece. Both it and the matching lid use the
+original `tree` path from the supplied [mariko-sticker.svg](../mariko-sticker.svg).
+The [tree-only SVG](references/mariko-tree.svg) preserves those cubic curves
+verbatim, excluding the sticker lettering, ring and cutline. Its width is 80 mm
+and height 88.322 mm. The CAD samples the curves to within 0.005 mm at this size,
+without tracing a bitmap or refitting the artwork. Regenerate the shared profile
+with `python3 scripts/import_logo.py`, then run the full build. Source provenance
+is recorded in [logo-source.json](references/logo-source.json). The supplied
+sticker, shared branding assets and other enclosure variants are unchanged.
+
+The preview colours are illustrative; print it in your preferred
+contrasting filament. Most edges retain **0.05 mm clearance per side**. Six small
+grip spots retain **0.04 mm local interference** for a light press-fit. The first
+0.2 mm has clearance to help it enter; the next 0.6 mm provides the grip. The grip
+patches end at the lid surface, leaving the raised face smooth. This is a
+friction fit with no undercut or snap catch; CAD interference does not guarantee
+holding force with a particular printer or material.
 
 Start with the [root fit piece](stl/router-heltec-logo-root-fit.stl), which uses
-three of the same grip spots and fits the lower root area of the actual lid.
-It is a cropped part of the logo, with no extra test socket to print. The full
-tree has three additional contacts, so check its fit gently too.
+three of the same grip spots and fits the lower root area of the matching 80 mm
+lid recess. It is a cropped part of the logo, with no extra test socket to print.
+The full tree has three additional contacts, so check its fit gently too.
 
-Print **0.1 mm layers, including the first layer**, with the flat seating face
-on the bed and no supports. Keep the original orientation; do not mirror it.
-Release the thin part carefully, align it with the recess, and seat it by
-pressing the broad root and circular leaf ends rather than bending the branches.
+Print **0.2 mm layers, including the first layer**: four layers seat inside the
+lid and two form the raised face. Keep the flat seating face on the bed, with
+no supports. Keep the original orientation; do not mirror it. Release the part
+carefully and seat it by pressing the broad root and circular leaf ends rather
+than bending the branches.
 
 If the test is too tight, lower `edge_grip` in
 [src/logo_inlay.scad](src/logo_inlay.scad); try 0.02 mm or 0 for a glue-in fit.
 If it is loose, try 0.06 mm. Regenerate both parts with
 `python3 scripts/build_inlay.py` from this directory. A tiny spot of superglue
-under a broad area is an optional fallback, as suggested by the user; keep it
-thin so it does not lift the inlay above the lid surface. Fit and durability
-still need a physical print trial.
+under a broad area remains an optional fallback; keep the film thin so it does
+not prevent full seating. `proud_height` controls how far the face stands above
+the lid; recess depth and tree size come from the main enclosure source.
 
 The [inlay validation report](test/inlay-validation.json) checks both meshes,
-clearance of the main outline, and small intentional contact at each of the six
-grip spots. It also checks there is no interference elsewhere with the actual lid.
+the seating depth plus raised height, clearance of the main outline, and small
+intentional contact at each grip spot. It also checks there is no interference
+elsewhere with the actual lid. The main build checks the 3 mm layout margin.
 
 ## Files and printing
 
 - [Editable CAD](src/router_heltec_case.scad)
-- [Base](stl/router-heltec-base.stl) and [lid](stl/router-heltec-lid.stl)
+- [Base](stl/router-heltec-base.stl), [logo lid](stl/router-heltec-lid.stl) and [plain lid](stl/router-heltec-lid-plain.stl)
+- [Editable plain lid](src/plain_lid.scad): same screen opening, screw holes and underside USB-C relief, with no logo recess
 - [Heltec cradle](stl/router-heltec-heltec-cradle.stl)
 - [GPS holder](stl/router-heltec-gps-holder.stl) and [retaining bridge](stl/router-heltec-gps-keeper.stl)
 - [HDMI](stl/router-heltec-hdmi-cover.stl), [SD](stl/router-heltec-sd-cover.stl) and [USB](stl/router-heltec-usb-cover.stl) covers
@@ -113,9 +161,10 @@ the lid prints with its recessed logo upward. The USB relief in the lid requires
 a short bridge. Check this bridge and the small ledges over the GPS connector
 reliefs in the cradle when slicing.
 
-For this alignment revision, **reprint the Heltec base, HDMI cover and USB cover**.
-The lid, SD cover and internal holders are unchanged and can be reused. The HDMI
-and USB covers have grown with their openings; earlier copies will not latch
+For the port-web revision, **reprint the Heltec base, HDMI cover and USB cover**.
+The SD cover and internal holders can be reused. The enlarged,
+original-vector logo additionally requires its matching new lid and inlay. The HDMI
+and USB covers have narrowed with their openings; earlier copies will not latch
 correctly. Their reinforced roots and reduced hook reach are retained. The SD
 cover remains geometrically identical to the original `router/` cover.
 PETG is the intended next trial material for the flexible arms and covers; neither
@@ -125,6 +174,7 @@ preview around the narrow support rings and spring roots.
 
 ![Matching HDMI, SD and USB covers, inside faces up](images/covers.png)
 ![Cradle, GPS tray and removable retaining bridge](images/holders.png)
+![Optional plain lid with the same display opening](images/lid-plain.png)
 
 ## Assembly
 
@@ -192,7 +242,10 @@ docker run --rm --init --user "$(id -u):$(id -g)" \
   r2-3dprint-tools:local python3 scripts/build.py
 ```
 
-The build exports nine enclosure meshes plus the optional inlay and root fit piece.
+The build exports nine enclosure meshes plus the optional plain lid, inlay and root fit piece.
+The plain lid uses the shared design's existing `lid_logo=false` switch. It can
+also be exported with `python3 scripts/build_plain_lid.py`; its mesh and matching
+overall dimensions are recorded in `test/plain-lid-validation.json`.
 It checks connected, watertight geometry;
 hardware, holders, antenna fittings and cable envelopes; screen clearance;
 closed-lid USB insertion; HDMI/SD and Ethernet access; and individual cover

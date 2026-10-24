@@ -2,71 +2,75 @@
   "status": "digital fit checked; physical grip requires a print trial",
   "parts": {
     "logo-inlay": {
-      "triangles": 2576,
+      "triangles": 18796,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
         [
-          -20.1187,
-          19.9612
+          -40.0393,
+          40.0393
         ],
         [
-          -22.0881,
-          22.2455
+          -44.1995,
+          44.2
         ],
         [
           0.0,
-          0.4
+          1.2
         ]
       ],
-      "volume_mm3": 250.25
+      "volume_mm3": 3022.7
     },
     "logo-root-fit": {
-      "triangles": 980,
+      "triangles": 6912,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
         [
-          -18.7689,
-          18.6114
+          -37.2621,
+          37.3039
         ],
         [
-          -22.0881,
-          -7.0
+          -44.1995,
+          -14.0
         ],
         [
           0.0,
-          0.4
+          1.2
         ]
       ],
-      "volume_mm3": 107.1
+      "volume_mm3": 1320.47
     }
   },
   "core_contact_mm3": 0.0,
   "unexpected_contact_mm3": 0.0,
   "individual_grip_contact_mm3": [
-    0.017021,
-    0.017259,
-    0.017021,
-    0.016779,
-    0.016753,
-    0.017471
+    0.069501,
+    0.069486,
+    0.067783,
+    0.067067,
+    0.06702,
+    0.067183
   ],
-  "grip_contact_mm3": 0.102303,
+  "grip_contact_mm3": 0.408039,
   "fit": {
     "edge_clearance_mm": 0.05,
     "local_edge_grip_mm": 0.04,
-    "lead_in_mm": 0.1,
-    "thickness_mm": 0.4,
-    "logo_width_mm": 40
+    "lead_in_mm": 0.2,
+    "seat_depth_mm": 0.8,
+    "proud_height_mm": 0.4,
+    "thickness_mm": 1.2000000000000002,
+    "logo_width_mm": 80,
+    "lid_material_below_recess_mm": 1.5999999999999999
   },
   "limits": [
-    "Shared traced profile and dimensions come directly from the existing lid source",
+    "Shared original SVG tree profile and dimensions come directly from the matching lid source",
     "Contact volumes show geometric interference, not measured friction or retention force",
-    "Print at 0.1 mm layer height including the first layer to resolve the lead-in and three gripping layers",
+    "Print at 0.2 mm layer height including the first layer: four seated layers and two raised layers",
     "The root trial uses the actual recess and three root grip spots; the full tree adds three more contacts",
     "Fit depends on printer/material and first-layer expansion; tune edge_grip before forcing thin branches",
-    "A tiny spot of glue can retain the inlay if needed; the 0.4 mm recess gives only shallow friction engagement",
-    "Lid geometry is unchanged; no undercut or snap catch is added"
+    "A tiny spot of glue can retain the inlay if needed; fit of the enlarged design requires a print trial",
+    "Requires the matching 80 mm logo lid with 0.8 mm recess; incompatible with the old 40 mm recess",
+    "No undercut or snap catch is added; the grip patches end at the lid surface"
   ]
 }

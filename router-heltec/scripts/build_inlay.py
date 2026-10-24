@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Export/check the optional logo inlay against the current, unmodified lid.
+"""Export/check the optional logo inlay against its matching lid.
 
 Uses OpenSCAD and the standard-library mesh checks from build.py.
 """
 import ast
+from concurrent.futures import ThreadPoolExecutor
 import json
 import re
 from pathlib import Path
@@ -25,7 +26,7 @@ def main():
     report = {'status': 'digital fit checked; physical grip requires a print trial', 'parts': {}}
     with tempfile.TemporaryDirectory() as temp:
         log = render(Path(temp)/'parameters.csg','parameters')
-        spec, clearance, grip, lead, centres, radius = ast.literal_eval(
+        spec, clearance, grip, lead, centres, radius, proud = ast.literal_eval(
             re.search(r'INLAY_PARAMETERS = (.+)',log)[1])
     width, depth, xy, _, _ = spec
     radius *= width/40
@@ -33,9 +34,11 @@ def main():
         path = ROOT/f'stl/router-heltec-{name}.stl'
         render(path, part)
         report['parts'][name] = inspect(path)
-        assert abs(report['parts'][name]['bounds_mm'][2][1]-depth)<0.001, 'Inlay must be flush in current recess'
-        print(f'{name}: watertight, single connected solid, {depth} mm thick', flush=True)
-    for part in ['core-contact','unexpected-contact','grip-contact']:
+        height = report['parts'][name]['bounds_mm'][2][1]
+        assert abs(height-(depth+proud))<0.001, 'Inlay must match seating depth plus raised height'
+        print(f'{name}: watertight, single connected solid, {height} mm thick', flush=True)
+    def check_contact(part):
+        result={}
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp)/'contact.stl'
             render(path, part)
@@ -57,21 +60,28 @@ def main():
                     assert all(0.0001<v<6*radius*grip*(depth-lead) for v in volumes), f'Check each grip spot: {volumes}'
                 else:
                     assert contact<0.001, 'Zero-grip inlay must have no interference'
-                report['individual_grip_contact_mm3'] = [round(v,6) for v in volumes]
+                result['individual_grip_contact_mm3'] = [round(v,6) for v in volumes]
             else:
                 assert contact<0.001, f'{part}: unexpected overlap {contact:.5f} mm3'
-            report[part.replace('-','_')+'_mm3'] = round(contact,6)
+            result[part.replace('-','_')+'_mm3'] = round(contact,6)
             print(f'{part}: passed ({contact:.6f} mm3)', flush=True)
+            return result
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        for result in executor.map(check_contact,['core-contact','unexpected-contact','grip-contact']):
+            report.update(result)
     report['fit'] = {'edge_clearance_mm':clearance,'local_edge_grip_mm':grip,
-                     'lead_in_mm':lead,'thickness_mm':depth,'logo_width_mm':width}
+                     'lead_in_mm':lead,'seat_depth_mm':depth,'proud_height_mm':proud,
+                     'thickness_mm':depth+proud,'logo_width_mm':width,
+                     'lid_material_below_recess_mm':spec[3]-depth}
     report['limits'] = [
-        'Shared traced profile and dimensions come directly from the existing lid source',
+        'Shared original SVG tree profile and dimensions come directly from the matching lid source',
         'Contact volumes show geometric interference, not measured friction or retention force',
-        'Print at 0.1 mm layer height including the first layer to resolve the lead-in and three gripping layers',
+        'Print at 0.2 mm layer height including the first layer: four seated layers and two raised layers',
         'The root trial uses the actual recess and three root grip spots; the full tree adds three more contacts',
         'Fit depends on printer/material and first-layer expansion; tune edge_grip before forcing thin branches',
-        'A tiny spot of glue can retain the inlay if needed; the 0.4 mm recess gives only shallow friction engagement',
-        'Lid geometry is unchanged; no undercut or snap catch is added',
+        'A tiny spot of glue can retain the inlay if needed; fit of the enlarged design requires a print trial',
+        'Requires the matching 80 mm logo lid with 0.8 mm recess; incompatible with the old 40 mm recess',
+        'No undercut or snap catch is added; the grip patches end at the lid surface',
     ]
     (ROOT/'test/inlay-validation.json').write_text(json.dumps(report,indent=2)+'\n')
 

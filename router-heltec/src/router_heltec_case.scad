@@ -2,7 +2,7 @@
 // Independent variant; aligned port edges with matching strengthened covers.
 // Millimetres. Prototype: check the actual cable and bulkhead before printing.
 // Original Mariko tree only, read from above without mirroring.
-use <../../branding/logos/mariko_logo_traced.scad>
+use <mariko_logo_vector.scad>
 
 part = "assembly"; // [assembly, closed, flashing, service, ports, holders, base, lid, heltec-cradle, gps-holder, gps-keeper, screen-fit, usb-cover, hdmi-cover, sd-cover, layout]
 $fn = 48;
@@ -54,6 +54,7 @@ gps_keeper_screws = [[gps_size[0]+3.8,-3],[gps_size[0]+3.8,gps_size[1]+3]];
 board_pilot = 2.1; // M2.5 screws into plastic; tune using test coupon
 lid_pilot = 2.6;   // M3 screws into plastic
 antenna_hole = 6.5; // provisional SMA bulkhead clearance — MEASURE yours
+antenna_fn = 128; // smooth bores independently of the general model resolution
 antenna_panel = 4; // total local wall thickness, including reinforcement
 antenna_x = 112; // cable bay: connector tail must not pass through raised radio
 antenna_z = 20;
@@ -61,9 +62,10 @@ wifi_antenna_x = outer_w-antenna_x; // symmetric rear mounting, 28 mm from left
 wifi_antenna_hole = 6.5; // independent tuning for the actual Wi-Fi bulkhead
 display_window = true;
 lid_logo = true;
-logo_width = 40;
-logo_depth = 0.4; // recessed into the outer lid face; 2 mm remains underneath
-logo_xy = [main_w/2,46];
+logo_width = 80; // double the original tree's width and branch sizes
+logo_depth = 0.8; // deeper seating recess; 1.6 mm of lid remains underneath
+logo_xy = [main_w/2,47.5]; // balance clearance to the front edge and display
+logo_margin = 3; // minimum separation from lid edges, screen and screw holes
 // Cover position from the dimensional drawing; verify along-board offset.
 screen_local = [15,3.4];
 screen_xy = [heltec_origin[0]-screen_local[0]-screen_cover[0]/2,
@@ -73,13 +75,15 @@ eps = 0.02;
 front_opening_bottom = pcb_z-1; // power and HDMI share Z=7.4
 hdmi_top = 20; // retain all existing HDMI plug clearance
 hdmi_xy = [pi_xy[0]+32,(front_opening_bottom+hdmi_top)/2]; // X,Z
-hdmi_size = [24,hdmi_top-front_opening_bottom];
+hdmi_size = [22.8,hdmi_top-front_opening_bottom]; // 22 mm plug envelope + 0.4 mm per side
 sd_xy = [pi_xy[1]+28,7]; // centre in left panel: Y,Z
 sd_size = [20,8];
 side_opening_bottom = pcb_z-2; // Ethernet and USB share Z=6.4..28.4
 side_opening_height = 22;
 usb_xy = [pi_xy[1]+29,side_opening_bottom+side_opening_height/2]; // Y,Z
-usb_size = [15,side_opening_height]; // retain the 1.5 mm web beside Ethernet
+usb_size = [12.5,side_opening_height]; // 12 mm plug envelope + 0.25 mm per side
+ethernet_width = 18.5; // 18 mm boot/latch envelope + 0.25 mm per side
+port_web_min = 3; // solid material between power/HDMI and Ethernet/USB
 wifi_size = [6,16,8]; // exposed nano-dongle body: X protrusion, Y width, Z height
 cover_face = 1.2;
 cover_flange = 1.2;
@@ -123,9 +127,10 @@ module gps_frame(z=0) { translate([gps_origin[0],gps_origin[1],z]) children(); }
 module port_cuts() {
     // Ethernet: open above and below socket for boot and latch access.
     // Socket at x~97; case wall at x106 leaves 9 mm for plug insertion.
-    // End at Y=25 to retain a solid web for the adjacent USB cover's hook.
+    // Leave a 3 mm web for the adjacent USB cover's hook.
     // Reach the socket face so the corner boss cannot obstruct a wide boot.
-    prism(97,pi_xy[1]+1,side_opening_bottom,main_w-97+2,19,side_opening_height);
+    prism(97,pi_xy[1]+10.5-ethernet_width/2,side_opening_bottom,
+          main_w-97+2,ethernet_width,side_opening_height);
     prism(main_w-wall-1,usb_xy[0]-usb_size[0]/2,usb_xy[1]-usb_size[1]/2,
           wall+4,usb_size[0],usb_size[1]);
     // Micro-USB power: generous moulded-plug opening, directly at Pi edge.
@@ -137,7 +142,7 @@ module port_cuts() {
           wall+2,sd_size[0],sd_size[1]);
     // Panel connector axis is along Y, at the rear.
     translate([antenna_x,outer_d+1,antenna_z]) rotate([90,0,0])
-        cylinder(d=antenna_hole,h=antenna_panel+2);
+        cylinder(d=antenna_hole,h=antenna_panel+2,$fn=antenna_fn);
     // Vertical vents have short 3 mm bridges; continuous material at top/bottom.
     // Two left banks leave the mid-side screw boss at Y=76 intact.
     for(bank=[[14,62],[86,128]])
@@ -147,7 +152,7 @@ module port_cuts() {
 }
 module wifi_antenna_cut() {
     translate([wifi_antenna_x,outer_d+1,antenna_z]) rotate([90,0,0])
-        cylinder(d=wifi_antenna_hole,h=antenna_panel+2);
+        cylinder(d=wifi_antenna_hole,h=antenna_panel+2,$fn=antenna_fn);
 }
 
 // Covers print outer face down. Four spring fingers preload the original hole;
@@ -175,8 +180,9 @@ module service_cover(size, preload=hdmi_clip_preload, hook_reach=hdmi_clip_hook)
             rounded_rect(size[0]+2*cover_flange,size[1]+2*cover_flange,1);
     for(side=[-1,1]) scale([side,1,1])
         cover_finger(size[0]/2,size[1]-2*clip_height_clearance,0.8,preload,hook_reach);
+    // Shorter end fingers keep 0.9 mm corner gaps on the narrowed USB cover.
     for(side=[-1,1]) rotate([0,0,side*90])
-        cover_finger(size[1]/2,8,0.6,preload);
+        cover_finger(size[1]/2,min(8,size[0]-6),0.6,preload);
 }
 module sd_cover() { service_cover(sd_size,sd_clip_preload,sd_clip_hook); }
 module usb_cover() { service_cover(usb_size,usb_clip_preload,usb_clip_hook); }
@@ -195,11 +201,12 @@ module installed_usb_cover(pull=0) { usb_cover_frame(cover_face+pull) usb_cover(
 // Only four narrow wall-contact regions per cover may intersect relaxed springs.
 // This is a deflection allowance, not a simulation of spring force.
 module spring_contact_zones(size, preload) {
+    end_width=min(8,size[0]-6); // match narrower end fingers on the USB cover
     for(side=[-1,1]) {
         x=side*size[0]/2;
         prism(x-(side<0?preload:0),-size[1]/2,0,preload,size[1],wall);
         y=side*size[1]/2;
-        prism(-4,y-(side<0?preload:0),0,8,preload,wall);
+        prism(-end_width/2,y-(side<0?preload:0),0,end_width,preload,wall);
     }
 }
 module sd_spring_contact_zones() {
@@ -295,7 +302,8 @@ module base() {
 
 // Shared by the optional contrasting-colour inlay; keep one source of truth.
 function lid_logo_spec() = [logo_width,logo_depth,logo_xy,lid_h,base_h];
-module lid_logo_profile() { mariko_logo2d(logo_width); }
+function lid_logo_grip_points() = vector_logo_grip_points(logo_width);
+module lid_logo_profile() { mariko_logo_vector(logo_width); }
 module lid() {
     // Flat underside on the bed, recessed tree on top. No text or other marks.
     difference() {
@@ -567,6 +575,10 @@ module holders_scene() {
 }
 
 assert(antenna_panel>=wall && antenna_panel<10,"Check SMA thread length against panel");
+assert(hdmi_xy[0]-hdmi_size[0]/2-(pi_xy[0]+10.6+7)>=port_web_min-0.001,
+       "Power/HDMI web must remain printable");
+assert(usb_xy[0]-usb_size[0]/2-(pi_xy[1]+10.5+ethernet_width/2)>=port_web_min-0.001,
+       "Ethernet/USB web must remain printable");
 assert(cable_bay>=30,"Straight USB plugs need cable space");
 assert(base_h>pcb_z+pcb_t+18,"Lid must clear Pi USB stack");
 assert(heltec_bottom-cradle_z>12,"Cradle must clear downward header pins");
@@ -647,6 +659,21 @@ else if(part=="port-alignment") difference() {
     }
     base();
 }
+else if(part=="antenna-bore-check") difference() {
+    // Sample the actual void through almost the entire reinforced panel.
+    // Separate blocks exclude vents and the other wall features.
+    for(x=[antenna_x,wifi_antenna_x])
+        prism(x-4,outer_d-antenna_panel+0.1,antenna_z-4,8,antenna_panel-0.2,8);
+    base();
+}
+else if(part=="usb-cover-corner-interference") intersection() {
+    // Probe 0.8 mm-wide free channels between adjacent clip roots, above
+    // the continuous face. These gaps must survive a 0.6 mm nozzle print.
+    usb_cover();
+    for(sx=[-1,1],sy=[-1,1]) scale([sx,sy,1])
+        prism(min(8,usb_size[0]-6)/2+0.05,usb_size[1]/2-1.85,
+              cover_face+0.02,0.8,1.7,0.2);
+}
 else if(part=="keyboard-interference") intersection() {
     keyboard_envelope(); union() { closed_shell(usb=false); hardware(); cable_envelopes(); wifi_envelope(); }
 }
@@ -675,6 +702,20 @@ else if(part=="screen-clearance-interference") intersection() {
     translate([0,0,base_h]) lid();
     heltec_frame(heltec_top+screen_stack-heltec_size[2]-1)
         prism(screen_local[0]-0.25,screen_local[1]-0.25,0,screen_cover[0]+0.5,screen_cover[1]+0.5,2);
+}
+else if(part=="logo-layout-interference") intersection() {
+    // The actual logo perimeter, expanded by the required margin, must not
+    // reach the edge of the lid, display opening or any screw hole.
+    translate([logo_xy[0],logo_xy[1],0]) linear_extrude(lid_h)
+        offset(delta=logo_margin) lid_logo_profile();
+    union() {
+        difference() {
+            prism(-10,-10,-1,outer_w+20,outer_d+20,lid_h+2);
+            translate([0,0,-2]) linear_extrude(lid_h+4) outline();
+        }
+        screen_aperture();
+        for(p=lid_screws) translate([p[0],p[1],-1]) cylinder(d=3.4,h=lid_h+2);
+    }
 }
 else if(part=="cradle-retention") intersection() {
     heltec_frame(cradle_z) heltec_cradle();
