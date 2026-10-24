@@ -1,6 +1,6 @@
 {
   "units": "mm",
-  "date": "2026-10-24",
+  "date": "2026-10-25",
   "user_confirmed": {
     "screen_cover_xy": [
       33,
@@ -12,7 +12,8 @@
       16
     ],
     "gps_total_connector_to_antenna_thickness": 7,
-    "gps_extension_from_heltec_edge_approx": 38
+    "gps_extension_from_heltec_edge_approx": 38,
+    "usb_c_plug_thickness_approx": 6.5
   },
   "manufacturer_sources": [
     {
@@ -67,11 +68,6 @@
     }
   ],
   "provisional": {
-    "usb_c_plug_lwh": [
-      20,
-      12,
-      8
-    ],
     "screen_cover_offset_from_usb_end": [
       15,
       3.4
@@ -82,14 +78,19 @@
     ],
     "bulkhead_panel_thickness": 4,
     "gps_component_height_split": "Illustrative only; total 7 mm conservative envelope is measured",
-    "gps_cable": "Illustrative route; actual bend and connector engagement require physical fit"
+    "gps_cable": "Illustrative route; actual bend and connector engagement require physical fit",
+    "usb_c_plug_length_width": [
+      20,
+      12
+    ],
+    "usb_c_plug_centring": "Moulded body assumed centred on connector axis"
   },
   "derived_default": {
-    "heltec_pcb_underside_z": 26.1,
-    "screen_cover_top_z": 33.2,
+    "heltec_pcb_underside_z": 27.0,
+    "screen_cover_top_z": 34.1,
     "lid_top_z": 34.4,
-    "screen_recess": 1.2,
-    "minimum_usb_relief_roof": 1.2,
+    "screen_recess": 0.3,
+    "minimum_usb_relief_roof": 1.05,
     "rear_antenna_centres_xz": [
       [
         28,
@@ -99,6 +100,9 @@
         112,
         20
       ]
-    ]
+    ],
+    "usb_relief_depth": 1.35,
+    "usb_plug_top_clearance": 0.3,
+    "cradle_seat_height": 21.6
   }
 }

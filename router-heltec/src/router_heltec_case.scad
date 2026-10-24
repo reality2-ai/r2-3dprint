@@ -24,12 +24,12 @@ screen_cover = [33,18.6];
 screen_stack = 7.1; // PCB underside to top of protected display
 screen_clearance = 0.3; // per side, tune with screen-fit coupon
 screen_recess_target = 0.3;
-usb_c_plug_height = 8; // provisional moulded plug envelope; measure yours
+usb_c_plug_height = 6.5; // user measured moulded plug thickness, approximately
 usb_c_plug_width = 12;
 usb_c_plug_length = 20;
 usb_c_axis_above_pcb = 1.2;
 usb_c_clearance = 0.3;
-usb_pocket_roof = 1.2; // minimum plastic above the internal USB-C plug
+usb_pocket_roof = 1.05; // deeper pocket requested: keep 1.05 mm roof, screen 0.3 mm recessed
 heltec_size = [51.689,25.4,1.6];
 heltec_origin = [97,117.4]; // USB end; board rotates 180 degrees in XY
 heltec_top = min(base_h+lid_h-screen_recess_target-(screen_stack-heltec_size[2]),
@@ -37,6 +37,10 @@ heltec_top = min(base_h+lid_h-screen_recess_target-(screen_stack-heltec_size[2])
 heltec_bottom = heltec_top-heltec_size[2];
 cradle_z = floor_h+3;
 cradle_plate = 1.8;
+cradle_clip_preload = 0.2; // each upper contact face sits slightly inside the PCB edge
+cradle_clip_thickness = 2.0; // stiffer arms for the user's PETG print
+cradle_clip_hook = 0.8; // relaxed overlap; 0.6 mm remains after nominal preload deflection
+cradle_clip_lift_gap = 0.05; // catch the seated board without the old 0.35 mm free lift
 // STEP V4.3.1 positions; V4R8 drawing differs on hole diameter. These are
 // support pads with clearance bores, NOT screw fasteners into the Heltec PCB.
 heltec_pads = [for(u=[16.879,45.879],v=[5.7,19.7]) [u,v]];
@@ -349,7 +353,7 @@ module lid() {
         for(p=lid_screws) translate([p[0],p[1],-1]) cylinder(d=3.4,h=lid_h+3);
         if(display_window) screen_aperture();
         // A shallow underside pocket clears the moulded USB-C plug. Its
-        // roof stays at least 1.2 mm thick; the board height adapts to the plug.
+        // roof stays at least 1.05 mm thick; the board height adapts to the plug.
         translate([0,0,-base_h]) usb_c_lid_pocket();
     }
 }
@@ -523,17 +527,44 @@ module cradle_outline() {
         }
     }
 }
-module cradle_spring(u,side) {
-    // Long, lightly deflected arms with flared roots. Hook overlaps only the
-    // outer 0.5 mm of the PCB, clear of headers and the factory screen casing.
-    // A 45-degree underside grows the hook from the arm without a flat ledge.
+module cradle_spring(u,side,deflection=0) {
+    // Lower arms clear the headers. A 45-degree neck moves the contact face
+    // inward only above the PCB underside. Both hook and neck print gradually.
+    // Deflection is used only for retention checks: a rigid tip-position proxy,
+    // not an elastic simulation of the entire spring.
     seat=heltec_bottom-cradle_z;
-    top=seat+heltec_size[2]+0.25;
-    translate([u,side<0?0:heltec_size[1],0]) scale([1,side,1])
+    contact=-cradle_clip_preload;
+    neck_rise=0.3+cradle_clip_preload;
+    hook_start=seat+heltec_size[2]+cradle_clip_lift_gap;
+    hook_end=hook_start+cradle_clip_hook-cradle_clip_preload;
+    translate([u,side<0?-deflection:heltec_size[1]+deflection,0]) scale([1,side,1])
         rotate([0,0,90]) rotate([90,0,0]) linear_extrude(4,center=true)
             polygon([[0.3,cradle_plate-0.2],[2.8,cradle_plate-0.2],
-                [1.5,5],[1.5,top+1.5],[0.3,top+1.5],[-0.5,top+1],
-                [-0.5,top+0.6],[0.3,top-0.2]]);
+                [0.3+cradle_clip_thickness,5],[0.3+cradle_clip_thickness,seat],
+                [contact+cradle_clip_thickness,seat+neck_rise],
+                [contact+cradle_clip_thickness,hook_end+0.9],
+                [contact,hook_end+0.9],[-cradle_clip_hook,hook_end+0.4],
+                [-cradle_clip_hook,hook_end],[contact,hook_start],
+                [contact,seat+neck_rise],[0.3,seat]]);
+}
+module cradle_spring_contact_zones() {
+    // Allow only the intended 0.2 mm PCB-edge squeeze. Never mask components
+    // below the PCB, the display, the supports or neighbouring hardware.
+    seat=heltec_bottom-cradle_z;
+    for(u=[7,34],side=[-1,1])
+        translate([u,side<0?0:heltec_size[1],seat]) scale([1,side,1])
+            prism(-2-eps,-cradle_clip_preload-eps,0,
+                  4+2*eps,cradle_clip_preload+2*eps,heltec_size[2]);
+}
+module cradle_retention(lift) {
+    seat=heltec_bottom-cradle_z;
+    intersection() {
+        // Account for the outward tip displacement of the seated, preloaded
+        // arms so preload alone cannot masquerade as hook retention.
+        union() for(u=[7,34],side=[-1,1])
+            cradle_spring(u,side,cradle_clip_preload);
+        translate([0,0,seat+lift]) cube(heltec_size);
+    }
 }
 module heltec_cradle() {
     seat=heltec_bottom-cradle_z;
@@ -623,7 +654,7 @@ assert(base_h>pcb_z+pcb_t+18,"Lid must clear Pi USB stack");
 assert(heltec_bottom-cradle_z>12,"Cradle must clear downward header pins");
 assert(screen_stack>heltec_size[2] && usb_c_plug_height>=3.5,"Check measured stack and USB plug");
 assert(heltec_top+screen_stack-heltec_size[2]>base_h,"Screen should enter the lid opening");
-assert(usb_pocket_roof>=1.2,"USB relief must leave a printable roof");
+assert(usb_pocket_roof>=1.05,"USB relief must leave a printable roof");
 assert(!lid_logo || (logo_depth>0 && lid_h-logo_depth>=1.2),
        "Recessed logo must leave at least 1.2 mm of lid thickness");
 assert(usb_opening_y[1]+usb_corner_flange<ethernet_step_y,
@@ -633,6 +664,10 @@ assert(clip_root_radius>0 && clip_root_radius<wall-0.2,
        "Clip fillet must end before the thin spring's wall-contact section");
 assert(clip_root_embed>0 && clip_root_embed<cover_face,
        "Clip roots must embed within the cover face");
+assert(cradle_clip_preload>0 && cradle_clip_preload<=0.2,
+       "Use only a light PCB-edge squeeze");
+assert(cradle_clip_hook>cradle_clip_preload && cradle_clip_hook<=0.8,
+       "Keep hooks on the PCB edge and clear of the display");
 if(part=="base") base();
 else if(part=="lid") lid();
 else if(part=="hardware") hardware();
@@ -734,7 +769,10 @@ else if(part=="internal-usb-interference") union() {
     intersection() { wifi_envelope(); union() { cable_envelopes(); hardware(); } }
 }
 else if(part=="holder-interference") union() {
-    intersection() { installed_holders(); union() { hardware(); cable_envelopes(); closed_shell(); } }
+    difference() {
+        intersection() { installed_holders(); union() { hardware(); cable_envelopes(); closed_shell(); } }
+        heltec_frame(cradle_z) cradle_spring_contact_zones();
+    }
     intersection() { heltec_frame(cradle_z) heltec_cradle(); gps_frame(gps_z) gps_holder(); }
     intersection() { gps_frame(gps_z) gps_holder(); gps_frame(gps_z+gps_retainer_z) gps_keeper(); }
 }
@@ -761,10 +799,13 @@ else if(part=="logo-layout-interference") intersection() {
         for(p=lid_screws) translate([p[0],p[1],-1]) cylinder(d=3.4,h=lid_h+2);
     }
 }
-else if(part=="cradle-retention") intersection() {
-    heltec_frame(cradle_z) heltec_cradle();
-    translate([0,0,0.6]) heltec_frame(heltec_bottom) cube(heltec_size);
+else if(part=="cradle-spring-contact") intersection() {
+    heltec_cradle();
+    translate([0,0,heltec_bottom-cradle_z]) cube(heltec_size);
+    cradle_spring_contact_zones();
 }
+else if(part=="cradle-retention") cradle_retention(0.6);
+else if(part=="cradle-retention-early") cradle_retention(0.2);
 else if(part=="gps-retention") intersection() {
     installed_holders();
     gps_frame(gps_z+gps_plate+0.6) cube(gps_size);

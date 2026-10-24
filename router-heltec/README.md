@@ -20,6 +20,23 @@ The original `router/` design is unchanged.
 
 The Heltec sits on a removable cradle, with its USB-C connector facing the right
 cable bay. Four long spring arms retain the PCB edges independently of the lid.
+The user found even the first tighter cradle loose in PETG. The revised arms
+are **2.0 mm thick** (up from 1.8 mm), and their upper contact faces are **25.0 mm
+apart** (previously 25.2 mm) around the nominal 25.4 mm-wide PCB: **0.2 mm preload
+per side**. The lower arms remain outside the headers; a 45° transition
+moves the contacts inward only above the PCB underside. The hooked tips overlap
+the edge by 0.8 mm relaxed, or 0.6 mm after nominal preload deflection, with only
+0.05 mm initial lift clearance. The board now seats 0.9 mm higher to bring the screen into the lid opening.
+
+The build checks each clip's seated contact and retention at 0.2 and 0.6 mm
+lift, allowing intentional interference only at the PCB edges. Retention checks
+shift the tips outward by the preload before testing; this approximates their
+position, not spring force. **Reprint the Heltec cradle and your chosen lid** for the combined grip and
+screen-height revision. The tighter PETG fit needs a physical trial: release the arms when
+removing the board, and do not force the display. Parameters
+`cradle_clip_preload`, `cradle_clip_thickness`, `cradle_clip_hook` and
+`cradle_clip_lift_gap` control the fit if further tuning is needed.
+
 Four hollow support pads clear the factory screen fasteners. The two GPS-end
 pads have C-shaped seating faces: their connector reliefs remain open through
 the top, removing the former unsupported caps. All four clips have 45° lower
@@ -32,11 +49,18 @@ not clamp the display or rely on the glass for retention.
 
 ![Revised cradle with sloping hooks and open rear seats](images/heltec-cradle.png)
 
-The screen opening is **33.6 × 19.2 mm**. With the provisional 8 mm-thick USB-C plug,
-the screen cover top sits **1.2 mm below the lid surface**. A local recess beneath
-the lid clears the plug while retaining a **1.2 mm roof**. Changing the plug height
-parameter automatically adjusts the cradle height and lid pocket together.
-A 6 mm-thick plug allows the display to sit 0.3 mm below the surface.
+The screen opening is **33.6 × 19.2 mm**. Using the user-measured **approximately
+6.5 mm-thick USB-C plug**, the cradle now raises the board **0.9 mm** and puts the
+screen cover top **0.3 mm below the lid surface**. The underside USB-C pocket is
+**1.35 mm deep** (0.15 mm deeper), leaving a **1.05 mm roof** and **0.3 mm nominal
+clearance above the plug**. Both logo and plain lids use this pocket. Print the
+new cradle with a matching new lid; the previous pocket is 0.15 mm shallower.
+Plug height automatically adjusts the cradle height and lid pocket together;
+the cable model assumes the moulding is centred on the USB-C connector.
+
+![Cutaway through the raised screen and USB-C pocket](images/screen-section.png)
+
+[Open the editable cutaway](test/screen-section.scad) to inspect both clearances.
 
 The GPS holder sits at the Heltec expansion end, allowing the user's measured
 **38 mm extension** from the Heltec PCB edge to the far end of the GPS. Its tray
@@ -177,12 +201,14 @@ a short bridge. The revised cradle removes the flat clip overhangs and rear
 support ledges; inspect its 45° ramps in the slicer with your chosen material and
 layer settings. Print fit and grip still need checking on the actual board.
 
-For this USB-access revision, **reprint the Heltec base and USB cover**.
-The HDMI and SD covers, both lids and internal holders can be reused. The USB
-cover from the divided opening is incompatible with the new joined opening.
-The SD cover remains geometrically identical to the original `router/` cover.
-PETG is the intended next trial material for the flexible arms and covers; neither
-spring force nor fatigue has been physically verified. Start with the existing
+For the current grip and screen-height revision, **reprint the Heltec cradle
+and either the logo lid or plain lid**. Reuse the base, port covers, GPS holder
+and logo inlay. If upgrading from the older divided USB/Ethernet opening, also
+use the matching revised base and three-sided USB cover; that earlier cover
+is incompatible with the joined opening. The SD cover remains geometrically
+identical to the original `router/` cover.
+The user is printing the cradle in PETG. This latest grip adjustment needs a
+physical trial; holding force and fatigue have not been measured. Start with the existing
 router's 0.2 mm layers, 0.4 mm nozzle and four perimeters, then inspect the slicer
 preview around the narrow support walls and spring roots.
 
@@ -208,8 +234,9 @@ preview around the narrow support walls and spring roots.
    posts, leaving clearance above the module.
 6. Connect the internal USB data cable to the upper internal Pi socket and route
    it through the right bay to the Heltec. Current envelopes allow a 24 × 12 × 9 mm
-   USB-A housing and a 20 × 12 × 8 mm USB-C housing. These are provisional cable
-   dimensions, not a guarantee for all plugs.
+   USB-A housing and a 20 × 12 × 6.5 mm USB-C housing. Only the USB-C thickness
+   is user-measured; other cable dimensions and moulding centring remain
+   provisional. Check the actual cable before tightening the lid.
 7. Check the screen cover fits the coupon and lid opening freely. Close with six
    M3 × 10 mm screws. Install the port covers as needed. Add feet for floor airflow.
 

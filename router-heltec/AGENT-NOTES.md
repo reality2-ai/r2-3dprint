@@ -338,3 +338,143 @@ exports retain HEAD bytes after canonical comparison; only the base and
 Heltec cradle differ. The user explicitly authorized committing and pushing
 these antenna/cradle changes after validation. The preceding USB revision
 was published in `72ca1d6`.
+
+
+## Active revision — PETG cradle grip
+
+Antenna/cradle printability changes were committed and pushed as `c01c373`.
+The user physically tried the cradle in PETG: the board sits loosely, the
+clips flex too easily, and the main issue is their spacing. No measured PCB
+width was supplied; retain nominal 25.4 mm. The old arms had 0.3 mm clearance
+each side and approximately 0.35 mm free lift before their sloped hooks met
+the board. Passing the old geometric lift test did not establish usable grip.
+
+New parameters: `cradle_clip_preload=0.1`, `cradle_clip_thickness=1.8`,
+`cradle_clip_hook=0.7`, `cradle_clip_lift_gap=0.05`. Opposing upper contact
+faces are 25.2 mm apart (0.8 mm closer than before); lower arms stay outside
+headers. At the PCB underside a 45° neck transitions inward over 0.4 mm.
+The arm thickness rises from 1.2 to 1.8 mm, with existing flared roots.
+Hook undersides remain 45°. Relaxed overlap 0.7 mm becomes 0.6 mm when the
+tip is displaced outward by the nominal preload. Board seats and mounts stay.
+
+`cradle_spring_contact_zones` masks only PCB-edge regions above its underside.
+The holder collision test excludes these intended preload regions, retaining
+all other checks. New individual contact checks require all four seated
+contacts and all four hooks at 0.2 and 0.6 mm lift. The retention scene shifts
+tips outward by 0.1 mm before lifting the board, so seated squeeze alone
+cannot satisfy retention. This is a position proxy, not a force simulation.
+
+Focused mesh: single watertight cradle, 3884 triangles, Z=0..23.85. All downward
+surfaces above bed are at least 45° (18 faces). Seated contact ~0.5 mm³ per
+clip; at 0.2 mm lift 0.045 mm³ per hook; at 0.6 mm ~0.605 mm³ per hook.
+Focused holder clearance passed with effectively zero unintended overlap
+(6e-13 mm³). Log: `/tmp/r2-heltec-grip-focus.log`. The final full build exited
+successfully. All 12 exports are single watertight solids on Z=0. All assembly
+clearance checks pass with zero unintended overlap. All four clips pass
+seated preload, 0.2 mm lift and 0.6 mm lift checks. Minimum downward surface
+slope is 45°. Covers, holders, ports and bores also pass; inlay core/unexpected
+contact is zero, grip contact 0.408039 mm³, and plain lid checks pass.
+Log: `/tmp/r2-heltec-grip-build.log`. Reports are current. All eleven unchanged
+STLs retain original bytes after canonical comparison; only cradle export
+changes. No validation process remains running.
+Close-up render completed and was visually checked. Other cradle-containing
+images are regenerated; log `/tmp/r2-heltec-grip-renders.log`.
+Full build, mesh hygiene and final notes are complete. The cradle
+preview was reopened in `r2-router-heltec-preview` on :10; screenshot verified
+and window maximized.
+Only cradle needs reprinting; physical PETG grip of this revision is unverified.
+No commit/push authorization yet for this new grip revision.
+
+
+## Pending measurement — raise the screen into the lid opening
+
+The user reports the printed display sits lower than desired and wants a slightly
+taller Heltec cradle. Current model: PCB underside Z=26.1, screen top Z=33.2,
+lid underside/top Z=32/34.4. A 0.9 mm lift puts the display 0.3 mm below the top.
+The limiting factor is the provisional 8 mm-thick USB-C moulding, not the screen.
+With the existing 1.2 mm-deep pocket and 0.3 mm cable clearance, that lift requires
+a centred USB-C plug body no thicker than 6.2 mm. Asked for its measured thickness;
+no geometry changed pending the answer. Preserve the existing lid pocket (the
+user explicitly chose to keep it), its 1.2 mm roof, and the tighter PETG clips.
+After a measurement, update the cable envelope and cradle height consistently,
+verify hardware clearances and retention, and run the required full build. The
+previous PETG grip revision remains validated and uncommitted.
+
+The user additionally reports the Heltec holder is still a bit loose. Asked
+whether the board moves between clips or the whole holder moves on mounting
+screws, and whether the print uses the latest 1.8 mm arms / 25.2 mm contact
+spacing revision. Do not assume that uncommitted revision has been physically
+tested, or blindly increase preload before identifying which fit is loose.
+Combine the resulting fit correction with the pending height adjustment.
+
+
+## Active revision — second PETG grip correction
+
+User confirms the latest 1.8 mm-arm / 25.2 mm-spacing cradle was printed and
+the PCB still moves between the clips; the holder itself is firmly mounted.
+Increase nominal preload from 0.1 to 0.2 mm per side (25.0 mm contact spacing),
+arm thickness from 1.8 to 2.0 mm, and relaxed hook overlap from 0.7 to 0.8 mm
+to retain 0.6 mm overlap after nominal deflection. Preserve the 0.05 mm lift
+gap and sloping neck/hook undersides. Physical grip is still a trial; no
+measured PCB width was supplied. Screen-height change remains pending the
+USB-C plug thickness; do not silently reduce the assumed cable envelope.
+Validation and exports/renders completed below. No commit/push requested.
+
+Focused and full validation completed successfully; no validation processes
+remain running. Logs: /tmp/r2-heltec-grip2-focus.log and
+/tmp/r2-heltec-grip2-build.log. The cradle is a single watertight solid with
+3884 triangles, 5012.68 mm³ volume, height 23.85 mm and minimum downward
+underside angle 45°. Each seated contact is ~0.96 mm³; each hook engages
+0.045 mm³ at 0.2 mm lift and ~0.605 mm³ at 0.6 mm lift. Holder interference
+is zero. All assembly clearance, cover/GPS retention, port and bore checks
+passed. Inlay core/unexpected contact zero, grip contact 0.408039 mm³; plain
+lid checks passed. All 12 exports are single watertight solids at Z=0.
+All eleven unchanged STL exports retained HEAD bytes after canonical mesh
+comparison; only the cradle STL differs. Cradle, holders, assembly and service
+images updated; close-up visually inspected. No GUI preview was opened this
+turn. README/CLAUDE and validation reports are current.
+
+This second grip correction is ready for a PETG print trial, not physically
+validated and not committed/pushed. The requested screen-height increase
+remains pending the USB-C plug thickness. A 0.9 mm lift requires a centred
+plug body at most 6.2 mm thick with the current pocket and 0.3 mm clearance.
+
+
+## Active revision — raised screen and deeper USB-C pocket
+
+User measured USB-C moulding thickness at approximately 6.5 mm, resolving the
+pending measurement. They additionally requested deepening the lid pocket.
+Set measured thickness 6.5 mm, minimum roof 1.05 mm (user's deeper-pocket
+request supersedes former 1.2 mm design constraint). Result: pocket depth
+1.35 mm, 0.15 mm deeper; cradle/PCB seat 0.9 mm higher (local Z21.6, installed
+PCB underside Z27.0), screen top Z34.1, 0.3 mm below lid top. Plug ceiling
+Z33.05 leaves 0.3 mm nominal headroom beneath pocket ceiling Z33.35. Retain
+the latest 2.0 mm arms, 25.0 mm contact spacing and sloped clip undersides.
+USB-C length/width and moulding centring still provisional. Change both lids
+and cradle; no base or cover change intended. Full build and renders pending.
+No commit/push requested for these accumulated changes.
+
+Full build completed successfully (exit 0); no validation process remains
+running. Log: /tmp/r2-heltec-height-build.log. All 12 printable exports are
+single watertight solids at Z=0. All assembly, screen, cable, port-access,
+cover/holder-retention and antenna-bore checks passed. Cradle height is
+24.75 mm, volume 5114.10 mm³; minimum downward underside angle remains 45°.
+Each seated contact ~0.96 mm³; each hook engages ~0.045 mm³ at 0.2 mm lift
+and ~0.605 mm³ at 0.6 mm lift. Inlay core/unexpected contact zero, grip
+contact 0.408039 mm³; plain lid matches logo-lid bounds. Reports current.
+
+Direct mesh measurements confirm support-seat faces at local Z21.6
+(total bearing area 26.7831 mm²). Both lids have pocket-ceiling faces at
+Z1.35 (290.4 mm²) and each loses only 43.56 mm³ from the deeper pocket.
+Nine unchanged STL exports retained HEAD bytes after canonical comparison;
+only cradle, logo lid and plain lid geometry changes. All relevant
+assembly/holder/lid renders refreshed, plus new `test/screen-section.scad`
+and `images/screen-section.png`; cutaway visually inspected. Render
+processes exited successfully. Only X0 was available this turn; no active
+RDP X10 socket, so no live RDP preview opened.
+
+The user explicitly requested committing and pushing these accumulated
+tighter-cradle, raised-screen and deeper-pocket changes after validation.
+All implementation, documentation, exports and checks are complete; ready
+for publication on the existing branch. Reprint the cradle and chosen lid
+together. Physical PETG grip and measured-cable fit require a print trial.

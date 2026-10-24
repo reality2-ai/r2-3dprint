@@ -39,7 +39,7 @@
           2.4
         ]
       ],
-      "volume_mm3": 40734.79
+      "volume_mm3": 40691.23
     },
     "hdmi-cover": {
       "triangles": 516,
@@ -102,7 +102,7 @@
       "volume_mm3": 686.74
     },
     "heltec-cradle": {
-      "triangles": 3820,
+      "triangles": 3884,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -116,10 +116,10 @@
         ],
         [
           0.0,
-          24.05
+          24.75
         ]
       ],
-      "volume_mm3": 4757.87
+      "volume_mm3": 5114.1
     },
     "gps-holder": {
       "triangles": 1836,
@@ -184,7 +184,7 @@
   },
   "cradle_print_overhangs": {
     "minimum_underside_angle_degrees": 45.0,
-    "downward_faces_above_bed": 10
+    "downward_faces_above_bed": 18
   },
   "hardware_envelope_overlap_mm3": 0.0,
   "holder_overlap_mm3": 0.0,
@@ -212,7 +212,25 @@
     "corner": 2.387623
   },
   "usb_cover_retention_engagement_mm3": 4.140007,
-  "cradle_retention_mm3": 0.5,
+  "cradle_seated_preload_per_clip_mm3": [
+    0.959986,
+    0.959986,
+    0.96,
+    0.96
+  ],
+  "cradle_retention_at_0_2_mm_lift_per_clip_mm3": [
+    0.044999,
+    0.044999,
+    0.045,
+    0.045
+  ],
+  "cradle_retention_at_0_6_mm_lift_per_clip_mm3": [
+    0.604995,
+    0.604995,
+    0.605,
+    0.605
+  ],
+  "cradle_retention_mm3": 2.419989,
   "gps_retention_mm3": 2.22,
   "port_alignment": {
     "power_z_mm": [
@@ -269,9 +287,11 @@
     "User confirmed screen cover 33 x 18.6 mm and PCB underside-to-top height 7.1 mm",
     "User measured GPS PCB 18 x 16 mm, total stack 7 mm and 38 mm extension from Heltec end",
     "Screen position on PCB, support-pad clearance, cable bend and SMA thread fit require physical checks",
-    "8 mm USB-C plug thickness is provisional; lid relief and board height adapt to this parameter",
+    "User measured USB-C thickness about 6.5 mm; plug length/width and centring remain provisional; deeper lid pocket leaves 1.05 mm roof and 0.3 mm plug clearance",
     "GPS antenna points upward; internal component stack is a simplified maximum envelope",
     "Holder seating and retention are geometric checks, not a prediction of spring force",
+    "PETG cradle has 0.2 mm nominal PCB-edge preload per side, 2.0 mm arms and 45-degree hook undersides; physical grip requires a new trial",
+    "Cradle retention tests shift each spring outward by its nominal preload before lifting the PCB; this is a tip-position proxy, not elastic simulation",
     "Cover spring force, fatigue and insertion fit require a physical PETG test",
     "Previous PLA clips broke at the face; wider filleted roots and reduced hooks are geometry changes, not a validated strength or fatigue result",
     "Retention volumes count only hook engagement beyond the spring-preload allowance, individually for HDMI, SD and USB covers",

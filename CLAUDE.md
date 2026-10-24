@@ -104,7 +104,11 @@ Use the user-confirmed screen cover 33 × 18.6 mm, PCB underside-to-screen heigh
 7.1 mm, GPS PCB 18 × 16 mm, total GPS thickness 7 mm and approximately 38 mm
 extension from the Heltec end. The factory display cover stays fitted. Retain
 by the PCB, without clamping the glass. USB-C plug height drives both cradle
-height and the lid relief; retain at least 1.2 mm above that relief. GPS antenna
+height and the lid relief. The user measured USB-C thickness at about 6.5 mm
+and requested a deeper pocket: 1.35 mm deep with a minimum 1.05 mm roof. This
+raises the cradle seat by 0.9 mm, leaving the display 0.3 mm below the lid top
+and 0.3 mm nominal clearance above a centred plug. Update both lid variants
+and the cradle together; retain the tighter PETG arms. GPS antenna
 faces upward in a removable tray, retained by a screw-on bridge. Both rear
 antenna positions are symmetrical, X=28/112 and Z=20, with independent hole sizes.
 Their 4 mm reinforcement pads transition from the 2.4 mm wall with 45° underside
@@ -113,9 +117,18 @@ and circular bores; the ramps address the pad's hanging lower ledge, not bore sa
 The source uses simplified envelopes; physical fit, spring durability, antenna
 routing and thermal validation remain necessary. See its README and
 `references/dimensions.json` for measured versus provisional dimensions.
-The cradle's clip undersides slope at 45°, with unchanged 0.5 mm edge overlap.
+The user's second PETG trial found the tightened cradle still loose. Its
+2.0 mm-thick arms now have 0.2 mm nominal PCB-edge preload per side: faces 25.0 mm
+apart for the 25.4 mm board. Keep the lower arms outside the headers; the
+45° neck moves inward only above the PCB underside. Hook overlap is 0.8 mm
+relaxed, 0.6 mm after nominal deflection, with 0.05 mm lift clearance.
+Only the explicit PCB-edge masks may contain relaxed spring interference.
+Check all four seated contacts and individual retention at 0.2 and 0.6 mm
+lift, shifting tips outward by the nominal preload so squeeze alone cannot
+count as hook retention. This proxy does not simulate spring force.
+The cradle's clip undersides still slope at 45°.
 The rear support-post connector reliefs continue through the top, leaving
-C-shaped bearing faces at the original seating height instead of unsupported
+C-shaped bearing faces at the calculated seating height instead of unsupported
 caps. Preserve connector and screw clearance. The build checks that downward
 surfaces above the print bed are at least 45° and that the clips still retain
 the PCB when lifted. This checks geometry, not retention force or print quality.

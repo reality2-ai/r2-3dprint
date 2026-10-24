@@ -172,6 +172,26 @@ def check_cradle_overhangs(path):
                 downward_faces_above_bed=len(angles))
 
 
+def connected_contact_volumes(faces):
+    by_vertex=collections.defaultdict(set)
+    for i,face in enumerate(faces):
+        for p in face:
+            by_vertex[tuple(round(n,5) for n in p)].add(i)
+    pending=set(range(len(faces)))
+    volumes=[]
+    while pending:
+        component={pending.pop()}
+        stack=list(component)
+        while stack:
+            for p in faces[stack.pop()]:
+                for neighbour in by_vertex[tuple(round(n,5) for n in p)] & pending:
+                    pending.remove(neighbour)
+                    component.add(neighbour)
+                    stack.append(neighbour)
+        volumes.append(round(volume([faces[i] for i in component]),6))
+    return sorted(volumes)
+
+
 def main():
     (ROOT / "stl").mkdir(exist_ok=True)
     report = {"status": "digital prototype; physical fit not verified", "parts": {}}
@@ -251,12 +271,27 @@ def main():
                     report['usb_cover_individual_hook_retention_mm3'] = volumes
                 report[f"{cover}_cover_{metric}_mm3"] = round(overlap, 6)
                 print(f"{scene}: passed", flush=True)
+    for scene,key in [('cradle-spring-contact','cradle_seated_preload_per_clip_mm3'),
+                      ('cradle-retention-early','cradle_retention_at_0_2_mm_lift_per_clip_mm3')]:
+        with tempfile.TemporaryDirectory() as temp:
+            output=Path(temp)/'contact.stl'
+            render(output,scene)
+            contacts=connected_contact_volumes(triangles(output)) if output.exists() else []
+            assert len(contacts)==4 and all(v>0.01 for v in contacts), f'{scene}: all four clips must engage: {contacts}'
+            if scene=='cradle-spring-contact':
+                assert all(v<1 for v in contacts), f'Excessive PCB-edge preload: {contacts}'
+            report[key]=contacts
+            print(f'{scene}: all four clips engage',flush=True)
     for part in ("cradle", "gps"):
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / "retention.stl"
             render(output, f"{part}-retention")
             overlap = volume(triangles(output)) if output.exists() else 0
             assert overlap > 0.01, f"{part}: module is not retained when lifted"
+            if part=='cradle':
+                contacts=connected_contact_volumes(triangles(output))
+                assert len(contacts)==4 and all(v>0.1 for v in contacts), f'Every cradle hook must retain the lifted PCB: {contacts}'
+                report['cradle_retention_at_0_6_mm_lift_per_clip_mm3']=contacts
             report[f"{part}_retention_mm3"] = round(overlap, 6)
             print(f"{part} retention: passed", flush=True)
     report["port_alignment"] = check_port_alignment()
@@ -291,9 +326,11 @@ def main():
                         "User confirmed screen cover 33 x 18.6 mm and PCB underside-to-top height 7.1 mm",
                         "User measured GPS PCB 18 x 16 mm, total stack 7 mm and 38 mm extension from Heltec end",
                         "Screen position on PCB, support-pad clearance, cable bend and SMA thread fit require physical checks",
-                        "8 mm USB-C plug thickness is provisional; lid relief and board height adapt to this parameter",
+                        "User measured USB-C thickness about 6.5 mm; plug length/width and centring remain provisional; deeper lid pocket leaves 1.05 mm roof and 0.3 mm plug clearance",
                         "GPS antenna points upward; internal component stack is a simplified maximum envelope",
                         "Holder seating and retention are geometric checks, not a prediction of spring force",
+                        "PETG cradle has 0.2 mm nominal PCB-edge preload per side, 2.0 mm arms and 45-degree hook undersides; physical grip requires a new trial",
+                        "Cradle retention tests shift each spring outward by its nominal preload before lifting the PCB; this is a tip-position proxy, not elastic simulation",
                         "Cover spring force, fatigue and insertion fit require a physical PETG test",
                         "Previous PLA clips broke at the face; wider filleted roots and reduced hooks are geometry changes, not a validated strength or fatigue result",
                         "Retention volumes count only hook engagement beyond the spring-preload allowance, individually for HDMI, SD and USB covers",
