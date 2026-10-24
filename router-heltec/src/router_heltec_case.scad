@@ -288,6 +288,18 @@ module lid_bosses() {
             }
         }
 }
+module antenna_pad(x) {
+    // Keep the flat washer/nut seat and full panel thickness. Build the
+    // inward projection gradually from the wall with a 45-degree underside.
+    projection=antenna_panel-wall;
+    bottom=antenna_z-9;
+    translate([x-10,0,0]) rotate([90,0,90]) linear_extrude(20)
+        polygon([[outer_d,bottom-projection],
+                 [outer_d-wall,bottom-projection],
+                 [outer_d-antenna_panel,bottom],
+                 [outer_d-antenna_panel,antenna_z+9],
+                 [outer_d,antenna_z+9]]);
+}
 module base() {
     difference() {
         union() {
@@ -304,8 +316,8 @@ module base() {
                 cylinder(d=8,h=gps_z-floor_h+eps);
             lid_bosses();
             // Antenna pad is separated from electronics, with room for washer/nut.
-            prism(antenna_x-10,outer_d-antenna_panel,antenna_z-9,20,antenna_panel,18);
-            prism(wifi_antenna_x-10,outer_d-antenna_panel,antenna_z-9,20,antenna_panel,18);
+            antenna_pad(antenna_x);
+            antenna_pad(wifi_antenna_x);
         }
         port_cuts();
         wifi_antenna_cut();
@@ -514,13 +526,14 @@ module cradle_outline() {
 module cradle_spring(u,side) {
     // Long, lightly deflected arms with flared roots. Hook overlaps only the
     // outer 0.5 mm of the PCB, clear of headers and the factory screen casing.
+    // A 45-degree underside grows the hook from the arm without a flat ledge.
     seat=heltec_bottom-cradle_z;
     top=seat+heltec_size[2]+0.25;
     translate([u,side<0?0:heltec_size[1],0]) scale([1,side,1])
         rotate([0,0,90]) rotate([90,0,0]) linear_extrude(4,center=true)
             polygon([[0.3,cradle_plate-0.2],[2.8,cradle_plate-0.2],
-                [1.5,5],[1.5,top+1.5],[0.3,top+1.5],[-0.5,top+0.4],
-                [-0.5,top],[0.3,top]]);
+                [1.5,5],[1.5,top+1.5],[0.3,top+1.5],[-0.5,top+1],
+                [-0.5,top+0.6],[0.3,top-0.2]]);
 }
 module heltec_cradle() {
     seat=heltec_bottom-cradle_z;
@@ -537,10 +550,10 @@ module heltec_cradle() {
         for(p=cradle_mounts) translate([p[0],p[1],-eps]) cylinder(d=2.8,h=cradle_plate+1);
         for(p=heltec_pads) translate([p[0],p[1],cradle_plate]) cylinder(d=3.2,h=seat+1);
         prism(20,8.7,-eps,20,8,cradle_plate+1);
-        // GNSS plug passes between the rear support pads. Relieve their inner
-        // faces below the PCB; the outer post walls and top seating rings stay
-        // joined. The resulting short ledges bridge less than 2 mm.
-        prism(43.3,6.1,seat-6.5,6,13.2,5.9);
+        // GNSS plug passes between the rear pads. Keep the inner relief open
+        // through the top, removing the unsupported caps. The remaining outer
+        // C-shaped seats support the PCB at the same height and clear screws.
+        prism(43.3,6.1,seat-6.5,6,13.2,6.5+eps);
     }
 }
 module gps_holder_outline() {

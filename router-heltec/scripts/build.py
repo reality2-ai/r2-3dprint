@@ -153,6 +153,25 @@ def check_antenna_bores():
     return report
 
 
+def check_cradle_overhangs(path):
+    # Inspect actual downward-facing mesh surfaces above the bed. The old
+    # flat hook undersides and rear-post caps would both fail this check.
+    angles=[]
+    for a,b,c in triangles(path):
+        if min(a[2],b[2],c[2]) < 0.001:
+            continue
+        u=[b[i]-a[i] for i in range(3)]
+        v=[c[i]-a[i] for i in range(3)]
+        n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]]
+        if n[2] < -0.00001:
+            angle=math.degrees(math.atan2(math.hypot(n[0],n[1]),-n[2]))
+            assert angle>=44.9, f'Cradle underside too shallow: {angle:.3f} degrees'
+            angles.append(angle)
+    assert angles, 'Expected sloping hook undersides'
+    return dict(minimum_underside_angle_degrees=round(min(angles),3),
+                downward_faces_above_bed=len(angles))
+
+
 def main():
     (ROOT / "stl").mkdir(exist_ok=True)
     report = {"status": "digital prototype; physical fit not verified", "parts": {}}
@@ -160,6 +179,8 @@ def main():
         output = ROOT / f"stl/router-heltec-{part}.stl"
         render(output, part)
         report["parts"][part] = inspect(output)
+        if part == 'heltec-cradle':
+            report['cradle_print_overhangs'] = check_cradle_overhangs(output)
         print(f"{part}: watertight, one connected solid", flush=True)
     scenes = [("interference", "hardware_envelope_overlap_mm3"),
                        ("holder-interference", "holder_overlap_mm3"),

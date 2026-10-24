@@ -107,9 +107,18 @@ by the PCB, without clamping the glass. USB-C plug height drives both cradle
 height and the lid relief; retain at least 1.2 mm above that relief. GPS antenna
 faces upward in a removable tray, retained by a screw-on bridge. Both rear
 antenna positions are symmetrical, X=28/112 and Z=20, with independent hole sizes.
+Their 4 mm reinforcement pads transition from the 2.4 mm wall with 45° underside
+ramps: 1.6 mm inward growth over Z=9.4..11 mm. Preserve the flat washer/nut seats
+and circular bores; the ramps address the pad's hanging lower ledge, not bore sag.
 The source uses simplified envelopes; physical fit, spring durability, antenna
 routing and thermal validation remain necessary. See its README and
 `references/dimensions.json` for measured versus provisional dimensions.
+The cradle's clip undersides slope at 45°, with unchanged 0.5 mm edge overlap.
+The rear support-post connector reliefs continue through the top, leaving
+C-shaped bearing faces at the original seating height instead of unsupported
+caps. Preserve connector and screw clearance. The build checks that downward
+surfaces above the print bed are at least 45° and that the clips still retain
+the PCB when lifted. This checks geometry, not retention force or print quality.
 
 The optional logo inlay is `router-heltec/src/logo_inlay.scad`. It reads the
 shared profile and dimensions from its matching lid. The current Heltec tree is

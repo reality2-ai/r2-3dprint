@@ -266,3 +266,75 @@ triangle comparison; only the base and USB cover geometry changed. The full
 validation report and documentation are current. Publication is authorized. A hand-cut existing base may need
 cover adjustment because its cutback was approximate; the exported base/cover
 are a matching pair. Physical fit/retention of the new cover remains untested.
+
+
+## Current revision — sloping antenna-pad undersides
+
+The USB revision was committed and pushed as `72ca1d6`. The user now reports
+the bottom of the wider antenna reinforcement section drooping during printing
+and asks for an angled underside. Both interior pads now have 45-degree ramps
+from the 2.4 mm wall to their 4 mm mounting thickness. Each ramp adds 1.6 mm
+inward over Z=9.4..11, across the full 20 mm pad width. The existing flat
+washer/nut seat, top, bore size and bore centres are unchanged. Only the base
+requires reprinting. No bore-shape or cover changes are intended.
+
+The actual exported base is watertight. A direct mesh check found both ramp
+faces on plane Y+Z=151 with full expected area 45.2550 mm² each, confirming
+the 45-degree slope and 20 mm width. Base volume increased by 51.2003 mm³,
+matching the two triangular ramps (51.2 mm³ expected). The antenna-only
+full build passed enclosure checks but was stopped during inlay validation
+when the cradle follow-up below was added. Its retained log is
+`/tmp/r2-heltec-antenna-ramp-build.log`; the combined run below supersedes it.
+Interior section scene `test/antenna-ramps.scad` omits the floor to show the
+undersides; it does not alter the exported base. It is open in RDP :10 using
+`r2-router-heltec-preview`. The render `images/antenna-ramps.png` and live RDP preview were visually
+checked; the user said the change should work. Internal assembly/service
+renders are refreshed. Eight unchanged enclosure STLs retain original bytes
+after canonical triangle comparison. Physical print behaviour remains unverified.
+
+
+## Active follow-up — cradle overhangs
+
+While the antenna-ramp full build was running, the user reported unsupported
+features on the main Heltec mount, especially the clips, and wants to avoid
+large amounts of slicer support. The antenna build passed all enclosure,
+clearance, retention, port and bore checks, but was stopped during unchanged
+inlay checks so the final combined geometry can be checked in one full build.
+Do not cite the stopped run as a complete build.
+
+The four spring-arm hooks now grow inward along 45-degree undersides instead
+of flat ledges. Their outer 0.5 mm PCB overlap and overall top height remain.
+The underside starts at [0.3,top-0.2], reaches [-0.5,top+0.6], and meets the
+upper lead-in at [-0.5,top+1]. The rear support-post relief now continues
+through the seat (6.5+eps high), removing the unsupported 0.6 mm caps and
+leaving C-shaped bearing faces at the same board height. Front pads unchanged.
+
+Focused mesh check passed: single watertight cradle. New check
+`check_cradle_overhangs` inspects actual downward mesh faces above the bed;
+minimum slope is 45 degrees (10 faces). Original flat hooks/caps would fail.
+Direct mesh measurements find all four bearing faces at Z=20.7 mm relative
+to the cradle base: front annuli 8.552 mm² each, rear C-shaped seats 4.840 mm²
+each. All remain connected to the base; physical bearing/strength is untested.
+Cradle retention at 0.6 mm lift is 0.5 mm³ (previously 2.8), still positive;
+this is geometric contact, not measured grip force. Focused holder clearance
+passed with effectively zero overlap (6e-13 mm³), and the focused run exited
+successfully. Its log is `/tmp/r2-heltec-cradle-focus.log`. The combined final
+full build exited successfully. All 12 meshes are single watertight solids
+on Z=0; all assembly overlaps are zero, all cover/holder retention checks pass,
+and measured ports/bores are correct. The cradle underside minimum is 45°.
+The inlay has zero core/unexpected contact and 0.408039 mm³ grip contact.
+Plain lid verification passed. Reports are current in `test/validation.json`,
+`test/inlay-validation.json` and `test/plain-lid-validation.json`. The log is
+`/tmp/r2-heltec-printability-build.log`. No validation process remains running.
+
+New scene/render: `test/heltec-cradle.scad`, `images/heltec-cradle.png`; render
+visually checked. CAD reopened in `r2-router-heltec-preview` on :10. The
+antenna-ramp source/render remain. Holders and internal/assembly renders completed successfully; log
+`/tmp/r2-heltec-cradle-renders.log`. Seven unchanged enclosure STLs retain
+HEAD bytes after canonical comparison. Only base and cradle geometry changes
+are intended in the combined revision. README/CLAUDE describe the changes.
+Full build, mesh hygiene and notes are complete. All ten unchanged STL
+exports retain HEAD bytes after canonical comparison; only the base and
+Heltec cradle differ. The user explicitly authorized committing and pushing
+these antenna/cradle changes after validation. The preceding USB revision
+was published in `72ca1d6`.

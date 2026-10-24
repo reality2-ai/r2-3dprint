@@ -19,7 +19,7 @@
           32.0
         ]
       ],
-      "volume_mm3": 87270.09
+      "volume_mm3": 87321.29
     },
     "lid": {
       "triangles": 19864,
@@ -102,7 +102,7 @@
       "volume_mm3": 686.74
     },
     "heltec-cradle": {
-      "triangles": 4164,
+      "triangles": 3820,
       "components": 1,
       "manifold": true,
       "bounds_mm": [
@@ -119,7 +119,7 @@
           24.05
         ]
       ],
-      "volume_mm3": 4761.05
+      "volume_mm3": 4757.87
     },
     "gps-holder": {
       "triangles": 1836,
@@ -182,6 +182,10 @@
       "volume_mm3": 1159.08
     }
   },
+  "cradle_print_overhangs": {
+    "minimum_underside_angle_degrees": 45.0,
+    "downward_faces_above_bed": 10
+  },
   "hardware_envelope_overlap_mm3": 0.0,
   "holder_overlap_mm3": 0.0,
   "antenna_bulkhead_overlap_mm3": 0.0,
@@ -208,7 +212,7 @@
     "corner": 2.387623
   },
   "usb_cover_retention_engagement_mm3": 4.140007,
-  "cradle_retention_mm3": 2.8,
+  "cradle_retention_mm3": 0.5,
   "gps_retention_mm3": 2.22,
   "port_alignment": {
     "power_z_mm": [

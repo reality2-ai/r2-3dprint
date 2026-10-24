@@ -20,10 +20,17 @@ The original `router/` design is unchanged.
 
 The Heltec sits on a removable cradle, with its USB-C connector facing the right
 cable bay. Four long spring arms retain the PCB edges independently of the lid.
-Four hollow support pads clear the factory screen fasteners; reliefs beneath the
-GPS-end pads let the connector pass between them. The factory screen cover stays
+Four hollow support pads clear the factory screen fasteners. The two GPS-end
+pads have C-shaped seating faces: their connector reliefs remain open through
+the top, removing the former unsupported caps. All four clips have 45° lower
+ramps so the hooks grow out from the arms without flat overhangs. The build
+checks the exported cradle's downward-facing surfaces for a minimum 45° slope,
+as well as board retention and component clearance. The board seating height
+is unchanged. The factory screen cover stays
 fitted. The lid surrounds that cover with **0.3 mm clearance per side**; it does
 not clamp the display or rely on the glass for retention.
+
+![Revised cradle with sloping hooks and open rear seats](images/heltec-cradle.png)
 
 The screen opening is **33.6 × 19.2 mm**. With the provisional 8 mm-thick USB-C plug,
 the screen cover top sits **1.2 mm below the lid surface**. A local recess beneath
@@ -41,6 +48,14 @@ No fragile snap fingers are used on the GPS holder.
 Two rear antenna holes are at **X=28 and X=112 mm**, both **Z=20 mm**, so each is
 28 mm from its nearest side. Both currently use **6.5 mm clearance holes** and
 **4 mm reinforced panels**, with room for an 11 mm nut and 10 mm internal tail.
+Each panel now has a **45° underside ramp** instead of an abrupt inward ledge.
+The ramp grows 1.6 mm into the case over 1.6 mm of height, from Z=9.4 to 11 mm,
+so the printer can build the reinforcement gradually. The flat nut/washer
+seat, panel thickness, hole size and hole positions are unchanged. This revision
+requires only a new base; physical print quality still needs checking.
+
+![Inside view of the sloped antenna-pad undersides](images/antenna-ramps.png)
+
 The bores use 128 segments, independently of the other geometry, keeping the
 CAD facet error at about 0.001 mm radially. Printed ovality or a sagging upper edge
 is a separate print-process issue; this resolution change addresses CAD facets.
@@ -158,8 +173,9 @@ Print the screen coupon and holders first to check the actual components before
 printing the full enclosure. All exported parts sit on Z=0 in their print
 orientation. Base cavity, cradle arms, GPS tray and port-cover clips point upward;
 the lid prints with its recessed logo upward. The USB relief in the lid requires
-a short bridge. Check this bridge and the small ledges over the GPS connector
-reliefs in the cradle when slicing.
+a short bridge. The revised cradle removes the flat clip overhangs and rear
+support ledges; inspect its 45° ramps in the slicer with your chosen material and
+layer settings. Print fit and grip still need checking on the actual board.
 
 For this USB-access revision, **reprint the Heltec base and USB cover**.
 The HDMI and SD covers, both lids and internal holders can be reused. The USB
@@ -168,7 +184,7 @@ The SD cover remains geometrically identical to the original `router/` cover.
 PETG is the intended next trial material for the flexible arms and covers; neither
 spring force nor fatigue has been physically verified. Start with the existing
 router's 0.2 mm layers, 0.4 mm nozzle and four perimeters, then inspect the slicer
-preview around the narrow support rings and spring roots.
+preview around the narrow support walls and spring roots.
 
 ![Matching HDMI, SD and USB covers, inside faces up](images/covers.png)
 ![Cradle, GPS tray and removable retaining bridge](images/holders.png)
@@ -182,7 +198,7 @@ preview around the narrow support rings and spring roots.
 3. Screw the empty Heltec cradle to its two short base bosses using two
    M2.5 × 5 mm screws. The pilot holes are 2.1 mm; check thread fit in spare plastic.
 4. Fit the Heltec, display up and USB-C toward the right cable bay. Gently spread
-   the long arms and seat the PCB on the support rings. Check that the factory
+   the long arms and seat the PCB on the four support faces. Check that the factory
    screws, underside connectors and headers clear the supports. Release the arms
    to latch over the PCB edges, keeping force off the display.
 5. Screw the GPS tray to its two tall base bosses using two M2.5 × 6 mm screws.
