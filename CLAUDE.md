@@ -162,6 +162,28 @@ and underside USB-C relief identical. The full build also runs
 `scripts/build_plain_lid.py`, checking its watertight mesh and matching overall
 dimensions, and exports `stl/router-heltec-lid-plain.stl` separately.
 
+### Compact radar battery holders
+
+`battery-holder/` contains two- and three-cell variants for user-measured
+64 mm-long, 18 mm-diameter cells, side by side and wired in parallel by the user.
+**66 mm is the absolute outside length limit.** The model is 65.8 mm long,
+including seated 0.8 mm continuous end walls and provisional 0.1 mm copper tape at
+each terminal. Tape thickness, chemistry and actual terminal geometry remain
+unconfirmed. Do not substitute nominal 18650 dimensions for the measurements,
+increase the length, or claim electrical/charger compatibility.
+Run `python3 battery-holder/scripts/build.py` after geometry changes. Keep both
+tray and band exports and the one-cell fit piece single connected, watertight
+solids. Both ends must offer uninterrupted tape backing across all cells, as
+requested by the user. Longitudinal rails stop 0.8 mm short of the relaxed
+contact lands, allowing the walls to flex from the floor; keep these gaps clear.
+Check tape-land continuity, relief gaps, cell/band clearance, intended relaxed-wall
+interference and retention. The shared wall couples all contacts; full-width
+contact pressure must be tested with every actual cell. Printed wall force,
+creep, tape performance and physical fit remain
+unverified. The three-cell assembly is 60.1 mm wide with bands and exceeds the
+PCB's recorded 54 mm battery reservation; box width/height need confirmation.
+Use the user's XRDP display for previews when available; see its render script.
+
 ## Adding a New Device
 
 When adding a new device case:

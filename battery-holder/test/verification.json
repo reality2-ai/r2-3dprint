@@ -1,0 +1,108 @@
+{
+  "status": "digital prototype; physical fit and contact force unverified",
+  "cell_mm": [
+    64,
+    18
+  ],
+  "hard_length_limit_mm": 66,
+  "nominal_length_mm": 65.8,
+  "assumed_tape_plus_adhesive_mm": 0.1,
+  "parts": {
+    "battery-2-tray.stl": {
+      "triangles": 140,
+      "connected_solids": 1,
+      "watertight": true,
+      "consistent_winding": true,
+      "size_mm": [
+        65.8,
+        39.0,
+        12.0
+      ],
+      "volume_mm3": 4448.699
+    },
+    "battery-2-band.stl": {
+      "triangles": 48,
+      "connected_solids": 1,
+      "watertight": true,
+      "consistent_winding": true,
+      "size_mm": [
+        21.0,
+        41.0,
+        5.0
+      ],
+      "volume_mm3": 561.95
+    },
+    "battery-3-tray.stl": {
+      "triangles": 156,
+      "connected_solids": 1,
+      "watertight": true,
+      "consistent_winding": true,
+      "size_mm": [
+        65.8,
+        58.1,
+        12.0
+      ],
+      "volume_mm3": 6417.28
+    },
+    "battery-3-band.stl": {
+      "triangles": 48,
+      "connected_solids": 1,
+      "watertight": true,
+      "consistent_winding": true,
+      "size_mm": [
+        21.0,
+        60.1,
+        5.0
+      ],
+      "volume_mm3": 757.725
+    },
+    "battery-contact-fit.stl": {
+      "triangles": 124,
+      "connected_solids": 1,
+      "watertight": true,
+      "consistent_winding": true,
+      "size_mm": [
+        65.8,
+        19.9,
+        12.0
+      ],
+      "volume_mm3": 2480.117
+    }
+  },
+  "checks": {
+    "2": {
+      "seated-interference_mm3": 0.0,
+      "unexpected-interference_mm3": 0.0,
+      "preload-interference_mm3": 38.688154,
+      "tape-land-missing_mm3": 0,
+      "end-relief-interference_mm3": 0,
+      "band-interference_mm3": 0,
+      "band-retention_mm3": 5.25,
+      "cell-retention_mm3": 18.194658,
+      "length_budget_rejections": "passed"
+    },
+    "3": {
+      "seated-interference_mm3": 0.0,
+      "unexpected-interference_mm3": 0.0,
+      "preload-interference_mm3": 58.03223,
+      "tape-land-missing_mm3": 0,
+      "end-relief-interference_mm3": 0,
+      "band-interference_mm3": 0,
+      "band-retention_mm3": 8.115,
+      "cell-retention_mm3": 27.29197,
+      "length_budget_rejections": "passed"
+    }
+  },
+  "loaded_with_bands_mm": {
+    "2": [
+      65.8,
+      41.0,
+      21
+    ],
+    "3": [
+      65.8,
+      60.1,
+      21
+    ]
+  }
+}
