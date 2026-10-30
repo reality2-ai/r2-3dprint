@@ -1,11 +1,12 @@
-// Radar Sensor Box: user-measured 64 x 18 mm cells, parallel, 66 mm HARD limit.
+// Radar Sensor Box: reported 64 x 18 mm cells, parallel, revised 67 mm HARD limit.
 // Units: mm. Prototype: contact force, tape thickness and print fit unverified.
 // OPENSCAD -D 'cells=3' -D 'part="tray"' ...
 cells = 2;
 part = "tray"; // tray, band, assembly, contact-fit; verification scenes below
 cell_l = 64;
 cell_d = 18;
-outside_l = 65.8; // leaves 0.2 mm nominal manufacturing margin to 66
+length_fit_allowance = 1.0; // first print was about 1 mm tight; not a new cell measurement
+outside_l = 66.8; // user approved 67 mm; retain 0.2 mm manufacturing margin
 tape_t = 0.10; // provisional TOTAL copper + adhesive thickness on EACH contact
 end_t = 0.8;
 preload = 0.2; // inward position of each relaxed end wall at terminal height
@@ -28,8 +29,10 @@ pitch = lane + divider_t;
 tray_w = 2*side_t + n*lane + (n-1)*divider_t;
 cell_z = floor_t + cell_d/2;
 packed_h = floor_t + cell_d;
-cell_x = (outside_l-cell_l)/2;
-// Required outward travel to seat the measured cell with the assumed tape.
+fit_l = cell_l + length_fit_allowance;
+cell_x = (outside_l-fit_l)/2;
+// Required travel for the FIT envelope, including empirical print allowance.
+// Actual contact on a nominal 64 mm cell cannot be inferred from this proxy.
 travel = end_t + preload + tape_t - cell_x;
 leaf_top = cell_z + 2;
 land_z = cell_z - 2;
@@ -37,9 +40,10 @@ band_centres = [outside_l/4, 3*outside_l/4];
 function cy(i) = side_t + lane/2 + i*pitch;
 
 assert(n >= 1 && n <= 3 && floor(n)==n);
-assert(outside_l <= 66, "Outside length exceeds the user limit");
+assert(outside_l <= 67, "Outside length exceeds the revised user limit");
+assert(length_fit_allowance >= 0);
 assert(cell_x >= end_t+tape_t-0.0001,
-       "Cell + two end walls + tape exceed the length budget; do not grow past 66");
+       "Fit envelope + two end walls + tape exceed the length budget; do not grow past 67");
 assert(travel > 0 && travel <= preload+0.0001,
        "Contact travel must stay within the recessed leaf allowance");
 assert(floor_t-groove_depth >= 0.6);
@@ -49,7 +53,9 @@ assert(band_clearance < rib_h && rib_h-band_clearance < groove_depth);
 echo(cells=n, tray_mm=[outside_l,tray_w,leaf_top],
      loaded_with_bands_mm=[outside_l,tray_w+2*(band_clearance+band_t),
                           packed_h+2*(band_clearance+band_t)],
-     per_contact_travel_mm=travel, tape_assumption_mm=tape_t);
+     per_contact_travel_mm=travel, tape_assumption_mm=tape_t,
+     reported_cell_l_mm=cell_l, fit_envelope_l_mm=fit_l,
+     relaxed_taped_gap_mm=outside_l-2*(end_t+preload+tape_t));
 
 // One continuous 0.8 mm end wall across ALL cells, rooted along the floor.
 // Rails stop short so they cannot brace the moving wall. The uninterrupted
@@ -89,9 +95,10 @@ module tray(seated=false) {
     }
 }
 
-module cell_envelopes(lift=0) {
-    for (i=[0:n-1]) translate([cell_x,cy(i),cell_z+lift])
-        rotate([0,90,0]) cylinder(d=cell_d,h=cell_l);
+module cell_envelopes(lift=0, include_fit_allowance=true) {
+    length = include_fit_allowance ? fit_l : cell_l;
+    for (i=[0:n-1]) translate([(outside_l-length)/2,cy(i),cell_z+lift])
+        rotate([0,90,0]) cylinder(d=cell_d,h=length);
 }
 
 // A complete ring, printed flat on its broad rim, slides over the end of the
@@ -123,7 +130,7 @@ module bands(shift=0) {
 // Only a small central terminal patch is exposed. Routing tails must be
 // insulated and run sideways; wrapping tape over the OUTSIDE ends adds length.
 module contact_patches() {
-    for (i=[0:n-1]) for (x=[cell_x-tape_t,cell_x+cell_l])
+    for (i=[0:n-1]) for (x=[cell_x-tape_t,cell_x+fit_l])
         translate([x,cy(i)-2,cell_z-1.5]) cube([tape_t,4,3]);
 }
 
@@ -169,6 +176,9 @@ else if (part=="tape-preview") {
 else if (part=="tape-land-missing") difference() { tape_land_probe(); tray(); }
 else if (part=="end-relief-interference") intersection() { end_relief_probe(); tray(); }
 else if (part=="seated-interference") intersection() { tray(true); cell_envelopes(); }
+else if (part=="nominal-cell-interference") intersection() {
+    tray(); cell_envelopes(include_fit_allowance=false);
+}
 else if (part=="unexpected-interference") difference() {
     intersection() { tray(); cell_envelopes(); }
     preload_masks();

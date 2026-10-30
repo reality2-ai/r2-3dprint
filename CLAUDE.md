@@ -166,11 +166,16 @@ dimensions, and exports `stl/router-heltec-lid-plain.stl` separately.
 
 `battery-holder/` contains two- and three-cell variants for user-measured
 64 mm-long, 18 mm-diameter cells, side by side and wired in parallel by the user.
-**66 mm is the absolute outside length limit.** The model is 65.8 mm long,
-including seated 0.8 mm continuous end walls and provisional 0.1 mm copper tape at
+**The user revised the outside length limit to 67 mm** after the 65.8 mm first
+print was about 1 mm tight and the end walls splayed. The revised model is
+66.8 mm long, adding exactly 1 mm between the contacts. Keep the original
+reported 64 mm cell length separate from `length_fit_allowance=1.0`: the 65 mm
+fit envelope is an empirical print correction, not a new battery measurement.
+The relaxed plastic/taped gaps are now 64.8/64.6 mm. The existing bands remain
+compatible. Keep 0.8 mm continuous end walls and provisional 0.1 mm copper tape at
 each terminal. Tape thickness, chemistry and actual terminal geometry remain
 unconfirmed. Do not substitute nominal 18650 dimensions for the measurements,
-increase the length, or claim electrical/charger compatibility.
+exceed the revised 67 mm limit, or claim electrical/charger compatibility.
 Run `python3 battery-holder/scripts/build.py` after geometry changes. Keep both
 tray and band exports and the one-cell fit piece single connected, watertight
 solids. Both ends must offer uninterrupted tape backing across all cells, as

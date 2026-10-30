@@ -4,9 +4,13 @@
     64,
     18
   ],
-  "hard_length_limit_mm": 66,
-  "nominal_length_mm": 65.8,
+  "hard_length_limit_mm": 67,
+  "nominal_length_mm": 66.8,
   "assumed_tape_plus_adhesive_mm": 0.1,
+  "length_fit_allowance_mm": 1.0,
+  "fit_envelope_length_mm": 65,
+  "relaxed_taped_gap_mm": 64.6,
+  "physical_feedback": "65.8 mm first print about 1 mm tight; end walls splay",
   "parts": {
     "battery-2-tray.stl": {
       "triangles": 140,
@@ -14,11 +18,11 @@
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
-        65.8,
+        66.8,
         39.0,
         12.0
       ],
-      "volume_mm3": 4448.699
+      "volume_mm3": 4509.299
     },
     "battery-2-band.stl": {
       "triangles": 48,
@@ -38,11 +42,11 @@
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
-        65.8,
+        66.8,
         58.1,
         12.0
       ],
-      "volume_mm3": 6417.28
+      "volume_mm3": 6504.18
     },
     "battery-3-band.stl": {
       "triangles": 48,
@@ -62,16 +66,27 @@
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
-        65.8,
+        66.8,
         19.9,
         12.0
       ],
-      "volume_mm3": 2480.117
+      "volume_mm3": 2514.417
     }
   },
   "checks": {
     "2": {
+      "measured_contact_spacing": [
+        {
+          "plastic_gap_mm": 64.8,
+          "with_0.1_mm_tape_each_end_mm": 64.6
+        },
+        {
+          "plastic_gap_mm": 64.8,
+          "with_0.1_mm_tape_each_end_mm": 64.6
+        }
+      ],
       "seated-interference_mm3": 0.0,
+      "nominal-cell-interference_mm3": 0.0,
       "unexpected-interference_mm3": 0.0,
       "preload-interference_mm3": 38.688154,
       "tape-land-missing_mm3": 0,
@@ -82,7 +97,22 @@
       "length_budget_rejections": "passed"
     },
     "3": {
+      "measured_contact_spacing": [
+        {
+          "plastic_gap_mm": 64.8,
+          "with_0.1_mm_tape_each_end_mm": 64.6
+        },
+        {
+          "plastic_gap_mm": 64.8,
+          "with_0.1_mm_tape_each_end_mm": 64.6
+        },
+        {
+          "plastic_gap_mm": 64.8,
+          "with_0.1_mm_tape_each_end_mm": 64.6
+        }
+      ],
       "seated-interference_mm3": 0.0,
+      "nominal-cell-interference_mm3": 0.0,
       "unexpected-interference_mm3": 0.0,
       "preload-interference_mm3": 58.03223,
       "tape-land-missing_mm3": 0,
@@ -95,12 +125,12 @@
   },
   "loaded_with_bands_mm": {
     "2": [
-      65.8,
+      66.8,
       41.0,
       21
     ],
     "3": [
-      65.8,
+      66.8,
       60.1,
       21
     ]

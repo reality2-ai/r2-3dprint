@@ -94,24 +94,51 @@ def render(path, part, cells, extra=(), allow_contact_surface=False):
     return log
 
 
+def check_contact_spacing(path, cells):
+    """Measure end-wall crossings in the exported mesh at each terminal centre."""
+    gaps = []
+    for i in range(cells):
+        y, z = 9.95 + i*19.1, 10.0
+        crossings = set()
+        for a,b,c in triangles(path):
+            by,bz,cy,cz = b[1]-a[1],b[2]-a[2],c[1]-a[1],c[2]-a[2]
+            det = by*cz-cy*bz
+            if abs(det) < 1e-9:
+                continue
+            u = ((y-a[1])*cz-(z-a[2])*cy)/det
+            v = (by*(z-a[2])-bz*(y-a[1]))/det
+            if u >= -1e-7 and v >= -1e-7 and u+v <= 1+1e-7:
+                crossings.add(round(a[0]+u*(b[0]-a[0])+v*(c[0]-a[0]),5))
+        xs = sorted(crossings)
+        assert len(xs) == 4, (i,xs)
+        gap = round(xs[2]-xs[1],5)
+        assert abs(gap-64.8) < 0.002, (i,gap)
+        gaps.append({"plastic_gap_mm":gap,"with_0.1_mm_tape_each_end_mm":round(gap-0.2,5)})
+    return gaps
+
+
 def main():
     (ROOT/"stl").mkdir(exist_ok=True)
     (ROOT/"test").mkdir(exist_ok=True)
     report = {"status":"digital prototype; physical fit and contact force unverified",
-              "cell_mm":[64,18],"hard_length_limit_mm":66,
-              "nominal_length_mm":65.8,"assumed_tape_plus_adhesive_mm":0.1,
+              "cell_mm":[64,18],"hard_length_limit_mm":67,
+              "nominal_length_mm":66.8,"assumed_tape_plus_adhesive_mm":0.1,
+              "length_fit_allowance_mm":1.0,"fit_envelope_length_mm":65,
+              "relaxed_taped_gap_mm":64.6,
+              "physical_feedback":"65.8 mm first print about 1 mm tight; end walls splay",
               "parts":{},"checks":{},"loaded_with_bands_mm":{}}
     for n in (2,3):
         width = 39+(n-2)*19.1
-        for part,size in (("tray",[65.8,width,12]),("band",[21,width+2,5])):
+        for part,size in (("tray",[66.8,width,12]),("band",[21,width+2,5])):
             path = ROOT/f"stl/battery-{n}-{part}.stl"
             render(path,part,n)
             report["parts"][path.name] = inspect(path,size)
             print(f"{path.name}: single watertight solid; {size} mm",flush=True)
-        report["loaded_with_bands_mm"][str(n)] = [65.8,width+2,21]
-        checks = {}
+        report["loaded_with_bands_mm"][str(n)] = [66.8,width+2,21]
+        checks = {"measured_contact_spacing":check_contact_spacing(ROOT/f"stl/battery-{n}-tray.stl",n)}
         with tempfile.TemporaryDirectory() as temp:
             for scene,positive in (("seated-interference",False),
+                                   ("nominal-cell-interference",False),
                                    ("unexpected-interference",False),
                                    ("preload-interference",True),
                                    ("tape-land-missing",False),
@@ -126,7 +153,7 @@ def main():
                 checks[scene+"_mm3"] = round(vol,6)
                 print(f"{n} cells: {scene} passed ({vol:.6f} mm3)",flush=True)
             # Reject a longer cell or excessive tape instead of silently enlarging.
-            for setting in ("cell_l=65","tape_t=0.2","outside_l=66.1"):
+            for setting in ("cell_l=65","tape_t=0.2","outside_l=67.1","outside_l=65.8"):
                 try:
                     render(Path(temp)/"invalid.stl","tray",n,["-D",setting])
                 except RuntimeError as error:
@@ -137,7 +164,7 @@ def main():
         report["checks"][str(n)] = checks
     path = ROOT/"stl/battery-contact-fit.stl"
     render(path,"contact-fit",2)
-    report["parts"][path.name] = inspect(path,[65.8,19.9,12])
+    report["parts"][path.name] = inspect(path,[66.8,19.9,12])
     (ROOT/"test/verification.json").write_text(json.dumps(report,indent=2)+"\n")
     print("Fit piece passed. Report: test/verification.json")
 
