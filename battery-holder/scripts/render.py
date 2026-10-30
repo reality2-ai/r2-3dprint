@@ -11,12 +11,14 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 SCAD = os.environ.get("OPENSCAD", "openscad")
 (ROOT/"images").mkdir(exist_ok=True)
-for cells,word in ((2,"two"),(3,"three")):
-    for part in ("tray","assembly","tape-preview"):
+for cells,word in ((1,"one"),(2,"two"),(3,"three")):
+    for part in ("tray","assembly","tape-preview","service","latch-detail"):
         output = ROOT/f"images/{word}-cell-{part}.png"
-        subprocess.run([SCAD,"-o",str(output),"--imgsize=1200,850","--viewall",
-                        "--autocenter","--projection=o",
-                        "--camera=0,0,0,65,0,35,180",
+        framing = (["--camera=0,0,0,55,0,35,350"] if part=="service" else
+                   ["--viewall","--camera=0,0,0,55,0,215,80"] if part=="latch-detail" else
+                   ["--viewall","--camera=0,0,0,55,0,35,180"])
+        subprocess.run([SCAD,"-o",str(output),"--imgsize=1400,950",
+                        "--autocenter","--projection=o",*framing,
                         "--colorscheme=Tomorrow","-D",f"cells={cells}",
                         "-D",f'part="{part}"',str(ROOT/"src/battery_holder.scad")],
                        check=True)

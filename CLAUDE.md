@@ -164,28 +164,43 @@ dimensions, and exports `stl/router-heltec-lid-plain.stl` separately.
 
 ### Compact radar battery holders
 
-`battery-holder/` contains two- and three-cell variants for user-measured
+`battery-holder/` contains one-, two- and three-cell variants for user-measured
 64 mm-long, 18 mm-diameter cells, side by side and wired in parallel by the user.
 **The user revised the outside length limit to 67 mm** after the 65.8 mm first
 print was about 1 mm tight and the end walls splayed. The revised model is
 66.8 mm long, adding exactly 1 mm between the contacts. Keep the original
 reported 64 mm cell length separate from `length_fit_allowance=1.0`: the 65 mm
 fit envelope is an empirical print correction, not a new battery measurement.
-The relaxed plastic/taped gaps are now 64.8/64.6 mm. The existing bands remain
-compatible. Keep 0.8 mm continuous end walls and provisional 0.1 mm copper tape at
+The relaxed plastic/taped gaps are now 64.8/64.6 mm. The user needs to replace
+batteries while the tray stays fixed to the board. The user rejected long
+flexible U clips and chose taller walls with slide-through bars. Each bar now
+has a forked snap catch at the far end: squeeze both prongs and withdraw sideways.
+The rigid bar underside MUST be at the nominal cell top (19 mm), with no intended
+gap or wrapper preload. Bars are 2 mm thick; slot roofs make the tray 22.2 mm high.
+Do not restore slide-on rings, U clips or underside grooves. Reprint tray and bars
+together. Outside ribs support the tall rails; do not thicken the inside walls
+above the cells, since that blocks vertical battery removal.
+Keep 0.8 mm continuous end walls and provisional 0.1 mm copper tape at
 each terminal. Tape thickness, chemistry and actual terminal geometry remain
 unconfirmed. Do not substitute nominal 18650 dimensions for the measurements,
 exceed the revised 67 mm limit, or claim electrical/charger compatibility.
-Run `python3 battery-holder/scripts/build.py` after geometry changes. Keep both
-tray and band exports and the one-cell fit piece single connected, watertight
+Run `python3 battery-holder/scripts/build.py` after geometry changes. Keep all
+tray and bar exports and the one-cell fit piece single connected, watertight
 solids. Both ends must offer uninterrupted tape backing across all cells, as
 requested by the user. Longitudinal rails stop 0.8 mm short of the relaxed
 contact lands, allowing the walls to flex from the floor; keep these gaps clear.
-Check tape-land continuity, relief gaps, cell/band clearance, intended relaxed-wall
-interference and retention. The shared wall couples all contacts; full-width
+Check tape-land continuity, relief gaps, cell/bar clearance, intended relaxed-wall
+interference, each far-end hook, the head stop and every cell's contact/retention.
+Verify exported bar underside height, retention with full upward slot clearance,
+flat floor/rib feet and bar/cell removal sweeps above a fixed board.
+Released forks use a geometric proxy with 0.9 mm inward free-tip movement each;
+actual release force, side/tool access and fatigue require physical checks. The
+shared end wall couples all contacts; full-width
 contact pressure must be tested with every actual cell. Printed wall force,
 creep, tape performance and physical fit remain
-unverified. The three-cell assembly is 60.1 mm wide with bands and exceeds the
+unverified. Assembly widths with bars are 24.9/44/63.1 mm and height is 22.2 mm,
+excluding mounting adhesive and service access. Side withdrawal travel is about
+23.4/42.5/61.6 mm, plus grip access. The three-cell assembly exceeds the
 PCB's recorded 54 mm battery reservation; box width/height need confirmation.
 Use the user's XRDP display for previews when available; see its render script.
 

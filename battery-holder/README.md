@@ -1,145 +1,147 @@
 # Compact Radar Sensor Box battery holders
 
-Printable prototypes for **two or three user-measured 64 mm-long, 18 mm-diameter
-cells**, side by side with the same polarity orientation for parallel connection.
-The user has revised the maximum length to **67 mm** after the first print was
-about 1 mm too tight and pushed the end walls outward. Nominal length is now
-**66.8 mm**, adding 1 mm of internal contact spacing and leaving 0.2 mm total
-for manufacturing variation. This revision still needs a physical fit check. Measure the
-finished, loaded holder: CAD dimensions do not guarantee a printer's accuracy.
+One-, two- and three-cell holders with **rigid slide-through bars and far-end snap
+catches**. The base stays fixed to the board while the bars slide out and the
+cells lift out. The bars sit directly on the nominal battery tops.
 
-![Two-cell holder assembled](images/two-cell-assembly.png)
-![Three-cell holder assembled](images/three-cell-assembly.png)
+![Two-cell holder with locking bars](images/two-cell-assembly.png)
+![Far-end squeeze-release catch](images/two-cell-latch-detail.png)
 
-Both ends now have a **continuous wall across the cells**, giving each copper
-strip an uninterrupted backing surface. The longitudinal rails stop 0.8 mm
-short of each wall's relaxed contact land so the wall can flex from its base.
+## Print files
 
-![Continuous tape surfaces, before terminal insulation](images/two-cell-tape-preview.png)
+Print **one tray and two matching bars**. This design replaces both the early
+slide-on rings and the intermediate U clips; reprint the tray and retainers.
 
-## Print files and size
-
-| Version | Tray STL (print one) | Retaining band STL (print two) | Loaded size with bands, L × W × H |
+| Cells | Tray | Bar (print two) | Assembled size, L × W × H |
 |---|---|---|---|
-| Two cells | [battery-2-tray.stl](stl/battery-2-tray.stl) | [battery-2-band.stl](stl/battery-2-band.stl) | **66.8 × 41 × 21 mm** |
-| Three cells | [battery-3-tray.stl](stl/battery-3-tray.stl) | [battery-3-band.stl](stl/battery-3-band.stl) | **66.8 × 60.1 × 21 mm** |
+| One | [battery-1-tray.stl](stl/battery-1-tray.stl) | [battery-1-bar.stl](stl/battery-1-bar.stl) | **66.8 × 24.9 × 22.2 mm** |
+| Two | [battery-2-tray.stl](stl/battery-2-tray.stl) | [battery-2-bar.stl](stl/battery-2-bar.stl) | **66.8 × 44 × 22.2 mm** |
+| Three | [battery-3-tray.stl](stl/battery-3-tray.stl) | [battery-3-bar.stl](stl/battery-3-bar.stl) | **66.8 × 63.1 × 22.2 mm** |
 
-Print the [one-cell contact-fit piece](stl/battery-contact-fit.stl) first. It
-preserves the full 66.8 mm length and end-wall cross-section, using less plastic
-than either complete holder. Its printed size is 66.8 × 19.9 × 12 mm.
-Its narrower wall does not reproduce the stiffness of a full-width holder.
-Previously printed retaining bands remain compatible; only the trays and fit
-piece are lengthened. Their band grooves move with the tray's quarter points.
+Widths include the pull head and the protruding catch. The tray alone, including
+outside strengthening ribs, is 21.9 / 41 / 60.1 mm wide. Mounting adhesive,
+wiring and finger/tool access are additional. The three-cell version exceeds the
+radar PCB's recorded 54 mm battery reservation; actual box width and height have
+not been confirmed.
 
-The trays alone are 66.8 × 39 × 12 mm and 66.8 × 58.1 × 12 mm. Cells project to
-19 mm above the tray bottom. Bands add 1 mm on each side and above/below the
-loaded tray. These sizes exclude external wiring, adhesive mounting pads and
-insulation beyond the modeled terminal tape. Width and height availability
-have **not** been confirmed. In particular, the three-cell version exceeds the
-54 mm battery-area width recorded in the adjacent radar PCB project.
+The [contact-fit piece](stl/battery-contact-fit.stl) matches the single-cell tray,
+66.8 × 21.9 × 22.2 mm. It can be used with the single-cell bars. Its narrower
+contact wall does not reproduce the stiffness of the larger holders.
 
-## Printing and assembly
+## Insertion, locking and replacement
 
-- Start with PETG, a 0.4 mm nozzle, 0.4 mm line width and 0.2 mm layers. The
-  0.8 mm end walls need two sound extrusion lines. This is a starting
-  process choice; flexure strength and long-term contact pressure are untested.
-- Print every STL as exported at 100% scale. The tray is floor down. Bands
-  already lie on their broad rim, so their large opening needs no bridge.
-  The tray's 5.4 mm underside grooves require a short bridge. Inspect these
-  and remove any brim/elephant-foot flare that increases the outside length.
-- Add the copper contacts before installing cells. Seat cells gently; do not
-  force the walls beyond the outside end planes or damage a wrapper.
-- Slide two matching bands over the loaded tray. Their inside bottom ribs
-  locate in the two underside grooves. Slight flex is needed to cross the
-  floor and engage the grooves. Check that the bands stay in place and retain
-  every cell. Band holding force is not established by the geometric checks.
-- There are no mounting screw holes or adhesive pads in this size budget.
-  Any box attachment method needs its own clearance allowance.
+Place the cells in the holder, then push each orange bar sideways through the
+aligned slots. The rounded leading underside helps avoid a sharp edge at the
+wrapper. The two short prongs at the far end squeeze together as their ramps
+pass through the wall, then snap outward. Their rear shoulders catch behind the
+far wall and prevent the bar withdrawing. The pull head stops over-insertion.
 
-## Copper tape and the length budget
+To remove a bar, squeeze its **two far-end prongs together**, then pull the head
+back through the slots. Approximately 0.9 mm movement per prong at the tip is
+modeled. Only these short prongs flex; the main bar stays rigid. Remove both
+bars before lifting the batteries out. Ease the copper contact walls if needed
+rather than scraping a wrapper.
 
-The user described tape about as thin as masking tape; its actual total
-copper-plus-adhesive thickness is still unmeasured. The default allowance is
-**0.10 mm at each terminal**, with 0.8 mm printed material behind each contact:
+![Bars withdrawn and cells lifted with the base fixed](images/two-cell-service.png)
 
-`64 mm reported cell + 1 mm fit allowance + 2 × (0.8 mm plastic + 0.1 mm tape) = 66.8 mm`
+Allow side withdrawal travel of approximately **23.4 / 42.5 / 61.6 mm** for the
+one-, two- and three-cell versions, plus space to grip the head and pinch the
+far-end catch. Open the enclosure lid for lifting the cells. Verify both side
+access and overhead access before permanently fixing the base down.
 
-The extra millimetre is an empirical correction from the user's first print,
-not a new battery measurement. The relaxed spacing between plastic contact
-faces is now **64.8 mm**, or **64.6 mm with the assumed tape**, up from 63.8/63.6 mm.
-The fit envelope in the assembly preview and clearance checks is 65 mm long
-(64 mm reported length plus the 1 mm fit allowance). A separate check uses the
-original 64 mm cell. A perfect 64 mm cell in a dimensionally perfect new print
-would have 0.6 mm total clearance between taped contacts; the next physical
-trial must establish the real fit and contact pressure. Do not treat the fit
-allowance as a confirmed cell length or guaranteed electrical contact.
+The floor and eight rib feet form a flat mounting surface. Nothing passes under
+the tray. Use the chosen insulating adhesive/mounting pad; its thickness adds to
+the installed height. No PCB-specific screw holes have been added. Keep adhesive
+off the moving contact walls and bar paths.
 
-Each end has one continuous flexible wall shared by all cells. The relaxed contact lands are
-0.2 mm inward from their position around the 65 mm fit envelope, providing a
-provisional 0.2 mm travel per end for that envelope with the assumed tape. This
-is a geometry allowance, not a validated
-contact-force specification. Thinner tape reduces preload; thicker tape or
-longer cells consume the hard length margin. The CAD rejects parameter changes
-that require the walls to move beyond the modeled ends. The common wall couples
-the contacts, so it no longer provides independent travel for each cell. Check
-contact on every cell in the full holder, especially if their lengths differ.
+## Height and stiffness
 
-Keep exposed copper confined to each terminal: the preview shows a **4 × 3 mm
-central patch**, whose suitability must be checked against the actual cell
-terminal. Insulate tape tails, especially near a positive terminal's surrounding
-can. Stick one continuous copper strip across the **inside** of each end wall,
-at terminal height, and insulate it except at the intended terminal patches.
-The tape preview illustrates the continuous conductor before that insulation;
-it is not a diagram of the final exposed copper. Route connections sideways at
-the wall ends, clear of the retaining bands. Do not wrap tape around the outside
-end faces: that adds unbudgeted length. Keep the relief gaps free of tape and
-adhesive so the rails do not restrain the moving walls. Make any lead joints away
-from the flexing portions and before fitting cells.
-Adhesive overlap alone is not a verified electrical joint.
+The floor is 1 mm thick, so an 18 mm-diameter cell reaches **19 mm** above the
+mounting surface. Each bar's flat underside is also at **19 mm**: there is no
+intentional gap above the battery and no designed compression of its wrapper.
+The bar is 2 mm thick, making its top 21 mm high. The 22.2 mm-tall walls include
+the slot clearance and roof. Real printer/cell variation still needs a fit check.
 
-The print supplies mechanical support only; contacts and interconnections are
-user-fitted. The originally stated Ni-Cd chemistry has not been confirmed from
-the battery label. No charger compatibility or electrical pack qualification is
-implied by these mechanical files. The 64 mm dimension must include terminals.
+The bar is 6 mm wide. It passes through the outer walls and, on multi-cell trays,
+through supports between cells. This limits each unsupported span to one cell.
+The inside faces remain straight for vertical cell removal. External ribs stiffen
+the outer walls without narrowing the battery lifting path. Rounded fork roots
+reduce sharp stress concentrations; the catch has not been fatigue tested.
 
-## First physical check
+## Cell length and copper tape
 
-Use the contact-fit piece with the actual tape and each cell in turn. Confirm
-the cell seats without force, tape stays on the intended terminals, and contact
-remains stable during gentle movement. Measure the maximum outside length with
-the cell installed; it must remain at or below 67 mm. Then dry-fit the full
-holder and bands in the box before connecting it to the sensor electronics.
-Contact resistance, current capacity, creep in a warm box and retention in
-service remain physical checks. Do not scale the whole STL to adjust contact
-pressure: change the relevant source parameter and rebuild instead.
+The user reported cells **64 mm long × 18 mm diameter**, including their wrappers.
+The first 65.8 mm-long print was about 1 mm tight and splayed at the ends. The
+user then approved a **67 mm maximum outside length**. The current length is
+66.8 mm, adding exactly 1 mm of internal spacing with a 0.2 mm nominal print margin.
+
+The source keeps the original 64 mm report separate from a 1 mm empirical fit
+allowance. The preview and clearance envelope are therefore 65 mm long; this is
+not a new battery measurement. The relaxed plastic contact spacing is 64.8 mm,
+or 64.6 mm after the assumed 0.1 mm copper-plus-adhesive at each end. A perfectly
+64 mm cell in a dimensionally perfect print would have clearance; the actual
+next print must establish contact pressure rather than assuming the proxy does.
+
+Both end walls remain continuous, 0.8 mm thick, with 0.2 mm modeled movement
+around the fit envelope. Stick one copper strip across the inside of each end
+wall. Insulate it except at the intended terminal patches, especially near the
+positive terminal's surrounding can. The illustrated 4 × 3 mm exposed patches
+must suit the actual terminal geometry. Do not wrap tape around outside ends
+or bond the end-wall relief gaps; both would defeat the length/flex allowance.
+Route leads clear of the bar paths and make joints before installing cells.
+
+Tape thickness, chemistry and terminal details remain unconfirmed. The user
+originally described Ni-Cd cells. These are mechanical parts; they do not establish
+charger compatibility, contact resistance or electrical pack qualification.
+
+## Printing and physical checks
+
+- Start with PETG, a 0.4 mm nozzle and 0.2 mm layers. Print at 100% scale.
+  Use 0.4 mm line width for the 0.8 mm contact walls and 1.2 mm latch prongs.
+- Print the tray floor down and bars flat as exported. The forks flex in the
+  layer plane. The slot roofs have 6.4 mm bridges; inspect their underside and
+  clear stray strands before insertion. No support material should occupy slots
+  or the fork gap.
+- Check bar motion and both catches on each bar before fitting live cells.
+  Do not force a binding bar or a latch that fails to spring back.
+- Check each actual cell fits, each bar rests lightly on it, and all contacts
+  remain stable. Measure the loaded length: it must not exceed 67 mm.
+- Dry-fit in the real box and replace the cells with the base held flat before
+  bonding it down. Latch force, repeated release, warm-box creep, wrapper wear,
+  electrical contact and mounting strength remain physical checks.
 
 ## Source and verification
 
-[src/battery_holder.scad](src/battery_holder.scad) is shared by both versions.
-Set `cells=2` or `cells=3`; choose `part="tray"`, `"band"`, `"contact-fit"` or
-`"assembly"`; `"tape-preview"` shows the uninterrupted copper backing surfaces.
-All cell and tape dimensions are parameters. Geometry changes
-must preserve the revised hard 67 mm limit and be followed by:
+The shared source is [src/battery_holder.scad](src/battery_holder.scad).
+Set `cells=1`, `2` or `3`; parts include `tray`, `bar`, `contact-fit`,
+`assembly`, `service`, `tape-preview` and `latch-detail`.
+
+After geometry changes:
 
 ```sh
 python3 battery-holder/scripts/build.py
 ```
 
-Set `OPENSCAD=/path/to/openscad` if it is not on PATH. The script requires only
-Python's standard library and OpenSCAD. [test/verification.json](test/verification.json)
-records single connected, watertight meshes, expected dimensions, seated fit-envelope
-clearance, interference confined to the intended relaxed end walls, band
-clearance and geometric retention. Full-width tape-land continuity and the
-end-wall relief gaps are checked too. Contact spacing is measured directly from
-the exported tray mesh at every cell centre. It also checks rejection of an excessive
-cell length, tape thickness or outside length. The seated end walls are a clearance
-proxy, not a simulation of bending, print anisotropy or contact pressure.
+Set `OPENSCAD=/path/to/openscad` if needed. The build uses OpenSCAD and Python's
+standard library. [test/verification.json](test/verification.json) records:
 
-To refresh the CAD previews using an existing desktop/XRDP display:
+- Connected, watertight printable meshes, envelope dimensions and flat mounting area.
+- Contact spacing measured from the exported tray, continuous tape backing and clear end-wall relief.
+- Clear seated cells/bars, individual far-end hook engagement and the head stop.
+- Bar underside at 19 mm and each cell's contact within a 0.05 mm lift.
+- Cell retention allowing the bar its full 0.2 mm upward slot clearance, plus slot-roof retention.
+- Conservative swept clearance for the squeezed bars withdrawing sideways and cells lifting out above a fixed board.
+
+The squeezed-fork and seated-contact-wall shapes are geometric proxies, not
+force/strain simulations. A digital pass does not establish latch strength or
+electrical contact. Tiny common-coordinate quantization below 0.000008 mm avoids
+OpenSCAD 2021 CGAL seams; it does not change practical fit dimensions.
+
+Refresh previews through the user's existing XRDP session:
 
 ```sh
 DISPLAY=:10 python3 battery-holder/scripts/render.py
 ```
 
-Use the actual session's display number and X authority. The renderer does not
-start another desktop. Both exports were checked with OpenSCAD 2021.01.
+The earlier plain-bar illustration remains in `concepts/` as a historical
+concept. Use the current source and STLs above for the locking-bar revision.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build both holders and check printable solids, fit and geometric retention.
+"""Build holders with battery-top sliding bars and far-end snap catches.
 
 Python standard library only. Requires OpenSCAD; override with OPENSCAD.
 Checks geometry, not spring mechanics, electrical contact or printer accuracy.
@@ -117,6 +117,16 @@ def check_contact_spacing(path, cells):
     return gaps
 
 
+def check_flat_mounting_face(path, width):
+    area = 0
+    for a,b,c in triangles(path):
+        if all(abs(p[2]) < 1e-5 for p in (a,b,c)):
+            area += abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]))/2
+    expected = 66.8*width + 8*1.2*1.0 # flat floor plus eight outside rib feet
+    assert abs(area-expected) < 0.01, (area,expected)
+    return round(area,4)
+
+
 def main():
     (ROOT/"stl").mkdir(exist_ok=True)
     (ROOT/"test").mkdir(exist_ok=True)
@@ -126,16 +136,20 @@ def main():
               "length_fit_allowance_mm":1.0,"fit_envelope_length_mm":65,
               "relaxed_taped_gap_mm":64.6,
               "physical_feedback":"65.8 mm first print about 1 mm tight; end walls splay",
-              "parts":{},"checks":{},"loaded_with_bands_mm":{}}
-    for n in (2,3):
+              "retention":"two sliding bars with squeeze-release far-end catches",
+              "battery_top_mm":19,"bar_underside_mm":19,
+              "parts":{},"checks":{},"assembled_mm":{}}
+    for n in (1,2,3):
         width = 39+(n-2)*19.1
-        for part,size in (("tray",[66.8,width,12]),("band",[21,width+2,5])):
+        for part,size in (("tray",[66.8,width+2,22.2]),("bar",[8,width+5,2])):
             path = ROOT/f"stl/battery-{n}-{part}.stl"
             render(path,part,n)
             report["parts"][path.name] = inspect(path,size)
             print(f"{path.name}: single watertight solid; {size} mm",flush=True)
-        report["loaded_with_bands_mm"][str(n)] = [66.8,width+2,21]
-        checks = {"measured_contact_spacing":check_contact_spacing(ROOT/f"stl/battery-{n}-tray.stl",n)}
+        report["assembled_mm"][str(n)] = [66.8,round(width+5,1),22.2]
+        tray_path = ROOT/f"stl/battery-{n}-tray.stl"
+        checks = {"measured_contact_spacing":check_contact_spacing(tray_path,n),
+                  "flat_mounting_face_mm2":check_flat_mounting_face(tray_path,width)}
         with tempfile.TemporaryDirectory() as temp:
             for scene,positive in (("seated-interference",False),
                                    ("nominal-cell-interference",False),
@@ -143,15 +157,42 @@ def main():
                                    ("preload-interference",True),
                                    ("tape-land-missing",False),
                                    ("end-relief-interference",False),
-                                   ("band-interference",False),
-                                   ("band-retention",True),
-                                   ("cell-retention",True)):
+                                   ("bar-interference",False),
+                                   ("board-interference",False),
+                                   ("bar-removal-interference",False),
+                                   ("cell-removal-interference",False),
+                                   ("head-stop",True),
+                                   ("bar-lift-retention",True)):
                 path = Path(temp)/f"{scene}.stl"
                 render(path,scene,n,allow_contact_surface=True)
                 vol = volume(triangles(path)) if path.exists() else 0
                 assert (vol > 0.01 if positive else vol < 0.001), (n,scene,vol)
                 checks[scene+"_mm3"] = round(vol,6)
                 print(f"{n} cells: {scene} passed ({vol:.6f} mm3)",flush=True)
+            for index in (0,1):
+                for side in (0,1):
+                    path = Path(temp)/f"latch-{index}-{side}.stl"
+                    render(path,"bar-retention",n,
+                           ["-D",f"check_index={index}","-D",f"check_side={side}"])
+                    vol = volume(triangles(path)) if path.exists() else 0
+                    assert vol > 0.01, (n,index,side,"No hook engagement")
+                    checks[f"bar_{index}_side_{side}_retention_mm3"] = round(vol,6)
+            for cell in range(n):
+                for scene in ("cell-contact","cell-retention"):
+                    path = Path(temp)/f"{scene}-{cell}.stl"
+                    render(path,scene,n,["-D",f"check_cell={cell}"])
+                    vol = volume(triangles(path)) if path.exists() else 0
+                    assert vol > 0.01, (n,cell,scene)
+                    checks[f"cell_{cell}_{scene}_mm3"] = round(vol,6)
+            path = Path(temp)/"bearing-height.stl"
+            render(path,"bearing-height",n)
+            zs = [p[2] for face in triangles(path) for p in face]
+            assert abs(min(zs)-19)<0.001 and abs(max(zs)-21)<0.001
+            checks["exported_bar_underside_mm"] = min(zs)
+            checks["cell_lift_for_contact_check_mm"] = 0.05
+            checks["cell_lift_for_retention_check_mm"] = 0.4
+            checks["bar_lift_for_cell_retention_check_mm"] = 0.2
+            print(f"{n} cells: all catches retain; each bar rests at battery-top height",flush=True)
             # Reject a longer cell or excessive tape instead of silently enlarging.
             for setting in ("cell_l=65","tape_t=0.2","outside_l=67.1","outside_l=65.8"):
                 try:
@@ -164,7 +205,7 @@ def main():
         report["checks"][str(n)] = checks
     path = ROOT/"stl/battery-contact-fit.stl"
     render(path,"contact-fit",2)
-    report["parts"][path.name] = inspect(path,[66.8,19.9,12])
+    report["parts"][path.name] = inspect(path,[66.8,21.9,22.2])
     (ROOT/"test/verification.json").write_text(json.dumps(report,indent=2)+"\n")
     print("Fit piece passed. Report: test/verification.json")
 

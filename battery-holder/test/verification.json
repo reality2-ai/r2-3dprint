@@ -11,69 +11,128 @@
   "fit_envelope_length_mm": 65,
   "relaxed_taped_gap_mm": 64.6,
   "physical_feedback": "65.8 mm first print about 1 mm tight; end walls splay",
+  "retention": "two sliding bars with squeeze-release far-end catches",
+  "battery_top_mm": 19,
+  "bar_underside_mm": 19,
   "parts": {
-    "battery-2-tray.stl": {
-      "triangles": 140,
+    "battery-1-tray.stl": {
+      "triangles": 300,
       "connected_solids": 1,
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
         66.8,
-        39.0,
-        12.0
+        21.9,
+        22.2
       ],
-      "volume_mm3": 4509.299
+      "volume_mm3": 3987.256
     },
-    "battery-2-band.stl": {
-      "triangles": 48,
+    "battery-1-bar.stl": {
+      "triangles": 204,
       "connected_solids": 1,
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
-        21.0,
-        41.0,
-        5.0
+        8.0,
+        24.9,
+        2.0
       ],
-      "volume_mm3": 561.95
+      "volume_mm3": 237.401
+    },
+    "battery-2-tray.stl": {
+      "triangles": 388,
+      "connected_solids": 1,
+      "watertight": true,
+      "consistent_winding": true,
+      "size_mm": [
+        66.8,
+        41.0,
+        22.2
+      ],
+      "volume_mm3": 6224.959
+    },
+    "battery-2-bar.stl": {
+      "triangles": 204,
+      "connected_solids": 1,
+      "watertight": true,
+      "consistent_winding": true,
+      "size_mm": [
+        8.0,
+        44.0,
+        2.0
+      ],
+      "volume_mm3": 466.601
     },
     "battery-3-tray.stl": {
-      "triangles": 156,
+      "triangles": 476,
       "connected_solids": 1,
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
         66.8,
-        58.1,
-        12.0
+        60.1,
+        22.2
       ],
-      "volume_mm3": 6504.18
+      "volume_mm3": 8462.663
     },
-    "battery-3-band.stl": {
-      "triangles": 48,
+    "battery-3-bar.stl": {
+      "triangles": 204,
       "connected_solids": 1,
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
-        21.0,
-        60.1,
-        5.0
+        8.0,
+        63.1,
+        2.0
       ],
-      "volume_mm3": 757.725
+      "volume_mm3": 695.801
     },
     "battery-contact-fit.stl": {
-      "triangles": 124,
+      "triangles": 300,
       "connected_solids": 1,
       "watertight": true,
       "consistent_winding": true,
       "size_mm": [
         66.8,
-        19.9,
-        12.0
+        21.9,
+        22.2
       ],
-      "volume_mm3": 2514.417
+      "volume_mm3": 3987.256
     }
   },
   "checks": {
+    "1": {
+      "measured_contact_spacing": [
+        {
+          "plastic_gap_mm": 64.8,
+          "with_0.1_mm_tape_each_end_mm": 64.6
+        }
+      ],
+      "flat_mounting_face_mm2": 1338.92,
+      "seated-interference_mm3": 0.0,
+      "nominal-cell-interference_mm3": 0.0,
+      "unexpected-interference_mm3": 0.0,
+      "preload-interference_mm3": 19.344079,
+      "tape-land-missing_mm3": 0,
+      "end-relief-interference_mm3": 0,
+      "bar-interference_mm3": 0.0,
+      "board-interference_mm3": 0,
+      "bar-removal-interference_mm3": 0.0,
+      "cell-removal-interference_mm3": 0.0,
+      "head-stop_mm3": 1.280019,
+      "bar-lift-retention_mm3": 2.687971,
+      "bar_0_side_0_retention_mm3": 0.24,
+      "bar_0_side_1_retention_mm3": 0.24,
+      "bar_1_side_0_retention_mm3": 0.24,
+      "bar_1_side_1_retention_mm3": 0.24,
+      "cell_0_cell-contact_mm3": 0.684957,
+      "cell_0_cell-retention_mm3": 5.909434,
+      "exported_bar_underside_mm": 19.0,
+      "cell_lift_for_contact_check_mm": 0.05,
+      "cell_lift_for_retention_check_mm": 0.4,
+      "bar_lift_for_cell_retention_check_mm": 0.2,
+      "length_budget_rejections": "passed"
+    },
     "2": {
       "measured_contact_spacing": [
         {
@@ -85,15 +144,31 @@
           "with_0.1_mm_tape_each_end_mm": 64.6
         }
       ],
+      "flat_mounting_face_mm2": 2614.8,
       "seated-interference_mm3": 0.0,
       "nominal-cell-interference_mm3": 0.0,
       "unexpected-interference_mm3": 0.0,
       "preload-interference_mm3": 38.688154,
       "tape-land-missing_mm3": 0,
       "end-relief-interference_mm3": 0,
-      "band-interference_mm3": 0,
-      "band-retention_mm3": 5.25,
-      "cell-retention_mm3": 18.194658,
+      "bar-interference_mm3": 0.0,
+      "board-interference_mm3": 0,
+      "bar-removal-interference_mm3": 0.0,
+      "cell-removal-interference_mm3": 0.0,
+      "head-stop_mm3": 1.280019,
+      "bar-lift-retention_mm3": 4.607971,
+      "bar_0_side_0_retention_mm3": 0.24,
+      "bar_0_side_1_retention_mm3": 0.24,
+      "bar_1_side_0_retention_mm3": 0.24,
+      "bar_1_side_1_retention_mm3": 0.24,
+      "cell_0_cell-contact_mm3": 0.684957,
+      "cell_0_cell-retention_mm3": 5.909434,
+      "cell_1_cell-contact_mm3": 0.684941,
+      "cell_1_cell-retention_mm3": 5.909376,
+      "exported_bar_underside_mm": 19.0,
+      "cell_lift_for_contact_check_mm": 0.05,
+      "cell_lift_for_retention_check_mm": 0.4,
+      "bar_lift_for_cell_retention_check_mm": 0.2,
       "length_budget_rejections": "passed"
     },
     "3": {
@@ -111,28 +186,51 @@
           "with_0.1_mm_tape_each_end_mm": 64.6
         }
       ],
+      "flat_mounting_face_mm2": 3890.68,
       "seated-interference_mm3": 0.0,
       "nominal-cell-interference_mm3": 0.0,
       "unexpected-interference_mm3": 0.0,
       "preload-interference_mm3": 58.03223,
       "tape-land-missing_mm3": 0,
       "end-relief-interference_mm3": 0,
-      "band-interference_mm3": 0,
-      "band-retention_mm3": 8.115,
-      "cell-retention_mm3": 27.29197,
+      "bar-interference_mm3": 0.0,
+      "board-interference_mm3": 0,
+      "bar-removal-interference_mm3": 0.0,
+      "cell-removal-interference_mm3": 0.0,
+      "head-stop_mm3": 1.280019,
+      "bar-lift-retention_mm3": 6.527971,
+      "bar_0_side_0_retention_mm3": 0.24,
+      "bar_0_side_1_retention_mm3": 0.24,
+      "bar_1_side_0_retention_mm3": 0.24,
+      "bar_1_side_1_retention_mm3": 0.24,
+      "cell_0_cell-contact_mm3": 0.684957,
+      "cell_0_cell-retention_mm3": 5.909434,
+      "cell_1_cell-contact_mm3": 0.684941,
+      "cell_1_cell-retention_mm3": 5.909376,
+      "cell_2_cell-contact_mm3": 0.684941,
+      "cell_2_cell-retention_mm3": 5.909376,
+      "exported_bar_underside_mm": 19.0,
+      "cell_lift_for_contact_check_mm": 0.05,
+      "cell_lift_for_retention_check_mm": 0.4,
+      "bar_lift_for_cell_retention_check_mm": 0.2,
       "length_budget_rejections": "passed"
     }
   },
-  "loaded_with_bands_mm": {
+  "assembled_mm": {
+    "1": [
+      66.8,
+      24.9,
+      22.2
+    ],
     "2": [
       66.8,
-      41.0,
-      21
+      44.0,
+      22.2
     ],
     "3": [
       66.8,
-      60.1,
-      21
+      63.1,
+      22.2
     ]
   }
 }
