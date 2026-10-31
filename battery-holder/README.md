@@ -8,15 +8,22 @@ replaces it with bare-wire feed-throughs and small solder-head pockets. The
 
 - [Printable wired-contact tray](stl/battery-1-protected-wired-tray.stl)
 - [Parametric source](src/wired_snap_cradle.scad)
-- Each end has a **1.2 mm through-hole** and an inward-facing **3 mm-diameter,
-  0.5 mm-deep pocket**, leaving 0.5 mm plastic backing around the hole.
+- Each end has a **1.2 mm through-hole** and an inward-facing **3 mm-diameter
+  solder pocket**. At the **negative end**, the pocket is recessed 0.5 mm into
+  the nominal top of the retained **5 mm-wide, 1 mm-high bump**. Its floor has
+  1.5 mm of backing around the wire hole. At the **positive end**, the pocket
+  is 0.5 mm deep in the flat 1 mm wall, leaving 0.5 mm backing.
 - The user's insulated wire is about **1 mm** across; only the stripped
   conductor sits in the hole when assembled. Its bare diameter remains unmeasured.
   The 1.2 mm bore lets the insulated body pass through while threading the wire
   from the inside, after forming the solder head away from the plastic. Check
   the actual printed clearance before assembling.
-- Polarity marks remain raised 0.5 mm and now sit **6 mm beside the hole**:
-  minus at the flush end, plus at the overhanging end.
+- Both holes and solder pockets lie on the **battery centreline**: 10.65 mm
+  from either side and **12.8 mm above the mounting surface**. This is above
+  the flap's midpoint because the battery extends above the flap.
+- Polarity marks remain raised 0.5 mm and now sit **5.5 mm below the holes**:
+  minus at the flush end, plus at the overhanging end. The wire goes through
+  the central hole, not through either symbol.
 
 The 67 mm mounting base, 71.8 mm body, 2 mm step, 25° curved lips and 1.6 mm
 shells are preserved. The plastic envelope including marks is
@@ -24,12 +31,15 @@ shells are preserved. The plastic envelope including marks is
 Only the plastic tray is included in the STL; the preview's silver contacts
 and copper-coloured wires are illustrations, not printed parts.
 
-The illustrated solder heads are 2.8 mm wide to fit into the 3 mm pockets and
-project **0.6 mm above each inner end-wall face** (1.1 mm from the pocket floor).
-That targets a **68.6 mm contact-to-contact gap**, asking the 69 mm cell to
-spread the ends by about **0.4 mm total**, as in the latest tape design. Actual
-blobs will vary, so check the final protrusion and fit. The negative plastic
-bump is omitted: the two solder heads now supply the contact projection.
+The illustrated solder heads are **2.8 mm wide** to fit the 3 mm pockets.
+At the negative end, aim for a solder peak **1.0 mm above the flat inner wall**,
+level with the bump's original, unrecessed apex. This is 0.5 mm above the pocket
+floor; the remaining curved rim around the recess is lower than that peak.
+At the positive end, aim for **0.2 mm above the flat inner wall**, or 0.7 mm
+above its pocket floor. These asymmetric targets preserve the **68.6 mm
+contact-to-contact gap** and approximately **0.4 mm total end-wall spread**
+with a 69 mm cell. Do not add the earlier 0.6 mm protrusion on top of the bump.
+Actual solder shapes vary; measure the peaks and check the physical fit.
 
 Form the soldered ends on the wires away from the printed holder, with the
 battery removed. Feed the free wire ends from the pocket side out through the
@@ -44,7 +54,8 @@ small horizontal holes after printing. Rebuild with
 `python3 battery-holder/scripts/build_wired_cradle.py` from the repository root;
 set `OPENSCAD` for the executable or `--wire-hole` to tune the hole diameter.
 The build checks watertightness, footprint, lip opening, both bore diameters,
-pocket diameters/depths, wall backing and offset polarity marks. It checks the
+pocket diameters/depths, the retained negative bump, horizontal and vertical alignment with the battery
+axis, wall backing and polarity marks below the holes. It checks the
 illustrative heads for pocket clearance and target preload, and requires cell
 clearance when each contact end is translated outward by 0.2 mm. This is a
 geometry proxy, not a spring or electrical-performance test.
@@ -52,6 +63,9 @@ geometry proxy, not a spring or electrical-performance test.
 ![Bare tray with feed-through holes and solder pockets](images/wired-single-empty.png)
 ![Illustrative soldered wire contacts fitted](images/wired-single-contacts.png)
 ![Section through both contact pockets](images/wired-single-section.png)
+![End-on alignment: orange circle and cross show the battery outline and centre](images/wired-single-alignment.png)
+
+The orange alignment guides are preview overlays only; they are not printed.
 
 ## Protected cells — 69 mm version
 

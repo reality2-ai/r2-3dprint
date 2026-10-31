@@ -170,12 +170,19 @@ holes and solder-head seats instead. Keep the copper-tape holder unchanged.
 produce `stl/battery-1-protected-wired-tray.stl`. Insulated wire is about 1 mm;
 bare conductor sits in the wall, with 1.2 mm holes so the insulated wire body
 can pass through while threading a pre-formed, cooled head from the inside.
-The initial 0.8 mm idea was rejected because it would obstruct that assembly. Both inside
-faces have 3 mm-diameter × 0.5 mm-deep pockets in the 1 mm walls, leaving 0.5 mm
-backing. Raised +/- marks move 6 mm sideways to avoid the centred wire holes.
-The alternative omits the negative plastic bump. Illustrative 2.8 mm solder
-heads project 0.6 mm from each inner face, giving 68.6 mm gap and 0.4 mm total
-preload with a 69 mm cell. Actual solder/contact performance is unverified.
+The initial 0.8 mm idea was rejected because it would obstruct that assembly.
+Both inside faces have 3 mm solder pockets. Retain the negative-side 5 mm-wide,
+1 mm-high bump and recess its pocket 0.5 mm from the original apex, leaving
+1.5 mm backing around the through-hole. The positive pocket is 0.5 mm deep in
+the flat 1 mm wall. Both holes/pockets stay on the battery axis at Y=10.65,
+Z=12.8 mm above the mounting underside. Raised +/- marks now sit 5.5 mm BELOW
+each hole; do not centre the bores vertically on the shorter end flaps.
+Illustrative 2.8 mm solder heads peak 1.0 mm beyond the negative flat wall
+(level with the original bump apex) and 0.2 mm beyond the positive flat wall.
+These targets preserve 68.6 mm contact gap and 0.4 mm total preload. The cell
+starts at X=1.8 in the relaxed preview; only the solder heads should preload it.
+Actual solder/contact performance is unverified. The build probes the retained
+bump, both pocket floors, hole/pocket centring in both axes and both head peaks.
 Keep 67 mm footprint, 71.8 mm body, 72.8 mm marked envelope, 25-degree lips and
 2 mm step. Export only plastic. Wire/solder geometry is for previews/probes.
 Build checks include both through-holes, pocket depth/diameter, backing, marks,

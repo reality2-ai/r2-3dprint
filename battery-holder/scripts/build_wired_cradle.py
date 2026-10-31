@@ -57,18 +57,31 @@ def main():
         report = inspect(paths["tray"], [72.8, 21.3, 17.2002])
         cy, cz = 10.65, 12.8
         expect_hits(faces, cy, cz, [])  # continuous bare-wire path through both ends
-        expect_hits(faces, cy+0.8, cz, [0, 0.5, 71.3, 71.8])  # 0.5 mm pocket floors
-        expect_hits(faces, cy+2, cz, [0, 1, 70.8, 71.8])  # full wall outside the pockets
+        expect_hits(faces, cy+0.8, cz, [0, 1.5, 71.3, 71.8])  # pockets into bump / flat wall
+        expect_hits(faces, cy+3, cz, [0, 1, 70.8, 71.8])  # full wall outside the bump
+        boss_r = (2.5**2+1**2)/2
+        boss_at_radius_2 = 2-boss_r+math.sqrt(boss_r**2-2**2)
+        expect_hits(faces,cy+2,cz,[0,boss_at_radius_2,70.8,71.8])
         # Bore/pocket diameters measured across both actual exported end walls.
         swapped = [tuple((p[1],p[0],p[2]) for p in face) for face in faces]
-        for x, diameter in ((0.25,args.wire_hole),(0.75,3),
+        for x, diameter in ((0.25,args.wire_hole),(0.75,args.wire_hole),
                             (71.55,args.wire_hole),(71.05,3)):
             expect_hits(swapped,x,cz,[0,cy-diameter/2,cy+diameter/2,21.3])
-        # Offset marks leave the wire holes unobstructed and preserve polarity.
-        expect_hits(faces,cy+6,cz,[-0.5,1,70.8,72.3])
+        bump_radius_at_pocket = math.sqrt(boss_r**2-(1.6-(2-boss_r))**2)
+        expect_hits(swapped,1.6,cz,[cy-bump_radius_at_pocket,cy-1.5,cy+1.5,cy+bump_radius_at_pocket])
+        # Check vertical centring on the battery axis, not the shorter flap centre.
+        vertical = [tuple((p[2],p[0],p[1]) for p in face) for face in faces]
+        for x, diameter, bottom in ((0.25,args.wire_hole,0),(0.75,args.wire_hole,0),
+                                    (71.55,args.wire_hole,2),(71.05,3,2)):
+            expect_hits(vertical,x,cy,[bottom,cz-diameter/2,cz+diameter/2,16.8])
+        expect_hits(vertical,1.6,cy,[0,3.8,cz-bump_radius_at_pocket,cz-1.5,cz+1.5,cz+bump_radius_at_pocket])
+        report["wire_axis_y_z_mm"] = [cy,cz]
+        # Marks sit below the holes, preserving polarity without masking the axis.
+        mark_z = cz-5.5
+        expect_hits(faces,cy,mark_z,[-0.5,1,70.8,72.3])
         for dz in (-2,2):
-            expect_hits(faces,cy+6,cz+dz,[0,1,70.8,72.3])
-        contacts = expect_hits(triangles(paths["heads"]),cy,cz,[0.5,1.6,70.2,71.3])
+            expect_hits(faces,cy,mark_z+dz,[0,1,70.8,72.3])
+        contacts = expect_hits(triangles(paths["heads"]),cy,cz,[1.5,2.0,70.6,71.3])
         report["target_contact_gap_mm"] = round(contacts[2]-contacts[1],4)
         report["target_preload_mm"] = round(69-report["target_contact_gap_mm"],4)
         inspect(paths["footprint"],[67,21.3,0.01])
