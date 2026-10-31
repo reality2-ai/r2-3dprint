@@ -164,18 +164,21 @@ dimensions, and exports `stl/router-heltec-lid-plain.stl` separately.
 
 ### Compact radar battery holders
 
-**Latest scope: longer protected cells, one or two only.** The user confirms
-three batteries cannot fit the Radar Sensor Box. New cells are reported just
-under 5 mm longer including the raised cap; exact length/diameter are pending.
-Keep the mounting base at its previous 66.8 mm length, allowing a longer raised
-upper cradle to overhang the component end. The thermistor plug interferes only
-with the two-cell version. Set its lift from the connected plug and wire bend
-height with clearance, then check the lid; do not assume 2 mm is sufficient or
-raise the single-cell version for a connector that it does not overlap. The
-earlier 67 mm overall limit below describes the short-cell revision; the user
-now proposes retaining the short base while extending the upper cradle. Do not
-label existing STLs suitable for the new cells or develop a new three-cell
-variant for this box. Retain older exports as historical until replaced.
+The user has now confirmed that the reinforced curved holder works for the
+shorter unprotected cells. Preserve that working geometry and its exports; the
+next task is a separate longer protected-cell version with the same retention.
+
+**Latest scope: one longer protected cell only.** The user confirms that raising
+batteries above the thermistor would prevent lid closure, ruling out the raised
+two-cell layout. Three cells also cannot fit. The protected battery is **69 mm
+including its cap**; diameter remains assumed 18 mm. The latest mounting base is
+**68 mm**, flush with one end of the upper cradle, with the entire overhang at
+the other end. Retain only a shallow step for that overhang, not a lift above
+the thermistor. The reported 70 mm plug-to-pin distance is along the board, not
+connector height; the user subsequently estimated 69 mm available for the body.
+The full upper tray still needs extra space beyond the mounting footprint.
+Do not alter the working short-cell exports or develop another protected two-
+or three-cell holder unless the user changes the installation constraints.
 Latest retention proposal: curve the holder's upper sides inward for a press-in
 snap cradle, replacing the separate bars. The latest concept uses two independent
 24 mm-long retaining sections per cell, smooth entry/contact edges and top removal with
@@ -185,7 +188,8 @@ fit or strength qualification. Final lips need the new cell diameter and a
 physical PETG test. The concept includes continuous 1 mm end walls for copper
 tape, separated from the curved sides by 1.2 mm relief gaps. Its 66.8 mm length
 is the old holder envelope, not a new-cell fit. Longer sections need a physical
-removal-force trial; protected-cell length, lift and cap contact remain pending.
+removal-force trial. The separate protected-cell source now uses the confirmed
+69 mm length; lift and cap contact fit remain to be verified.
 `battery-holder/scripts/build_snap_cradle.py` exports the current concept as
 `battery-{1,2}-snap-fit-test.stl`, checking connected, watertight meshes and
 dimensions. These are short-cell fit tests (64.8 mm plastic gap, 18 mm diameter
@@ -196,6 +200,17 @@ Outside dimensions are 66.8 × 21.3/43.4 × 14.8 mm; cell tops are at 19.8 mm.
 The exporter also checks seated clearance and retention at 0.8 mm lift; physical
 force/fatigue remain unverified. Keep these fit-test files distinct from the
 historical bar-retained trays and from the eventual longer-cell revision.
+The separate `battery-holder/src/protected_snap_cradle.scad` uses a 68 mm
+mounting plinth and a 71.8 mm upper tray (3.8 mm overhang at +X, flush at X=0).
+The plastic/taped gaps are 69.8/69.6 mm, carrying forward 0.6 mm total length
+allowance. `scripts/build_protected_cradle.py` exports the single-cell STL with
+a provisional 2 mm lift, giving 71.8 × 21.3 × 16.8 mm printed size and 21.8 mm
+installed cell-top height. This is a shallow mounting step, not a thermistor-
+clearing lift; single-cell lid fit must still be checked. Source and build accept
+one protected cell only. Checks cover mesh integrity, cell clearance/capture,
+the 68 mm mounting footprint, flush-end alignment and empty space under the
+overhang. Print supports are needed under the 3.8 mm
+cantilever. Do not overwrite the working short-cell STLs.
 The user also suggests a diagonal single-cell layout. Compare it with the raised
 layout using the complete holder and bar-service envelopes. Do not assume the
 66 × 54 mm reservation's diagonal guarantees fit: simple rectangular screening

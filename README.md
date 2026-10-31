@@ -15,7 +15,7 @@ This repository contains parametric case designs for various Mariko Earthgrids d
 | [Xiao + LoRa](xiao/) | Phone-mount case for Seeed Xiao + LoRa board | ✅ Production |
 | [Heltec router](router-heltec/) | Pi 3 + Heltec V4R8, close-fitting screen opening, GPS holder and two rear antenna mounts | Digital prototype; physical fit pending |
 | [Home router](router/) | Pi + DFR1195 enclosure with external USB access and removable covers | USB access revision; print fit pending |
-| [Compact battery holders](battery-holder/) | Locking slide-through bars; longer protected-cell revision limited to one or two cells | New cell/plug measurements pending; existing STLs are for the previous cells; three-cell version does not fit the box |
+| [Compact battery holders](battery-holder/) | Reinforced curved holders; single protected-cell version with 68 mm base and one-ended overhang | Short-cell version user-tested; 69 mm protected-cell STL available for fit checking; raised two-cell layout cannot clear the lid |
 
 ## Project Structure
 

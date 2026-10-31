@@ -1,11 +1,49 @@
 # Compact Radar Sensor Box battery holders
 
-## Longer protected cells — revision pending
+## Protected cells — 69 mm version
 
-The user has confirmed that **only one or two cells fit the Radar Sensor Box;
-three do not fit**. The new protected cells are reported to be just under 5 mm
-longer than the previous cells, including the raised cap. Exact length and
-diameter are still needed before generating replacement print files.
+The user has confirmed **69 mm total battery length including the cap**. The
+new [protected-cell source](src/protected_snap_cradle.scad) retains the working
+curved grip, 1.6 mm shells, 1.8 mm cradle floor and continuous copper-tape ends.
+The protected-cell revision is now **single-cell only**. The user reports that
+raising two batteries above the thermistor would prevent the lid from closing.
+
+The upper tray is **71.8 mm long**, with a **69.8 mm plastic contact gap**.
+With the provisional 0.1 mm tape at each end, the gap is 69.6 mm, carrying over
+0.6 mm total length allowance from the successful short-cell holder. The
+mounting plinth is **68 mm long**, flush with the upper tray at X=0. The upper
+tray overhangs by **3.8 mm only at the opposite end** (+X). Aim that extension
+towards the available space. The complete holder is still 71.8 mm long; a
+69 mm cell plus end walls cannot fit in a 69 mm outside envelope.
+
+- [Single-cell protected tray STL](stl/battery-1-protected-snap-tray.stl):
+  71.8 × 21.3 × 16.8 mm printed envelope, with a 68 × 21.3 mm mounting face.
+  The starting lift is **2 mm**; installed cell top is 21.8 mm above the mounting
+  surface. This shallow step retains the earlier overhang concept; it is not
+  intended to lift the battery above the thermistor. Verify the closed-lid fit.
+
+**Diameter is still assumed to be 18 mm**, carried over from the working short
+cells. The raised cap's detailed shape and electrical contact pressure are not
+modeled. The 69 mm length is confirmed; diameter, closed-lid space and physical
+fit still need checking. The single-cell layout does not overlap the thermistor
+plug; its lift preserves the short mounting footprint under the longer tray.
+
+Print base down with the cavity upwards. Provide slicer support under the
+3.8 mm cantilever and keep it clear of the flexing lips and relief gaps. Remove
+support before mounting. No separate retaining bars are required.
+
+Rebuild with `python3 battery-holder/scripts/build_protected_cradle.py --cells 1`
+from the repository root (`OPENSCAD` selects the executable). Override
+`--diameter` when measured; `--lift` adjusts the shallow step if a fit trial
+requires it. The source and exporter accept only one protected cell. The build checks connected,
+watertight meshes, dimensions, the short mounting footprint, seated-cell
+clearance, retention at 0.8 mm lift and empty space under the overhang. These
+geometry checks do not measure grip, contact pressure or print quality.
+
+![Protected single-cell holder](images/protected-single-assembly.png)
+![Side view showing the flush end and overhang](images/protected-single-side.png)
+
+## Working short-cell curved holder
 
 The latest retention proposal is **curved press-in lips on the holder itself**,
 replacing the separate bars. Two 24 mm-long curved retaining sections per cell allow
@@ -27,6 +65,10 @@ Printable fit-test files for this geometry are linked below. They are not sized
 for the new, longer protected cells.
 
 ### Curved-holder fit-test STLs
+
+The user has confirmed that the reinforced curved holder works with the shorter
+unprotected batteries. Keep this working version while developing the longer-cell
+variant separately. This confirmation does not establish fit for protected cells.
 
 After feedback that the earlier holders were flimsy, the curved walls are now
 **1.6 mm thick** (was 1.2 mm) and the base **1.8 mm thick** (was 1.2 mm).
@@ -59,12 +101,9 @@ the dimensions above before publishing them. It also checks seated-cell
 clearance and geometric capture with the cells lifted 0.8 mm; this does not
 simulate flexing or measure holding force.
 
-Keep the mounting base at the previous 66.8 mm length. The proposed longer upper
-cradle can overhang the component end of the battery area. The thermistor plug
-is a clearance concern **only for the two-cell holder**; do not impose that
-connector-driven lift on the single-cell design unnecessarily. Set the two-cell
-lift from the fitted plug/wire height plus clearance, and check the closed lid.
-The user's suggested couple of millimetres is not yet a verified lift dimension.
+The protected-cell version above uses a separate 68 mm base with a one-ended
+overhang. The earlier two-cell raised layout was rejected because the required
+height over the thermistor would prevent lid closure.
 
 The user also proposes **diagonal placement for the single-cell version**.
 Evaluate that alongside the raised/overhanging layout. Check the full cell,
