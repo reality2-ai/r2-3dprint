@@ -12,7 +12,7 @@ mount_lift = 2; // shallow step under overhang; verify single-cell lid clearance
 radial_clearance = 0.05;
 shell_t = 1.6;
 floor_t = 1.8;
-base_l = 68;
+base_l = 67; // shortened 1 mm after physical fit between components
 rib_w = 24;
 end_t = 1;
 end_relief = 1.2; // keep curved sides separate from the contact walls
@@ -63,7 +63,7 @@ module upper_cradle() {
 
 module cradle() {
     union() {
-        // 68 mm mounting face, flush at X=0; upper tray overhangs only at +X.
+        // 67 mm mounting face, flush at X=0; upper tray overhangs only at +X.
         cube([base_l,base_w,mount_lift+floor_t]);
         translate([0,0,mount_lift]) upper_cradle();
     }

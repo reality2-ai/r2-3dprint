@@ -172,7 +172,8 @@ next task is a separate longer protected-cell version with the same retention.
 batteries above the thermistor would prevent lid closure, ruling out the raised
 two-cell layout. Three cells also cannot fit. The protected battery is **69 mm
 including its cap**; diameter remains assumed 18 mm. The latest mounting base is
-**68 mm**, flush with one end of the upper cradle, with the entire overhang at
+**67 mm** (shortened from 68 mm after a tight physical fit between components),
+flush with one end of the upper cradle, with the entire overhang at
 the other end. Retain only a shallow step for that overhang, not a lift above
 the thermistor. The reported 70 mm plug-to-pin distance is along the board, not
 connector height; the user subsequently estimated 69 mm available for the body.
@@ -200,16 +201,16 @@ Outside dimensions are 66.8 × 21.3/43.4 × 14.8 mm; cell tops are at 19.8 mm.
 The exporter also checks seated clearance and retention at 0.8 mm lift; physical
 force/fatigue remain unverified. Keep these fit-test files distinct from the
 historical bar-retained trays and from the eventual longer-cell revision.
-The separate `battery-holder/src/protected_snap_cradle.scad` uses a 68 mm
-mounting plinth and a 71.8 mm upper tray (3.8 mm overhang at +X, flush at X=0).
+The separate `battery-holder/src/protected_snap_cradle.scad` uses a 67 mm
+mounting plinth and a 71.8 mm upper tray (4.8 mm overhang at +X, flush at X=0).
 The plastic/taped gaps are 69.8/69.6 mm, carrying forward 0.6 mm total length
 allowance. `scripts/build_protected_cradle.py` exports the single-cell STL with
 a provisional 2 mm lift, giving 71.8 × 21.3 × 16.8 mm printed size and 21.8 mm
 installed cell-top height. This is a shallow mounting step, not a thermistor-
 clearing lift; single-cell lid fit must still be checked. Source and build accept
 one protected cell only. Checks cover mesh integrity, cell clearance/capture,
-the 68 mm mounting footprint, flush-end alignment and empty space under the
-overhang. Print supports are needed under the 3.8 mm
+the 67 mm mounting footprint, flush-end alignment and empty space under the
+overhang. Print supports are needed under the 4.8 mm
 cantilever. Do not overwrite the working short-cell STLs.
 The user also suggests a diagonal single-cell layout. Compare it with the raised
 layout using the complete holder and bar-service envelopes. Do not assume the

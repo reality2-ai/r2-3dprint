@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export the single 69 mm protected-cell holder on a flush-ended 68 mm base."""
+"""Export the single 69 mm protected-cell holder on a flush-ended 67 mm base."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import os
@@ -51,9 +51,9 @@ def main():
         with ThreadPoolExecutor(max_workers=3) as pool:
             paths = dict(pool.map(export, parts))
         report = inspect(paths["tray"], [71.8, width, height])
-        inspect(paths["footprint"], [68, width, 0.01])
-        # Both start at X=0, so all 3.8 mm of extension lies at the far end.
-        for part, xmax in (("footprint", 68), ("tray", 71.8)):
+        inspect(paths["footprint"], [67, width, 0.01])
+        # Both start at X=0, so all 4.8 mm of extension lies at the far end.
+        for part, xmax in (("footprint", 67), ("tray", 71.8)):
             xs = [p[0] for face in triangles(paths[part]) for p in face]
             assert abs(min(xs)) < 0.001 and abs(max(xs)-xmax) < 0.001
         for part in ("interference", "retention", "overhang-clearance"):

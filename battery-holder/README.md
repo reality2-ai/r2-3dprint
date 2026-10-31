@@ -11,13 +11,15 @@ raising two batteries above the thermistor would prevent the lid from closing.
 The upper tray is **71.8 mm long**, with a **69.8 mm plastic contact gap**.
 With the provisional 0.1 mm tape at each end, the gap is 69.6 mm, carrying over
 0.6 mm total length allowance from the successful short-cell holder. The
-mounting plinth is **68 mm long**, flush with the upper tray at X=0. The upper
-tray overhangs by **3.8 mm only at the opposite end** (+X). Aim that extension
+mounting plinth is **67 mm long**, flush with the upper tray at X=0. The upper
+tray overhangs by **4.8 mm only at the opposite end** (+X). Aim that extension
 towards the available space. The complete holder is still 71.8 mm long; a
-69 mm cell plus end walls cannot fit in a 69 mm outside envelope.
+69 mm cell plus end walls cannot fit in a 69 mm outside envelope. The mounting
+base was shortened from 68 to 67 mm after the user found it tight between the
+components; the upper cradle and battery space retain their working dimensions.
 
 - [Single-cell protected tray STL](stl/battery-1-protected-snap-tray.stl):
-  71.8 × 21.3 × 16.8 mm printed envelope, with a 68 × 21.3 mm mounting face.
+  71.8 × 21.3 × 16.8 mm printed envelope, with a 67 × 21.3 mm mounting face.
   The starting lift is **2 mm**; installed cell top is 21.8 mm above the mounting
   surface. This shallow step retains the earlier overhang concept; it is not
   intended to lift the battery above the thermistor. Verify the closed-lid fit.
@@ -29,7 +31,7 @@ fit still need checking. The single-cell layout does not overlap the thermistor
 plug; its lift preserves the short mounting footprint under the longer tray.
 
 Print base down with the cavity upwards. Provide slicer support under the
-3.8 mm cantilever and keep it clear of the flexing lips and relief gaps. Remove
+4.8 mm cantilever and keep it clear of the flexing lips and relief gaps. Remove
 support before mounting. No separate retaining bars are required.
 
 Rebuild with `python3 battery-holder/scripts/build_protected_cradle.py --cells 1`
@@ -101,7 +103,7 @@ the dimensions above before publishing them. It also checks seated-cell
 clearance and geometric capture with the cells lifted 0.8 mm; this does not
 simulate flexing or measure holding force.
 
-The protected-cell version above uses a separate 68 mm base with a one-ended
+The protected-cell version above uses a separate 67 mm base with a one-ended
 overhang. The earlier two-cell raised layout was rejected because the required
 height over the thermistor would prevent lid closure.
 
