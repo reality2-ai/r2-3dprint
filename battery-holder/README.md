@@ -23,7 +23,41 @@ placeholder and retains the previous 66.8 mm length for illustration. The end
 walls and copper bands are now included, but the study does not yet define the
 protected-cell length, raised-cap contact fit, lift or thermistor-plug clearance.
 The longer curved sections need a physical grip/removal trial.
-No replacement print files have been issued from this study.
+Printable fit-test files for this geometry are linked below. They are not sized
+for the new, longer protected cells.
+
+### Curved-holder fit-test STLs
+
+After feedback that the earlier holders were flimsy, the curved walls are now
+**1.6 mm thick** (was 1.2 mm) and the base **1.8 mm thick** (was 1.2 mm).
+The inner curves remain concentric with the cells with 0.05 mm radial clearance;
+extra shell thickness grows outward. The end walls remain 1 mm, preserving the
+length and contact gap. The thicker sides will resist opening more; physical
+grip, release force and durability still need a printed trial.
+
+| Variant | Printable tray | Outside size, L × W × H |
+|---|---|---|
+| Single cell | [battery-1-snap-fit-test.stl](stl/battery-1-snap-fit-test.stl) | 66.8 × 21.3 × 14.8 mm |
+| Two cells | [battery-2-snap-fit-test.stl](stl/battery-2-snap-fit-test.stl) | 66.8 × 43.4 × 14.8 mm |
+
+Print one tray, flat base down and opening upwards. These include the curved
+sides and both continuous end walls; the preview batteries and copper tape are
+excluded. No separate bars are needed. Use the single-cell tray for an initial
+PETG grip/removal trial before printing the double.
+
+The plastic end-wall gap is **64.8 mm**, or **64.6 mm** with the illustrative
+0.1 mm tape at each end. The cell diameter placeholder is **18 mm**. These are
+short-cell fit tests, not final protected-cell holders; they do not include the
+proposed raised base/overhang. The assembled cell reaches 19.8 mm above the base,
+above the printed tray's 14.8 mm end walls. Physical grip, contact pressure and
+print quality remain unverified.
+
+Rebuild with `python3 battery-holder/scripts/build_snap_cradle.py` from the
+repository root (`OPENSCAD` can specify the executable). The exporter checks
+both files for a single connected, watertight solid, consistent winding and
+the dimensions above before publishing them. It also checks seated-cell
+clearance and geometric capture with the cells lifted 0.8 mm; this does not
+simulate flexing or measure holding force.
 
 Keep the mounting base at the previous 66.8 mm length. The proposed longer upper
 cradle can overhang the component end of the battery area. The thermistor plug

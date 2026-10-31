@@ -6,8 +6,8 @@ occupied_cells = 1;
 part = "assembly"; // assembly, section, empty, tray, interference, retention
 cell_d = 18;
 radial_clearance = 0.05;
-shell_t = 1.2;
-floor_t = 1.2;
+shell_t = 1.6;
+floor_t = 1.8;
 base_l = 66.8;
 rib_w = 24;
 end_t = 1;
@@ -37,9 +37,9 @@ module section_profile() {
     offset(r=tip_round) offset(delta=-tip_round)
         polygon(concat(
             [for(a=[180-lip_angle:1:360+lip_angle])
-                [outside_r*cos(a),outside_r+outside_r*sin(a)]],
+                [outside_r*cos(a),cell_z+outside_r*sin(a)]],
             [for(a=[360+lip_angle:-1:180-lip_angle])
-                [inside_r*cos(a),outside_r+inside_r*sin(a)]]));
+                [inside_r*cos(a),cell_z+inside_r*sin(a)]]));
 }
 
 module cradle() {

@@ -9,24 +9,31 @@ turn slightly past the cell's widest point; adjacent lanes have independent
 arms and rounded entry edges.
 
 Both ends now have **continuous full-width walls** for copper tape. They are
-1 mm thick and 14.2 mm high, reaching 4 mm above the illustrative terminal
+1 mm thick and 14.8 mm high, reaching 4 mm above the illustrative terminal
 centre, with flat tops for wrapping tape over. Copper-coloured bands show the
 contact locations. A 1.2 mm gap separates each curved section from the end wall
 so the wall does not brace the upper lips. The floor joins everything together.
 
 This is a concept for one or two cells. It retains the previous **66.8 mm length**
-and **18 mm placeholder diameter**, with 1.2 mm shell and floor and a 20° wrap
+and **18 mm placeholder diameter**, with a 1.6 mm shell, 1.8 mm floor and a 20° wrap
 above the equator. The 64.6 mm grey cylinders illustrate the space between the
 0.1 mm tape placeholders; they are not measurements of the new cells. Longer
-sections will resist opening more than the earlier short sections; grip and
+sections and thicker walls will resist opening more than the earlier version; grip and
 removal force need a physical trial before choosing final thickness/opening.
 
 Views are `part="assembly"`, `"section"` and `"empty"`; set `cells=1` or `2`.
+Wall and floor thickness were increased following feedback that earlier holders
+were flimsy. The inner curves stay centred on the cells as thickness changes.
 The default shows one occupied lane and one empty lane. `occupied_cells` controls
 that illustration; `part="tray"` supplies the bare concept geometry for checks.
 
 The protected-cell length, raised cap/contact geometry, mounting lift and
-thermistor clearance remain pending. No replacement print files have been issued.
+thermistor clearance remain pending. Printable **short-cell fit-test** exports
+are available as [single](../stl/battery-1-snap-fit-test.stl) and
+[double](../stl/battery-2-snap-fit-test.stl). They include the tray only, without
+the preview batteries or tape. See the [holder README](../README.md) for sizes,
+printing orientation and limitations. Rebuild using
+`python3 battery-holder/scripts/build_snap_cradle.py` from the repository root.
 
 ![Longer sides and copper-tape ends](../images/snap-cradle-concept.png)
 ![Empty holder exposing the end contact backing](../images/snap-cradle-empty.png)

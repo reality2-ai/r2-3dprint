@@ -186,6 +186,16 @@ physical PETG test. The concept includes continuous 1 mm end walls for copper
 tape, separated from the curved sides by 1.2 mm relief gaps. Its 66.8 mm length
 is the old holder envelope, not a new-cell fit. Longer sections need a physical
 removal-force trial; protected-cell length, lift and cap contact remain pending.
+`battery-holder/scripts/build_snap_cradle.py` exports the current concept as
+`battery-{1,2}-snap-fit-test.stl`, checking connected, watertight meshes and
+dimensions. These are short-cell fit tests (64.8 mm plastic gap, 18 mm diameter
+placeholder), not protected-cell replacements. The curved shells are now
+1.6 mm and the floor 1.8 mm following feedback about flimsiness. Centre the
+inner and outer arcs on cell_z so floor/shell changes preserve radial clearance.
+Outside dimensions are 66.8 × 21.3/43.4 × 14.8 mm; cell tops are at 19.8 mm.
+The exporter also checks seated clearance and retention at 0.8 mm lift; physical
+force/fatigue remain unverified. Keep these fit-test files distinct from the
+historical bar-retained trays and from the eventual longer-cell revision.
 The user also suggests a diagonal single-cell layout. Compare it with the raised
 layout using the complete holder and bar-service envelopes. Do not assume the
 66 × 54 mm reservation's diagonal guarantees fit: simple rectangular screening
