@@ -214,12 +214,20 @@ each end outward by half the nominal preload. This proxy does not simulate
 wall bending, holding force or fatigue. Curved-lip retention must pass after
 excluding axial contact masks, so end pressure cannot masquerade as retention.
 
+The protected holder's curved lips now wrap 25° above the equator rather than
+20°, adding approximately 0.8 mm of inner arc per side. Keep 1.6 mm shells and
+rounded tips. The build checks the actual opening at the section end and the
+rounded lip height (16.5925 mm opening, 17.2002 mm printed height at defaults).
+The lips rise slightly above the end walls but remain below
+the installed cell top. Increased insertion/removal force and vibration
+retention require physical checks; do not claim a shake test from geometry.
+
 Raised outside polarity marks are 0.5 mm proud, 5 mm wide with 0.8 mm strokes:
 minus at the flush/bumped end, plus at the overhanging end. They embed 0.1 mm into
 the flaps. Body length remains 71.8 mm; relaxed overall length including marks
 is **72.8 mm**, and the footprint remains 67 mm. End-wall flex further increases
 installed length; physical fit is pending. `scripts/build_protected_cradle.py`
-exports a 72.8 × 21.3 × 16.8 mm STL including the marks, using the existing 2 mm
+exports a 72.8 × 21.3 × 17.2 mm STL including the marks, using the existing 2 mm
 step, and checks the exported bump and plus/minus geometry. Cell-top height
 is 21.8 mm. Print supports are needed under the 4.8 mm cantilever; marking
 print quality also needs inspection. Do not overwrite working short-cell STLs.

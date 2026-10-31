@@ -8,6 +8,13 @@ curved grip, 1.6 mm shells, 1.8 mm cradle floor and continuous copper-tape ends.
 The protected-cell revision is now **single-cell only**. The user reports that
 raising two batteries above the thermistor would prevent the lid from closing.
 
+The retaining curves now extend **25° above the battery equator**, up from 20°,
+adding about 0.8 mm of inner arc at each lip. They retain the 1.6 mm wall
+thickness and rounded tips. The measured mesh opening is **16.59 mm**, and the
+printed height is **17.2 mm**. The narrower opening increases geometric capture;
+actual insertion/removal force and resistance to shaking still need a print
+trial. The taller lips remain below the top of the installed cell.
+
 The upper tray body is **71.8 mm long**, with **69.8 mm between the flat end
 walls**. A **5 mm-wide, 1 mm-high rounded bump** inside the flush end backs the
 negative copper contact. The end wall stays continuous behind it. Press the
@@ -36,7 +43,7 @@ base was shortened from 68 to 67 mm after the user found it tight between the
 components; neither the bump nor the marks change that mounting footprint.
 
 - [Single-cell protected tray STL](stl/battery-1-protected-snap-tray.stl):
-  **72.8 × 21.3 × 16.8 mm** relaxed printed envelope including polarity marks,
+  **72.8 × 21.3 × 17.2 mm** relaxed printed envelope including polarity marks,
   with a **67 × 21.3 mm** mounting face. Body length is 71.8 mm.
   The shallow step is **2 mm**; installed cell top is 21.8 mm above the mounting
   surface. The step is not intended to lift the battery above the thermistor.
@@ -60,7 +67,8 @@ Relaxed-cell interference must be confined to narrow contact masks at the two
 terminal faces. A geometric proxy moves each end outward 0.2 mm and checks cell
 clearance; this is not a simulation of bending. Retention at 0.8 mm lift excludes
 end-contact pressure, so the curved lips must provide the capture. Checks also
-cover empty space under the overhang and exported end-wall/bump positions.
+cover empty space under the overhang, exported end-wall/bump positions and the
+actual lip opening and height in the mesh.
 These checks do not measure spring force, tape performance or print quality.
 
 ![Protected single-cell holder](images/protected-single-assembly.png)

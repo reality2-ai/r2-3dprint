@@ -2,6 +2,7 @@
 """Export the single 69 mm protected-cell holder on a flush-ended 67 mm base."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+import math
 import os
 from pathlib import Path
 import shutil
@@ -44,7 +45,6 @@ def main():
     if lift <= 0 or args.diameter <= 0:
         parser.error("Lift and diameter must be positive")
     width = args.cells*(args.diameter+3.3)+(args.cells-1)*0.8
-    height = lift+args.diameter/2+5.8
     env = os.environ.copy()
     env.setdefault("QT_QPA_PLATFORM", "offscreen")
     with tempfile.TemporaryDirectory(prefix="protected-cradle-") as temp:
@@ -71,10 +71,24 @@ def main():
                  "unexpected-interference", "relieved-interference"]
         with ThreadPoolExecutor(max_workers=3) as pool:
             paths = dict(pool.map(export, parts))
-        report = inspect(paths["tray"], [72.8, width, height])
         faces = triangles(paths["tray"])
         centre_y = args.diameter/2+0.05+1.6
         centre_z = lift+1.8+args.diameter/2
+        # Rounded 25-degree lips now extend slightly above the end walls.
+        # Check the height against the unrounded arc and its 0.3 mm tip rounding.
+        tip_height = centre_z+centre_y*math.sin(math.radians(25))
+        height = max(p[2] for face in faces for p in face)
+        assert max(centre_z+4, tip_height-0.3)-0.005 <= height <= max(centre_z+4, tip_height)+0.005
+        report = inspect(paths["tray"], [72.8, width, height])
+        # Measure the actual throat at the first curved section's inner end.
+        profile = [p for face in faces for p in face
+                   if abs(p[0]-26.2)<0.001 and p[2]>centre_z]
+        left = max(p[1] for p in profile if p[1]<centre_y)
+        right = min(p[1] for p in profile if p[1]>centre_y)
+        opening = right-left
+        raw_opening = 2*(args.diameter/2+0.05)*math.cos(math.radians(25))
+        assert raw_opening-0.005 <= opening <= raw_opening+0.6, opening
+        report["lip_opening_mm"] = round(opening, 4)
         for offset, inner_x in ((0, 2.0), (3, 1.0)):
             hits = axial_crossings(faces, centre_y+offset, centre_z)
             expected = [-0.5, inner_x, 70.8, 72.3] if offset == 0 else [0, inner_x, 70.8, 71.8]
