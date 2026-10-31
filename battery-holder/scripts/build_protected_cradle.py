@@ -13,6 +13,26 @@ from build import inspect, triangles, volume
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def axial_crossings(faces, y, z):
+    """Intersect the exported surface with a line through a terminal."""
+    hits = []
+    for a, b, c in faces:
+        uy, uz = b[1]-a[1], b[2]-a[2]
+        vy, vz = c[1]-a[1], c[2]-a[2]
+        det = uy*vz-uz*vy
+        if abs(det) < 1e-10:
+            continue
+        dy, dz = y-a[1], z-a[2]
+        u, v = (dy*vz-dz*vy)/det, (uy*dz-uz*dy)/det
+        if u >= -1e-7 and v >= -1e-7 and u+v <= 1+1e-7:
+            hits.append(a[0]+u*(b[0]-a[0])+v*(c[0]-a[0]))
+    distinct = []
+    for x in sorted(hits):
+        if not distinct or abs(x-distinct[-1]) > 1e-5:
+            distinct.append(x)
+    return distinct
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cells", type=int, choices=(1,), default=1)
@@ -51,6 +71,15 @@ def main():
         with ThreadPoolExecutor(max_workers=3) as pool:
             paths = dict(pool.map(export, parts))
         report = inspect(paths["tray"], [71.8, width, height])
+        faces = triangles(paths["tray"])
+        centre_y = args.diameter/2+0.05+1.6
+        centre_z = lift+1.8+args.diameter/2
+        for offset, inner_x in ((0, 1.5), (3, 1.0)):
+            hits = axial_crossings(faces, centre_y+offset, centre_z)
+            expected = [0, inner_x, 70.8, 71.8]
+            assert len(hits) == 4 and all(abs(a-b)<0.005 for a,b in zip(hits, expected)), hits
+            if offset == 0:
+                report["plastic_contact_gap_mm"] = round(hits[2]-hits[1], 4)
         inspect(paths["footprint"], [67, width, 0.01])
         # Both start at X=0, so all 4.8 mm of extension lies at the far end.
         for part, xmax in (("footprint", 67), ("tray", 71.8)):

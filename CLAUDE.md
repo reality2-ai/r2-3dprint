@@ -203,8 +203,14 @@ force/fatigue remain unverified. Keep these fit-test files distinct from the
 historical bar-retained trays and from the eventual longer-cell revision.
 The separate `battery-holder/src/protected_snap_cradle.scad` uses a 67 mm
 mounting plinth and a 71.8 mm upper tray (4.8 mm overhang at +X, flush at X=0).
-The plastic/taped gaps are 69.8/69.6 mm, carrying forward 0.6 mm total length
-allowance. `scripts/build_protected_cradle.py` exports the single-cell STL with
+The flat wall spacing is 69.8 mm. A 5 mm-wide, 0.5 mm-high spherical-cap bump
+now backs the negative copper contact on the flush end (X=0 end), reducing the
+nominal plastic/taped gap at the terminal centre to 69.3/69.1 mm. Keep the wall
+unbroken behind it and show tape conforming over the bump. Shift the preview
+cell 0.25 mm towards +X to centre it in the remaining 0.1 mm axial allowance.
+The build probes the exported wall crossings on and off the bump and rejects
+seated cell interference; actual tape conformance/contact pressure need a trial.
+`scripts/build_protected_cradle.py` exports the single-cell STL with
 a provisional 2 mm lift, giving 71.8 × 21.3 × 16.8 mm printed size and 21.8 mm
 installed cell-top height. This is a shallow mounting step, not a thermistor-
 clearing lift; single-cell lid fit must still be checked. Source and build accept

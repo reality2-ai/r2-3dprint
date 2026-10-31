@@ -8,15 +8,21 @@ curved grip, 1.6 mm shells, 1.8 mm cradle floor and continuous copper-tape ends.
 The protected-cell revision is now **single-cell only**. The user reports that
 raising two batteries above the thermistor would prevent the lid from closing.
 
-The upper tray is **71.8 mm long**, with a **69.8 mm plastic contact gap**.
-With the provisional 0.1 mm tape at each end, the gap is 69.6 mm, carrying over
-0.6 mm total length allowance from the successful short-cell holder. The
+The upper tray is **71.8 mm long**, with **69.8 mm between the flat end walls**.
+A **5 mm-wide, 0.5 mm-high rounded bump** on the inside of the flush end brings
+the copper tape towards the battery's negative terminal. The end wall stays
+continuous behind it. Press the tape smoothly over this bump when applying it.
+At the bump, the nominal plastic gap is **69.3 mm**, or **69.1 mm** allowing for
+0.1 mm tape at each end. This uses 0.5 mm of the original 0.6 mm total length
+allowance. The preview cell shifts 0.25 mm towards the opposite end to centre it
+in the remaining clearance. Tape conformance and contact pressure need a
+physical trial; this is a backing bump, not a spring contact. The
 mounting plinth is **67 mm long**, flush with the upper tray at X=0. The upper
 tray overhangs by **4.8 mm only at the opposite end** (+X). Aim that extension
 towards the available space. The complete holder is still 71.8 mm long; a
 69 mm cell plus end walls cannot fit in a 69 mm outside envelope. The mounting
 base was shortened from 68 to 67 mm after the user found it tight between the
-components; the upper cradle and battery space retain their working dimensions.
+components. Adding the contact bump keeps the mounting dimensions unchanged.
 
 - [Single-cell protected tray STL](stl/battery-1-protected-snap-tray.stl):
   71.8 × 21.3 × 16.8 mm printed envelope, with a 67 × 21.3 mm mounting face.
@@ -39,11 +45,13 @@ from the repository root (`OPENSCAD` selects the executable). Override
 `--diameter` when measured; `--lift` adjusts the shallow step if a fit trial
 requires it. The source and exporter accept only one protected cell. The build checks connected,
 watertight meshes, dimensions, the short mounting footprint, seated-cell
-clearance, retention at 0.8 mm lift and empty space under the overhang. These
+clearance, retention at 0.8 mm lift, empty space under the overhang and the
+exported end-wall/bump positions at and beside the terminal centre. These
 geometry checks do not measure grip, contact pressure or print quality.
 
 ![Protected single-cell holder](images/protected-single-assembly.png)
 ![Side view showing the flush end and overhang](images/protected-single-side.png)
+![Copper tape over the rounded negative-end bump](images/protected-single-contact.png)
 
 ## Working short-cell curved holder
 
