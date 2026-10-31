@@ -164,6 +164,26 @@ dimensions, and exports `stl/router-heltec-lid-plain.stl` separately.
 
 ### Compact radar battery holders
 
+**Wired-contact alternative:** copper tape proved fragile, so the user requests
+holes and solder-head seats instead. Keep the copper-tape holder unchanged.
+`battery-holder/src/wired_snap_cradle.scad` and `scripts/build_wired_cradle.py`
+produce `stl/battery-1-protected-wired-tray.stl`. Insulated wire is about 1 mm;
+bare conductor sits in the wall, with 1.2 mm holes so the insulated wire body
+can pass through while threading a pre-formed, cooled head from the inside.
+The initial 0.8 mm idea was rejected because it would obstruct that assembly. Both inside
+faces have 3 mm-diameter × 0.5 mm-deep pockets in the 1 mm walls, leaving 0.5 mm
+backing. Raised +/- marks move 6 mm sideways to avoid the centred wire holes.
+The alternative omits the negative plastic bump. Illustrative 2.8 mm solder
+heads project 0.6 mm from each inner face, giving 68.6 mm gap and 0.4 mm total
+preload with a 69 mm cell. Actual solder/contact performance is unverified.
+Keep 67 mm footprint, 71.8 mm body, 72.8 mm marked envelope, 25-degree lips and
+2 mm step. Export only plastic. Wire/solder geometry is for previews/probes.
+Build checks include both through-holes, pocket depth/diameter, backing, marks,
+head-to-plastic and wire-to-plastic clearance, target preload, relieved cell
+clearance, lip capture and overhang clearance. Check fit of the actual bare
+wire and formed heads. Solder wire ends away from plastic and cells, install
+cold, and preserve the existing protected-cell variant as the comparison.
+
 The user has now confirmed that the reinforced curved holder works for the
 shorter unprotected cells. Preserve that working geometry and its exports; the
 next task is a separate longer protected-cell version with the same retention.

@@ -1,5 +1,58 @@
 # Compact Radar Sensor Box battery holders
 
+## Wired-contact alternative — experimental
+
+The copper tape was too fragile in the user's trial. This separate variant
+replaces it with bare-wire feed-throughs and small solder-head pockets. The
+[original copper-tape version](stl/battery-1-protected-snap-tray.stl) remains available.
+
+- [Printable wired-contact tray](stl/battery-1-protected-wired-tray.stl)
+- [Parametric source](src/wired_snap_cradle.scad)
+- Each end has a **1.2 mm through-hole** and an inward-facing **3 mm-diameter,
+  0.5 mm-deep pocket**, leaving 0.5 mm plastic backing around the hole.
+- The user's insulated wire is about **1 mm** across; only the stripped
+  conductor sits in the hole when assembled. Its bare diameter remains unmeasured.
+  The 1.2 mm bore lets the insulated body pass through while threading the wire
+  from the inside, after forming the solder head away from the plastic. Check
+  the actual printed clearance before assembling.
+- Polarity marks remain raised 0.5 mm and now sit **6 mm beside the hole**:
+  minus at the flush end, plus at the overhanging end.
+
+The 67 mm mounting base, 71.8 mm body, 2 mm step, 25° curved lips and 1.6 mm
+shells are preserved. The plastic envelope including marks is
+**72.8 × 21.3 × 17.2 mm**. External wire routing needs additional space.
+Only the plastic tray is included in the STL; the preview's silver contacts
+and copper-coloured wires are illustrations, not printed parts.
+
+The illustrated solder heads are 2.8 mm wide to fit into the 3 mm pockets and
+project **0.6 mm above each inner end-wall face** (1.1 mm from the pocket floor).
+That targets a **68.6 mm contact-to-contact gap**, asking the 69 mm cell to
+spread the ends by about **0.4 mm total**, as in the latest tape design. Actual
+blobs will vary, so check the final protrusion and fit. The negative plastic
+bump is omitted: the two solder heads now supply the contact projection.
+
+Form the soldered ends on the wires away from the printed holder, with the
+battery removed. Feed the free wire ends from the pocket side out through the
+holes and seat the cooled heads in the pockets. Secure the insulated wire
+outside the flaps so a pull does not load the small contact seats. Do not solder
+to the battery itself; see [Panasonic's battery safety guidance](https://www.panasonic.com/global/energy/study/academy/safety.html).
+The printed pockets locate the contacts; contact resistance, current capacity,
+wear, solder shape and end-wall durability have not been validated.
+
+Print base down, cavity up, supporting the 4.8 mm overhang. Check and clear the
+small horizontal holes after printing. Rebuild with
+`python3 battery-holder/scripts/build_wired_cradle.py` from the repository root;
+set `OPENSCAD` for the executable or `--wire-hole` to tune the hole diameter.
+The build checks watertightness, footprint, lip opening, both bore diameters,
+pocket diameters/depths, wall backing and offset polarity marks. It checks the
+illustrative heads for pocket clearance and target preload, and requires cell
+clearance when each contact end is translated outward by 0.2 mm. This is a
+geometry proxy, not a spring or electrical-performance test.
+
+![Bare tray with feed-through holes and solder pockets](images/wired-single-empty.png)
+![Illustrative soldered wire contacts fitted](images/wired-single-contacts.png)
+![Section through both contact pockets](images/wired-single-section.png)
+
 ## Protected cells — 69 mm version
 
 The user has confirmed **69 mm total battery length including the cap**. The
