@@ -1,5 +1,54 @@
 # Compact Radar Sensor Box battery holders
 
+## Longer protected cells — revision pending
+
+The user has confirmed that **only one or two cells fit the Radar Sensor Box;
+three do not fit**. The new protected cells are reported to be just under 5 mm
+longer than the previous cells, including the raised cap. Exact length and
+diameter are still needed before generating replacement print files.
+
+The latest retention proposal is **curved press-in lips on the holder itself**,
+replacing the separate bars. Two 24 mm-long curved retaining sections per cell allow
+the upper lips to flex for insertion/removal while the base stays fixed. Continuous
+end walls provide backing for copper tape, with 1.2 mm relief gaps between the
+curved sections and the ends. Keep
+adjacent cells' flexing sections independent and round the entry/contact edges.
+The diameter, opening, wall thickness and print material determine the grip;
+use a small PETG fit trial after measuring the new cells.
+
+![Curved-lip retention study, one occupied lane and one empty](images/snap-cradle-concept.png)
+
+The [retention study](concepts/snap-cradle.scad) uses the old 18 mm diameter as a
+placeholder and retains the previous 66.8 mm length for illustration. The end
+walls and copper bands are now included, but the study does not yet define the
+protected-cell length, raised-cap contact fit, lift or thermistor-plug clearance.
+The longer curved sections need a physical grip/removal trial.
+No replacement print files have been issued from this study.
+
+Keep the mounting base at the previous 66.8 mm length. The proposed longer upper
+cradle can overhang the component end of the battery area. The thermistor plug
+is a clearance concern **only for the two-cell holder**; do not impose that
+connector-driven lift on the single-cell design unnecessarily. Set the two-cell
+lift from the fitted plug/wire height plus clearance, and check the closed lid.
+The user's suggested couple of millimetres is not yet a verified lift dimension.
+
+The user also proposes **diagonal placement for the single-cell version**.
+Evaluate that alongside the raised/overhanging layout. Check the full cell,
+contact walls, curved lips and insertion/removal access, not just the cell's length
+against the area's diagonal. A rectangular screening check against the recorded
+66 × 54 mm reservation finds that even a bare 68 × 18 mm rectangle fits only near
+35.1°, while a 69 × 18 mm rectangle does not fit at any angle. The existing
+66.8 × 21.9 mm tray envelope also does not fit diagonally within that strict
+rectangle. These are envelope checks, not measurements of the new cell or proof
+that all space beyond the reservation is obstructed. A diagonal design needs
+the actual usable outline and new cell dimensions; do not assume it avoids a lift.
+
+**The files and dimensions below are the previous short-cell design.** They
+have not been revised for the new protected cells. The three-cell files are
+retained as historical designs, not an option for this box.
+
+## Previous short-cell design
+
 One-, two- and three-cell holders with **rigid slide-through bars and far-end snap
 catches**. The base stays fixed to the board while the bars slide out and the
 cells lift out. The bars sit directly on the nominal battery tops.
@@ -16,13 +65,13 @@ slide-on rings and the intermediate U clips; reprint the tray and retainers.
 |---|---|---|---|
 | One | [battery-1-tray.stl](stl/battery-1-tray.stl) | [battery-1-bar.stl](stl/battery-1-bar.stl) | **66.8 × 24.9 × 22.2 mm** |
 | Two | [battery-2-tray.stl](stl/battery-2-tray.stl) | [battery-2-bar.stl](stl/battery-2-bar.stl) | **66.8 × 44 × 22.2 mm** |
-| Three | [battery-3-tray.stl](stl/battery-3-tray.stl) | [battery-3-bar.stl](stl/battery-3-bar.stl) | **66.8 × 63.1 × 22.2 mm** |
+| Three — does not fit this box | [battery-3-tray.stl](stl/battery-3-tray.stl) | [battery-3-bar.stl](stl/battery-3-bar.stl) | **66.8 × 63.1 × 22.2 mm** |
 
 Widths include the pull head and the protruding catch. The tray alone, including
 outside strengthening ribs, is 21.9 / 41 / 60.1 mm wide. Mounting adhesive,
 wiring and finger/tool access are additional. The three-cell version exceeds the
-radar PCB's recorded 54 mm battery reservation; actual box width and height have
-not been confirmed.
+radar PCB's recorded 54 mm battery reservation and the user confirms it does
+not fit this box. Protected-cell lift and closed-lid clearance remain unmeasured.
 
 The [contact-fit piece](stl/battery-contact-fit.stl) matches the single-cell tray,
 66.8 × 21.9 × 22.2 mm. It can be used with the single-cell bars. Its narrower

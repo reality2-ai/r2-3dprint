@@ -1,4 +1,37 @@
-# Taller-wall, slide-through bar concept
+# Retention concepts
+
+## Curved press-in cradle — latest study
+
+`snap-cradle.scad` illustrates two **24 mm-long curved retaining sections per
+cell**, extended from the first study's 6 mm sections. A central 14.4 mm gap
+leaves access to the cell and separates the flexing sections. The upper lips
+turn slightly past the cell's widest point; adjacent lanes have independent
+arms and rounded entry edges.
+
+Both ends now have **continuous full-width walls** for copper tape. They are
+1 mm thick and 14.2 mm high, reaching 4 mm above the illustrative terminal
+centre, with flat tops for wrapping tape over. Copper-coloured bands show the
+contact locations. A 1.2 mm gap separates each curved section from the end wall
+so the wall does not brace the upper lips. The floor joins everything together.
+
+This is a concept for one or two cells. It retains the previous **66.8 mm length**
+and **18 mm placeholder diameter**, with 1.2 mm shell and floor and a 20° wrap
+above the equator. The 64.6 mm grey cylinders illustrate the space between the
+0.1 mm tape placeholders; they are not measurements of the new cells. Longer
+sections will resist opening more than the earlier short sections; grip and
+removal force need a physical trial before choosing final thickness/opening.
+
+Views are `part="assembly"`, `"section"` and `"empty"`; set `cells=1` or `2`.
+The default shows one occupied lane and one empty lane. `occupied_cells` controls
+that illustration; `part="tray"` supplies the bare concept geometry for checks.
+
+The protected-cell length, raised cap/contact geometry, mounting lift and
+thermistor clearance remain pending. No replacement print files have been issued.
+
+![Longer sides and copper-tape ends](../images/snap-cradle-concept.png)
+![Empty holder exposing the end contact backing](../images/snap-cradle-empty.png)
+
+## Earlier taller-wall, slide-through bar concept
 
 `slide-through.scad` is the historical plain-bar concept requested for review.
 It has been superseded by the locking-bar implementation in

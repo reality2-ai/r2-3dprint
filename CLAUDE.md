@@ -164,6 +164,37 @@ dimensions, and exports `stl/router-heltec-lid-plain.stl` separately.
 
 ### Compact radar battery holders
 
+**Latest scope: longer protected cells, one or two only.** The user confirms
+three batteries cannot fit the Radar Sensor Box. New cells are reported just
+under 5 mm longer including the raised cap; exact length/diameter are pending.
+Keep the mounting base at its previous 66.8 mm length, allowing a longer raised
+upper cradle to overhang the component end. The thermistor plug interferes only
+with the two-cell version. Set its lift from the connected plug and wire bend
+height with clearance, then check the lid; do not assume 2 mm is sufficient or
+raise the single-cell version for a connector that it does not overlap. The
+earlier 67 mm overall limit below describes the short-cell revision; the user
+now proposes retaining the short base while extending the upper cradle. Do not
+label existing STLs suitable for the new cells or develop a new three-cell
+variant for this box. Retain older exports as historical until replaced.
+Latest retention proposal: curve the holder's upper sides inward for a press-in
+snap cradle, replacing the separate bars. The latest concept uses two independent
+24 mm-long retaining sections per cell, smooth entry/contact edges and top removal with
+the base still fixed. `battery-holder/concepts/snap-cradle.scad` is a visual
+retention study using the old 18 mm diameter only; it is not a protected-cell
+fit or strength qualification. Final lips need the new cell diameter and a
+physical PETG test. The concept includes continuous 1 mm end walls for copper
+tape, separated from the curved sides by 1.2 mm relief gaps. Its 66.8 mm length
+is the old holder envelope, not a new-cell fit. Longer sections need a physical
+removal-force trial; protected-cell length, lift and cap contact remain pending.
+The user also suggests a diagonal single-cell layout. Compare it with the raised
+layout using the complete holder and bar-service envelopes. Do not assume the
+66 × 54 mm reservation's diagonal guarantees fit: simple rectangular screening
+already rejects 69 × 18 mm bare cells and the current 66.8 × 21.9 mm tray within
+that strict rectangle. Actual cell size and usable space outside the reservation
+remain unknown; a narrower/reshaped holder or overhang may still be needed.
+
+The following describes the existing short-cell files:
+
 `battery-holder/` contains one-, two- and three-cell variants for user-measured
 64 mm-long, 18 mm-diameter cells, side by side and wired in parallel by the user.
 **The user revised the outside length limit to 67 mm** after the 65.8 mm first
@@ -201,7 +232,7 @@ creep, tape performance and physical fit remain
 unverified. Assembly widths with bars are 24.9/44/63.1 mm and height is 22.2 mm,
 excluding mounting adhesive and service access. Side withdrawal travel is about
 23.4/42.5/61.6 mm, plus grip access. The three-cell assembly exceeds the
-PCB's recorded 54 mm battery reservation; box width/height need confirmation.
+PCB's recorded 54 mm battery reservation and is confirmed not to fit the box.
 Use the user's XRDP display for previews when available; see its render script.
 
 ## Adding a New Device
