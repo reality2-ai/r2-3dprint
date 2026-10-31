@@ -203,21 +203,26 @@ force/fatigue remain unverified. Keep these fit-test files distinct from the
 historical bar-retained trays and from the eventual longer-cell revision.
 The separate `battery-holder/src/protected_snap_cradle.scad` uses a 67 mm
 mounting plinth and a 71.8 mm upper tray (4.8 mm overhang at +X, flush at X=0).
-The flat wall spacing is 69.8 mm. A 5 mm-wide, 0.5 mm-high spherical-cap bump
-now backs the negative copper contact on the flush end (X=0 end), reducing the
-nominal plastic/taped gap at the terminal centre to 69.3/69.1 mm. Keep the wall
-unbroken behind it and show tape conforming over the bump. Shift the preview
-cell 0.25 mm towards +X to centre it in the remaining 0.1 mm axial allowance.
-The build probes the exported wall crossings on and off the bump and rejects
-seated cell interference; actual tape conformance/contact pressure need a trial.
-`scripts/build_protected_cradle.py` exports the single-cell STL with
-a provisional 2 mm lift, giving 71.8 × 21.3 × 16.8 mm printed size and 21.8 mm
-installed cell-top height. This is a shallow mounting step, not a thermistor-
-clearing lift; single-cell lid fit must still be checked. Source and build accept
-one protected cell only. Checks cover mesh integrity, cell clearance/capture,
-the 67 mm mounting footprint, flush-end alignment and empty space under the
-overhang. Print supports are needed under the 4.8 mm
-cantilever. Do not overwrite the working short-cell STLs.
+The flat wall spacing is 69.8 mm. A 5 mm-wide, **1 mm-high** rounded bump
+backs the negative copper contact at the flush end. The nominal plastic/taped
+gaps at its centre are **68.8/68.6 mm**. The user explicitly wants the 69 mm cell
+to push the ends outward for tape contact: 0.4 mm total nominal preload, shared
+as 0.2 mm per end in a geometric clearance proxy. Keep the walls continuous.
+The build permits relaxed interference only within narrow terminal masks;
+all other interference is rejected. It also checks clearance after translating
+each end outward by half the nominal preload. This proxy does not simulate
+wall bending, holding force or fatigue. Curved-lip retention must pass after
+excluding axial contact masks, so end pressure cannot masquerade as retention.
+
+Raised outside polarity marks are 0.5 mm proud, 5 mm wide with 0.8 mm strokes:
+minus at the flush/bumped end, plus at the overhanging end. They embed 0.1 mm into
+the flaps. Body length remains 71.8 mm; relaxed overall length including marks
+is **72.8 mm**, and the footprint remains 67 mm. End-wall flex further increases
+installed length; physical fit is pending. `scripts/build_protected_cradle.py`
+exports a 72.8 × 21.3 × 16.8 mm STL including the marks, using the existing 2 mm
+step, and checks the exported bump and plus/minus geometry. Cell-top height
+is 21.8 mm. Print supports are needed under the 4.8 mm cantilever; marking
+print quality also needs inspection. Do not overwrite working short-cell STLs.
 The user also suggests a diagonal single-cell layout. Compare it with the raised
 layout using the complete holder and bar-service envelopes. Do not assume the
 66 × 54 mm reservation's diagonal guarantees fit: simple rectangular screening

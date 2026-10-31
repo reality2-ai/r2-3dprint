@@ -58,7 +58,7 @@ def main():
                 capture_output=True, text=True, env=env)
             log = result.stdout+result.stderr
             empty = "Current top level object is empty" in log
-            if part == "interference":
+            if part in ("interference", "unexpected-interference", "relieved-interference"):
                 for warning in (
                     "WARNING: Object may not be a valid 2-manifold and may need repair!",
                     "EXPORT-WARNING: Exported object may not be a valid 2-manifold and may need repair"):
@@ -67,29 +67,40 @@ def main():
                 raise RuntimeError(log)
             return part, path
 
-        parts = ["tray", "interference", "retention", "footprint", "overhang-clearance"]
+        parts = ["tray", "interference", "retention", "footprint", "overhang-clearance",
+                 "unexpected-interference", "relieved-interference"]
         with ThreadPoolExecutor(max_workers=3) as pool:
             paths = dict(pool.map(export, parts))
-        report = inspect(paths["tray"], [71.8, width, height])
+        report = inspect(paths["tray"], [72.8, width, height])
         faces = triangles(paths["tray"])
         centre_y = args.diameter/2+0.05+1.6
         centre_z = lift+1.8+args.diameter/2
-        for offset, inner_x in ((0, 1.5), (3, 1.0)):
+        for offset, inner_x in ((0, 2.0), (3, 1.0)):
             hits = axial_crossings(faces, centre_y+offset, centre_z)
-            expected = [0, inner_x, 70.8, 71.8]
+            expected = [-0.5, inner_x, 70.8, 72.3] if offset == 0 else [0, inner_x, 70.8, 71.8]
             assert len(hits) == 4 and all(abs(a-b)<0.005 for a,b in zip(hits, expected)), hits
             if offset == 0:
                 report["plastic_contact_gap_mm"] = round(hits[2]-hits[1], 4)
+                report["nominal_taped_preload_mm"] = round(69-(hits[2]-hits[1]-0.2), 4)
+        # The vertical stroke must occur only at the positive end, above/below centre.
+        for dz in (-2, 2):
+            hits = axial_crossings(faces, centre_y, centre_z+dz)
+            assert len(hits) == 4 and abs(hits[0]) < 0.005 and abs(hits[-1]-72.3) < 0.005, hits
         inspect(paths["footprint"], [67, width, 0.01])
-        # Both start at X=0, so all 4.8 mm of extension lies at the far end.
-        for part, xmax in (("footprint", 67), ("tray", 71.8)):
+        # Body remains flush at X=0; the outside marks add 0.5 mm at either end.
+        for part, xmin, xmax in (("footprint", 0, 67), ("tray", -0.5, 72.3)):
             xs = [p[0] for face in triangles(paths[part]) for p in face]
-            assert abs(min(xs)) < 0.001 and abs(max(xs)-xmax) < 0.001
-        for part in ("interference", "retention", "overhang-clearance"):
+            assert abs(min(xs)-xmin) < 0.001 and abs(max(xs)-xmax) < 0.001
+        for part in ("interference", "retention", "overhang-clearance",
+                     "unexpected-interference", "relieved-interference"):
             path = paths[part]
             measured = volume(triangles(path)) if path.exists() else 0
             if part == "retention":
                 assert measured > args.cells, (part, measured)
+            elif part == "interference":
+                # Requested preload intentionally overlaps the relaxed contact ends.
+                # Strict masks and the relieved proxy separately check the rest.
+                assert 0 < measured < 0.2*3.142*(args.diameter/2)**2, measured
             else:
                 assert measured < 0.001, (part, measured)
             report[part+"_mm3"] = round(measured, 6)

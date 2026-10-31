@@ -4,7 +4,7 @@
 // The shallow 2 mm step provides an overhang, not clearance above that connector.
 cells = 1;
 occupied_cells = 1;
-part = "assembly"; // assembly, section, empty, tray, interference, retention, footprint, overhang-clearance
+part = "assembly"; // assembly, section, empty, tray, interference, unexpected-interference, relieved-interference, retention, footprint, overhang-clearance
 cell_d = 18;
 cell_l = 69;
 length_clearance = 0.6; // total allowance carried over from successful short holder
@@ -18,8 +18,11 @@ end_t = 1;
 end_relief = 1.2; // keep curved sides separate from the contact walls
 tape_t = 0.1; // illustrative only; actual tape thickness unmeasured
 tape_band_h = 6;
-contact_bump_h = 0.5; // brings the negative copper contact towards the cell
+contact_bump_h = 1; // deliberate end-wall preload, requested after physical trial
 contact_bump_d = 5; // shallow rounded cap, centred on the flush-end terminal
+mark_h = 0.5; // raised polarity marks on the outside end flaps
+mark_size = 5;
+mark_stroke = 0.8;
 lip_angle = 20; // degrees above the equator; a small undercut for retention
 tip_round = 0.3;
 between_shells = 0.8;
@@ -32,14 +35,16 @@ pitch = 2*outside_r+between_shells;
 base_w = 2*outside_r+(cells-1)*pitch;
 cell_z = floor_t+cell_d/2;
 end_h = cell_z+4;
-// Centre the cell in the remaining axial clearance after adding the bump.
+contact_preload = max(0,contact_bump_h-length_clearance);
+// Centre the cell between contacts; negative clearance represents end-wall flex.
 cell_start = end_t+tape_t+contact_bump_h+(length_clearance-contact_bump_h)/2;
 stations = [end_t+end_relief+rib_w/2,upper_l-end_t-end_relief-rib_w/2];
 function cy(i)=outside_r+i*pitch;
 assert(cells==1 && occupied_cells>=0 && occupied_cells<=cells,
        "Protected-cell version is single only: two cells cannot clear the lid");
 assert(2*(end_t+end_relief+rib_w)<upper_l, "Leave a central access gap");
-assert(contact_bump_h>0 && contact_bump_h<length_clearance);
+assert(contact_bump_h>0 && contact_bump_h<=1,
+       "Bump heights above the requested 1 mm need another preload review");
 
 module contact_bump() {
     // Revolve the cap profile directly to avoid sliver facets from cutting a sphere.
@@ -64,25 +69,47 @@ module section_profile() {
 
 assert(mount_lift>0 && upper_l>=base_l);
 
-module upper_cradle() {
+module polarity_marks(end_spread=0) {
+    for(i=[0:cells-1]) {
+        // Minus: flush end, beside the raised negative contact on the inside.
+        translate([-mark_h-end_spread,cy(i)-mark_size/2,cell_z-mark_stroke/2])
+            cube([mark_h+0.1,mark_size,mark_stroke]);
+        // Plus: opposite end. Both strokes embed 0.1 mm into the wall.
+        translate([upper_l-0.1+end_spread,cy(i)-mark_size/2,cell_z-mark_stroke/2])
+            cube([mark_h+0.1,mark_size,mark_stroke]);
+        translate([upper_l-0.1+end_spread,cy(i)-mark_stroke/2,cell_z-mark_size/2])
+            cube([mark_h+0.1,mark_stroke,mark_size]);
+    }
+}
+
+module upper_cradle(end_spread=0) {
     union() {
         cube([upper_l,base_w,floor_t]);
         // Unbroken backing across every cell, with a flat top for tape wrap-over.
-        for(x=[0,upper_l-end_t])
+        for(x=[-end_spread,upper_l-end_t+end_spread])
             translate([x,0,0]) cube([end_t,base_w,end_h]);
-        contact_bump();
+        translate([-end_spread,0,0]) contact_bump();
+        polarity_marks(end_spread);
         for(i=[0:cells-1]) for(x=stations)
             translate([x-rib_w/2,cy(i),0]) rotate([90,0,90])
                 linear_extrude(rib_w) section_profile();
     }
 }
 
-module cradle() {
+module cradle(end_spread=0) {
     union() {
         // 67 mm mounting face, flush at X=0; upper tray overhangs only at +X.
         cube([base_l,base_w,mount_lift+floor_t]);
-        translate([0,0,mount_lift]) upper_cradle();
+        translate([0,0,mount_lift]) upper_cradle(end_spread);
     }
+}
+
+module contact_masks(lift=0) {
+    // Only the small axial overlaps at the two terminal faces are intentional.
+    translate([cell_start-0.001,0,mount_lift+floor_t+lift-0.001])
+        cube([max(0,end_t+contact_bump_h-cell_start)+0.002,base_w,cell_d+0.002]);
+    translate([upper_l-end_t-0.001,0,mount_lift+floor_t+lift-0.001])
+        cube([max(0,cell_start+cell_l-(upper_l-end_t))+0.002,base_w,cell_d+0.002]);
 }
 
 module cell_sections(lift=0, count=occupied_cells) {
@@ -109,7 +136,19 @@ module tape_preview() {
 }
 
 if(part=="interference") intersection() { cradle(); cell_sections(count=cells); }
-else if(part=="retention") intersection() { cradle(); cell_sections(0.8,count=cells); }
+else if(part=="unexpected-interference") difference() {
+    intersection() { cradle(); cell_sections(count=cells); }
+    contact_masks();
+}
+else if(part=="relieved-interference") intersection() {
+    // Geometric clearance proxy only: translate each end by half the preload.
+    // This does not simulate the wall's bend, contact force or fatigue.
+    cradle(contact_preload/2); cell_sections(count=cells);
+}
+else if(part=="retention") difference() {
+    intersection() { cradle(); cell_sections(0.8,count=cells); }
+    contact_masks(0.8); // end pressure alone must not count as curved-lip capture
+}
 else if(part=="tray") cradle();
 else if(part=="footprint") intersection() {
     cradle(); translate([-1,-1,0]) cube([upper_l+2,base_w+2,0.01]);

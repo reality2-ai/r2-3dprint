@@ -8,27 +8,38 @@ curved grip, 1.6 mm shells, 1.8 mm cradle floor and continuous copper-tape ends.
 The protected-cell revision is now **single-cell only**. The user reports that
 raising two batteries above the thermistor would prevent the lid from closing.
 
-The upper tray is **71.8 mm long**, with **69.8 mm between the flat end walls**.
-A **5 mm-wide, 0.5 mm-high rounded bump** on the inside of the flush end brings
-the copper tape towards the battery's negative terminal. The end wall stays
-continuous behind it. Press the tape smoothly over this bump when applying it.
-At the bump, the nominal plastic gap is **69.3 mm**, or **69.1 mm** allowing for
-0.1 mm tape at each end. This uses 0.5 mm of the original 0.6 mm total length
-allowance. The preview cell shifts 0.25 mm towards the opposite end to centre it
-in the remaining clearance. Tape conformance and contact pressure need a
-physical trial; this is a backing bump, not a spring contact. The
-mounting plinth is **67 mm long**, flush with the upper tray at X=0. The upper
-tray overhangs by **4.8 mm only at the opposite end** (+X). Aim that extension
-towards the available space. The complete holder is still 71.8 mm long; a
-69 mm cell plus end walls cannot fit in a 69 mm outside envelope. The mounting
+The upper tray body is **71.8 mm long**, with **69.8 mm between the flat end
+walls**. A **5 mm-wide, 1 mm-high rounded bump** inside the flush end backs the
+negative copper contact. The end wall stays continuous behind it. Press the
+tape smoothly over the bump when applying it.
+
+The bump leaves a **68.8 mm plastic gap**, or **68.6 mm** with the illustrative
+0.1 mm tape at each end. For the user's 69 mm battery, this deliberately asks
+the ends to spread **0.4 mm in total** (about 0.2 mm per end if shared equally).
+The user explicitly requested this outward flex to improve tape contact.
+This replaces the previous 0.5 mm bump and its loose-fit allowance. Actual
+contact pressure, insertion force and long-term wall flex need a physical trial.
+The preview cell is centred in the preloaded position; relaxed assembly views
+therefore show intentional overlap at the end contacts.
+
+Raised **− and + marks** sit on the outside end flaps, **0.5 mm proud**, using
+5 mm-wide symbols with 0.8 mm strokes. The **−** is at the bumped, flush end;
+the **+** is at the opposite end. These marks add 0.5 mm beyond each end of the
+body, making the relaxed maximum length **72.8 mm including the marks**.
+Leave the outside marks visible when routing the copper tape. End-wall movement
+under preload adds to the installed length; the lid/box fit needs a physical check.
+
+The mounting plinth remains **67 mm long**, flush with the body at X=0. The
+upper body overhangs **4.8 mm at the opposite end** (+X), in addition to the
+raised mark there. Aim this extension towards the available space. The mounting
 base was shortened from 68 to 67 mm after the user found it tight between the
-components. Adding the contact bump keeps the mounting dimensions unchanged.
+components; neither the bump nor the marks change that mounting footprint.
 
 - [Single-cell protected tray STL](stl/battery-1-protected-snap-tray.stl):
-  71.8 × 21.3 × 16.8 mm printed envelope, with a 67 × 21.3 mm mounting face.
-  The starting lift is **2 mm**; installed cell top is 21.8 mm above the mounting
-  surface. This shallow step retains the earlier overhang concept; it is not
-  intended to lift the battery above the thermistor. Verify the closed-lid fit.
+  **72.8 × 21.3 × 16.8 mm** relaxed printed envelope including polarity marks,
+  with a **67 × 21.3 mm** mounting face. Body length is 71.8 mm.
+  The shallow step is **2 mm**; installed cell top is 21.8 mm above the mounting
+  surface. The step is not intended to lift the battery above the thermistor.
 
 **Diameter is still assumed to be 18 mm**, carried over from the working short
 cells. The raised cap's detailed shape and electrical contact pressure are not
@@ -44,14 +55,18 @@ Rebuild with `python3 battery-holder/scripts/build_protected_cradle.py --cells 1
 from the repository root (`OPENSCAD` selects the executable). Override
 `--diameter` when measured; `--lift` adjusts the shallow step if a fit trial
 requires it. The source and exporter accept only one protected cell. The build checks connected,
-watertight meshes, dimensions, the short mounting footprint, seated-cell
-clearance, retention at 0.8 mm lift, empty space under the overhang and the
-exported end-wall/bump positions at and beside the terminal centre. These
-geometry checks do not measure grip, contact pressure or print quality.
+watertight meshes, dimensions, the mounting footprint and raised mark shapes.
+Relaxed-cell interference must be confined to narrow contact masks at the two
+terminal faces. A geometric proxy moves each end outward 0.2 mm and checks cell
+clearance; this is not a simulation of bending. Retention at 0.8 mm lift excludes
+end-contact pressure, so the curved lips must provide the capture. Checks also
+cover empty space under the overhang and exported end-wall/bump positions.
+These checks do not measure spring force, tape performance or print quality.
 
 ![Protected single-cell holder](images/protected-single-assembly.png)
 ![Side view showing the flush end and overhang](images/protected-single-side.png)
-![Copper tape over the rounded negative-end bump](images/protected-single-contact.png)
+![Copper tape over the rounded bump and the outside positive mark](images/protected-single-contact.png)
+![Outside negative mark on the flush end](images/protected-single-negative.png)
 
 ## Working short-cell curved holder
 
