@@ -187,7 +187,9 @@ Keep 67 mm footprint, 71.8 mm body, 72.8 mm marked envelope, 25-degree lips and
 1.4 mm step. The step was lowered by 0.6 mm, rather than the initial suggested
 1 mm reduction, to leave a 1.2 mm floor below a new 2 mm-deep thermistor groove.
 The battery-facing groove is 3 mm wide along X, positioned at X=33.5 (base
-midlength), opening from the +Y edge to Y=10.65: length 10.65 mm, half the width.
+midlength), opening from the **−Y / Y=0 edge** to Y=10.65: length 10.65 mm,
+half the width. The user corrected the original +Y opening to this opposite side.
+Mirror only the slot, not the holder, end contacts or polarity marks.
 It stays between the retaining sections and preserves the flat mounting underside.
 The user reports 0.5 mm mounting tape: installed printed height is 17.1 mm and
 cell top 21.7 mm above the board before tape compression. Printed height is

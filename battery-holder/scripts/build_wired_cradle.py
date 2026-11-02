@@ -85,13 +85,14 @@ def main():
         report["target_contact_gap_mm"] = round(contacts[2]-contacts[1],4)
         report["target_preload_mm"] = round(69-report["target_contact_gap_mm"],4)
         inspect(paths["footprint"],[67,21.3,0.01])
-        # Groove: 3 mm wide along X, half-width entry from +Y, 2 mm deep.
-        expect_hits(faces,cy+5,1.7,[0,32,35,71.8])
-        expect_hits(swapped,33.5,1.7,[0,10.65])
-        expect_hits(vertical,33.5,cy+5,[0,1.2])
-        expect_hits(vertical,33.5,cy-0.05,[0,3.2])
-        expect_hits(vertical,31.95,cy+5,[0,3.2])
-        expect_hits(vertical,35.05,cy+5,[0,3.2])
+        # Groove: 3 mm wide along X, corrected half-width entry from -Y, 2 mm deep.
+        expect_hits(faces,cy-5,1.7,[0,32,35,71.8])
+        expect_hits(swapped,33.5,1.7,[10.65,21.3])
+        expect_hits(vertical,33.5,cy-5,[0,1.2])
+        expect_hits(vertical,33.5,cy+0.05,[0,3.2])
+        expect_hits(vertical,31.95,cy-5,[0,3.2])
+        expect_hits(vertical,35.05,cy-5,[0,3.2])
+        report["thermistor_slot_y_extent_mm"] = [0,10.65]
         report["thermistor_slot_w_l_depth_mm"] = [3,10.65,2]
         report["thermistor_floor_mm"] = 1.2
         report["cell_top_above_board_with_0.5mm_tape_mm"] = 21.7

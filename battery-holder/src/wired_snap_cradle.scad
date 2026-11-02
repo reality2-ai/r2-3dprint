@@ -102,9 +102,9 @@ module end_flap(positive=false) {
 }
 
 module thermistor_slot(inset=0) {
-    // Battery-facing groove, from the right (+Y) edge to the width centreline.
+    // Battery-facing groove, from the corrected -Y (Y=0) edge to the centreline.
     translate([thermistor_slot_x-thermistor_slot_w/2+inset,
-               base_w-thermistor_slot_l+inset,thermistor_floor_t+inset])
+               -0.01,thermistor_floor_t+inset])
         cube([thermistor_slot_w-2*inset,thermistor_slot_l+0.01-inset,
               thermistor_slot_depth+0.01-2*inset]);
 }

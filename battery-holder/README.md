@@ -32,7 +32,8 @@ curved lips and 1.6 mm shells are preserved. The plastic envelope including
 marks is **72.8 × 21.3 × 16.6 mm**. External wire routing needs additional space.
 
 The **3 mm-wide × 2 mm-deep thermistor groove** opens towards the battery from
-the right-hand (+Y) side, running **10.65 mm**, exactly half the holder's width,
+the **−Y (Y=0) side**, corrected to the opposite side after the user's review.
+It runs **10.65 mm**, exactly half the holder's width,
 to its width centreline. It lies midway along the 67 mm mounting base (X=33.5),
 between the retaining sections. A **1.2 mm floor** remains beneath the groove;
 the underside remains flat for mounting tape. The requested full 1 mm height
@@ -82,7 +83,7 @@ geometry proxy, not a spring or electrical-performance test.
 ![Bare tray with feed-through holes and solder pockets](images/wired-single-empty.png)
 ![Illustrative soldered wire contacts fitted](images/wired-single-contacts.png)
 ![Section through both contact pockets](images/wired-single-section.png)
-![Thermistor groove from the right-hand side](images/wired-single-thermistor-slot.png)
+![Thermistor groove opening from the corrected side](images/wired-single-thermistor-slot.png)
 ![Cross-section through the thermistor groove and battery](images/wired-single-thermistor-section.png)
 ![End-on alignment: orange circle and cross show the battery outline and centre](images/wired-single-alignment.png)
 
