@@ -1,7 +1,7 @@
 // Experimental soldered-wire contact alternative to protected_snap_cradle.scad.
 // User: 69 mm cell, insulated wire about 1 mm, only bare wire through the wall.
 // Bare conductor diameter, solder shape and electrical performance are unmeasured.
-part = "assembly"; // tray, empty, assembly, contacts, alignment, section and build probes
+part = "assembly"; // tray, empty, assembly, contacts, alignment, section, thermistor-section and build probes
 cell_d = 18;
 cell_l = 69;
 wire_hole_d = 1.2; // passes ~1 mm insulated body when installing a cold formed head
@@ -13,11 +13,14 @@ negative_bump_d = 5;
 positive_head_proud = 0.2;
 negative_head_proud = 0; // solder fills to the nominal top of the negative bump
 bare_wire_d = 0.5; // preview only, not a measurement
-mount_lift = 2;
+mount_lift = 1.4; // lowered 0.6 mm, keeping 1.2 mm below the 2 mm-deep slot
 base_l = 67;
 upper_l = 71.8;
 end_t = 1;
 floor_t = 1.8;
+thermistor_slot_w = 3;
+thermistor_slot_depth = 2;
+mounting_tape_t = 0.5; // installation note only; not part of the printed solid
 shell_t = 1.6;
 radial_clearance = 0.05;
 rib_w = 24;
@@ -39,6 +42,9 @@ end_h = cell_z+4;
 function seat_face(positive) = end_t+(positive ? 0 : negative_bump_h);
 function head_top(positive) = seat_face(positive)+(positive ? positive_head_proud : negative_head_proud);
 cell_start = (head_top(false)+upper_l-head_top(true)-cell_l)/2;
+thermistor_slot_x = base_l/2;
+thermistor_slot_l = base_w/2;
+thermistor_floor_t = mount_lift+floor_t-thermistor_slot_depth;
 preload = cell_l-(upper_l-head_top(false)-head_top(true));
 stations = [end_t+end_relief+rib_w/2,upper_l-end_t-end_relief-rib_w/2];
 assert(wire_hole_d>1 && wire_hole_d<pocket_d-0.8,
@@ -46,6 +52,10 @@ assert(wire_hole_d>1 && wire_hole_d<pocket_d-0.8,
 assert(pocket_depth>0 && end_t-pocket_depth>=0.4);
 assert(head_d<pocket_d && bare_wire_d<wire_hole_d && preload>=0);
 assert(cell_z-mark_drop-mark_size/2>floor_t && mount_lift>0);
+assert(thermistor_floor_t>=1.2-0.000001, "Keep at least 1.2 mm beneath the thermistor");
+assert(thermistor_slot_x-thermistor_slot_w/2>stations[0]+rib_w/2 &&
+       thermistor_slot_x+thermistor_slot_w/2<stations[1]-rib_w/2,
+       "Keep the slot between the curved retaining sections");
 
 module section_profile() {
     offset(r=tip_round) offset(delta=-tip_round)
@@ -91,15 +101,26 @@ module end_flap(positive=false) {
     }
 }
 
+module thermistor_slot(inset=0) {
+    // Battery-facing groove, from the right (+Y) edge to the width centreline.
+    translate([thermistor_slot_x-thermistor_slot_w/2+inset,
+               base_w-thermistor_slot_l+inset,thermistor_floor_t+inset])
+        cube([thermistor_slot_w-2*inset,thermistor_slot_l+0.01-inset,
+              thermistor_slot_depth+0.01-2*inset]);
+}
+
 module cradle(spread=0) {
-    union() {
-        cube([base_l,base_w,mount_lift+floor_t]);
-        translate([0,0,mount_lift]) {
-            cube([upper_l,base_w,floor_t]);
-            for(positive=[false,true]) at_end(positive,spread) end_flap(positive);
-            for(x=stations) translate([x-rib_w/2,cy,0]) rotate([90,0,90])
-                linear_extrude(rib_w) section_profile();
+    difference() {
+        union() {
+            cube([base_l,base_w,mount_lift+floor_t]);
+            translate([0,0,mount_lift]) {
+                cube([upper_l,base_w,floor_t]);
+                for(positive=[false,true]) at_end(positive,spread) end_flap(positive);
+                for(x=stations) translate([x-rib_w/2,cy,0]) rotate([90,0,90])
+                    linear_extrude(rib_w) section_profile();
+            }
         }
+        thermistor_slot();
     }
 }
 
@@ -161,6 +182,15 @@ else if(part=="footprint") intersection() {
 else if(part=="overhang-clearance") intersection() {
     cradle(); translate([base_l+0.01,-1,-0.01])
         cube([upper_l-base_l+1,base_w+2,mount_lift]);
+}
+else if(part=="thermistor-clearance") intersection() { cradle(); thermistor_slot(0.01); }
+else if(part=="thermistor-section") {
+    color("SteelBlue") render() intersection() {
+        cradle(); translate([thermistor_slot_x-0.2,-1,-1]) cube([0.4,base_w+2,cell_d+10]);
+    }
+    color([0.3,0.32,0.35]) render() intersection() {
+        cell(); translate([thermistor_slot_x-0.2,-1,-1]) cube([0.4,base_w+2,cell_d+10]);
+    }
 }
 else if(part=="section") {
     color("SteelBlue") render() intersection() {

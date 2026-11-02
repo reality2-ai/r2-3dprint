@@ -175,7 +175,7 @@ Both inside faces have 3 mm solder pockets. Retain the negative-side 5 mm-wide,
 1 mm-high bump and recess its pocket 0.5 mm from the original apex, leaving
 1.5 mm backing around the through-hole. The positive pocket is 0.5 mm deep in
 the flat 1 mm wall. Both holes/pockets stay on the battery axis at Y=10.65,
-Z=12.8 mm above the mounting underside. Raised +/- marks now sit 5.5 mm BELOW
+Z=12.2 mm above the printed mounting underside. Raised +/- marks now sit 5.5 mm BELOW
 each hole; do not centre the bores vertically on the shorter end flaps.
 Illustrative 2.8 mm solder heads peak 1.0 mm beyond the negative flat wall
 (level with the original bump apex) and 0.2 mm beyond the positive flat wall.
@@ -184,7 +184,17 @@ starts at X=1.8 in the relaxed preview; only the solder heads should preload it.
 Actual solder/contact performance is unverified. The build probes the retained
 bump, both pocket floors, hole/pocket centring in both axes and both head peaks.
 Keep 67 mm footprint, 71.8 mm body, 72.8 mm marked envelope, 25-degree lips and
-2 mm step. Export only plastic. Wire/solder geometry is for previews/probes.
+1.4 mm step. The step was lowered by 0.6 mm, rather than the initial suggested
+1 mm reduction, to leave a 1.2 mm floor below a new 2 mm-deep thermistor groove.
+The battery-facing groove is 3 mm wide along X, positioned at X=33.5 (base
+midlength), opening from the +Y edge to Y=10.65: length 10.65 mm, half the width.
+It stays between the retaining sections and preserves the flat mounting underside.
+The user reports 0.5 mm mounting tape: installed printed height is 17.1 mm and
+cell top 21.7 mm above the board before tape compression. Printed height is
+16.6002 mm, cell top 21.2 mm above its underside. The 1.2 mm groove floor is a
+design margin, not a physical strength qualification; sensor fit/contact need a
+trial. Build checks include the groove dimensions, floor and clear side entry.
+Export only plastic. Wire/solder geometry is for previews/probes.
 Build checks include both through-holes, pocket depth/diameter, backing, marks,
 head-to-plastic and wire-to-plastic clearance, target preload, relieved cell
 clearance, lip capture and overhang clearance. Check fit of the actual bare

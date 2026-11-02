@@ -31,7 +31,7 @@ def main():
     env.setdefault("QT_QPA_PLATFORM", "offscreen")
     parts = ["tray", "heads", "interference", "retention", "head-interference",
              "wire-interference", "contact-preload", "relieved-interference",
-             "footprint", "overhang-clearance"]
+             "footprint", "overhang-clearance", "thermistor-clearance"]
     with tempfile.TemporaryDirectory(prefix="wired-cradle-") as temp:
         def export(part):
             path = Path(temp) / f"{part}.stl"
@@ -54,8 +54,8 @@ def main():
         with ThreadPoolExecutor(max_workers=3) as pool:
             paths = dict(pool.map(export, parts))
         faces = triangles(paths["tray"])
-        report = inspect(paths["tray"], [72.8, 21.3, 17.2002])
-        cy, cz = 10.65, 12.8
+        report = inspect(paths["tray"], [72.8, 21.3, 16.6002])
+        cy, cz = 10.65, 12.2
         expect_hits(faces, cy, cz, [])  # continuous bare-wire path through both ends
         expect_hits(faces, cy+0.8, cz, [0, 1.5, 71.3, 71.8])  # pockets into bump / flat wall
         expect_hits(faces, cy+3, cz, [0, 1, 70.8, 71.8])  # full wall outside the bump
@@ -72,9 +72,9 @@ def main():
         # Check vertical centring on the battery axis, not the shorter flap centre.
         vertical = [tuple((p[2],p[0],p[1]) for p in face) for face in faces]
         for x, diameter, bottom in ((0.25,args.wire_hole,0),(0.75,args.wire_hole,0),
-                                    (71.55,args.wire_hole,2),(71.05,3,2)):
-            expect_hits(vertical,x,cy,[bottom,cz-diameter/2,cz+diameter/2,16.8])
-        expect_hits(vertical,1.6,cy,[0,3.8,cz-bump_radius_at_pocket,cz-1.5,cz+1.5,cz+bump_radius_at_pocket])
+                                    (71.55,args.wire_hole,1.4),(71.05,3,1.4)):
+            expect_hits(vertical,x,cy,[bottom,cz-diameter/2,cz+diameter/2,16.2])
+        expect_hits(vertical,1.6,cy,[0,3.2,cz-bump_radius_at_pocket,cz-1.5,cz+1.5,cz+bump_radius_at_pocket])
         report["wire_axis_y_z_mm"] = [cy,cz]
         # Marks sit below the holes, preserving polarity without masking the axis.
         mark_z = cz-5.5
@@ -85,6 +85,16 @@ def main():
         report["target_contact_gap_mm"] = round(contacts[2]-contacts[1],4)
         report["target_preload_mm"] = round(69-report["target_contact_gap_mm"],4)
         inspect(paths["footprint"],[67,21.3,0.01])
+        # Groove: 3 mm wide along X, half-width entry from +Y, 2 mm deep.
+        expect_hits(faces,cy+5,1.7,[0,32,35,71.8])
+        expect_hits(swapped,33.5,1.7,[0,10.65])
+        expect_hits(vertical,33.5,cy+5,[0,1.2])
+        expect_hits(vertical,33.5,cy-0.05,[0,3.2])
+        expect_hits(vertical,31.95,cy+5,[0,3.2])
+        expect_hits(vertical,35.05,cy+5,[0,3.2])
+        report["thermistor_slot_w_l_depth_mm"] = [3,10.65,2]
+        report["thermistor_floor_mm"] = 1.2
+        report["cell_top_above_board_with_0.5mm_tape_mm"] = 21.7
         xs = [p[0] for face in triangles(paths["footprint"]) for p in face]
         assert abs(min(xs))<0.001 and abs(max(xs)-67)<0.001
         profile = [p for face in faces for p in face if abs(p[0]-26.2)<0.001 and p[2]>cz]

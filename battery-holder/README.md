@@ -19,15 +19,32 @@ replaces it with bare-wire feed-throughs and small solder-head pockets. The
   from the inside, after forming the solder head away from the plastic. Check
   the actual printed clearance before assembling.
 - Both holes and solder pockets lie on the **battery centreline**: 10.65 mm
-  from either side and **12.8 mm above the mounting surface**. This is above
+  from either side and **12.2 mm above the printed mounting underside**. This is above
   the flap's midpoint because the battery extends above the flap.
 - Polarity marks remain raised 0.5 mm and now sit **5.5 mm below the holes**:
   minus at the flush end, plus at the overhanging end. The wire goes through
   the central hole, not through either symbol.
 
-The 67 mm mounting base, 71.8 mm body, 2 mm step, 25° curved lips and 1.6 mm
-shells are preserved. The plastic envelope including marks is
-**72.8 × 21.3 × 17.2 mm**. External wire routing needs additional space.
+The mounting base remains **67 mm long** and the body 71.8 mm long. The
+pedestal step is now **1.4 mm**, reduced from 2 mm by 0.6 mm. This leaves 1.2 mm
+of material under the new thermistor groove while lowering the battery. The 25°
+curved lips and 1.6 mm shells are preserved. The plastic envelope including
+marks is **72.8 × 21.3 × 16.6 mm**. External wire routing needs additional space.
+
+The **3 mm-wide × 2 mm-deep thermistor groove** opens towards the battery from
+the right-hand (+Y) side, running **10.65 mm**, exactly half the holder's width,
+to its width centreline. It lies midway along the 67 mm mounting base (X=33.5),
+between the retaining sections. A **1.2 mm floor** remains beneath the groove;
+the underside remains flat for mounting tape. The requested full 1 mm height
+reduction would have left only 0.8 mm there. The 1.2 mm choice adds design margin,
+not a tested strength guarantee. Verify the actual thermistor fit and contact
+against the cell; the groove dimensions do not establish its temperature response.
+
+With the user's **0.5 mm double-sided tape**, the printed holder reaches about
+**17.1 mm above the board**, and the installed cell top **21.7 mm above the board**.
+The hole axis is 12.7 mm above the board including tape. These are geometric
+heights before tape compression; check the actual lid and component clearance.
+Keep tape under the flat underside rather than filling the thermistor groove.
 Only the plastic tray is included in the STL; the preview's silver contacts
 and copper-coloured wires are illustrations, not printed parts.
 
@@ -57,12 +74,16 @@ The build checks watertightness, footprint, lip opening, both bore diameters,
 pocket diameters/depths, the retained negative bump, horizontal and vertical alignment with the battery
 axis, wall backing and polarity marks below the holes. It checks the
 illustrative heads for pocket clearance and target preload, and requires cell
-clearance when each contact end is translated outward by 0.2 mm. This is a
+clearance when each contact end is translated outward by 0.2 mm. It also checks
+the groove width, half-width length, depth, 1.2 mm floor and unobstructed side
+entry against the exported mesh. This is a
 geometry proxy, not a spring or electrical-performance test.
 
 ![Bare tray with feed-through holes and solder pockets](images/wired-single-empty.png)
 ![Illustrative soldered wire contacts fitted](images/wired-single-contacts.png)
 ![Section through both contact pockets](images/wired-single-section.png)
+![Thermistor groove from the right-hand side](images/wired-single-thermistor-slot.png)
+![Cross-section through the thermistor groove and battery](images/wired-single-thermistor-section.png)
 ![End-on alignment: orange circle and cross show the battery outline and centre](images/wired-single-alignment.png)
 
 The orange alignment guides are preview overlays only; they are not printed.
